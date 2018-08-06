@@ -5,52 +5,49 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import javax.validation.constraints.NotNull;
 
+@Table(name = "groups")
 @Entity
-@Table(name = "accounts")
 @NoArgsConstructor
 @Data
-public class Account {
+public class Group {
 
   @Id
   @Column(name = "id")
   @NotNull
   private int id;
 
-  @Column(name = "username")
+  @Column(name = "name")
   @NotNull
-  private String username;
+  private String name;
 
-  @Column(name = "email")
-  @NotNull
-  private String email;
+  @Column(name = "description")
+  private String description;
 
   @Column(name = "password")
-  @NotNull
   private String password;
 
-  @Column(name = "register_no")
+  @Column(name = "can_join")
   @NotNull
-  private int register_no;
+  private boolean can_join;
 
-  @Column(name = "role")
+  @Column(name = "need_acceptance")
   @NotNull
-  private int id_role;
+  private boolean need_acceptance;
 
-  @Column(name = "enabled")
+  @Column(name = "is_show")
   @NotNull
-  private boolean enabled;
+  private boolean is_show;
 
-  @Column(name = "firstname")
-  @NotNull
-  private String firstname;
+  @Column(name = "id_parent")
+  private int id_parent;
 
-  @Column(name = "lastname")
+  @Column(name = "order")
   @NotNull
-  private String lastname;
+  private int order;
 
   @Column(name = "creation_time", updatable = false)
   @NotNull
