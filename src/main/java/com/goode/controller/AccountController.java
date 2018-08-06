@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/account")
 public class AccountController {
 
-  @PreAuthorize("hasRole('ADMIN')")
   @GetMapping
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   public String account(){
     return "account2";
   }
