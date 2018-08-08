@@ -32,7 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             + " from accounts where username=?")
         .authoritiesByUsernameQuery("select a.username, r.role "
             + "from accounts a, access_roles r "
-            + "where a.username=? and a.id_role = r.id")
+            + "where a.username=? and a.id_access_role = r.id_access_role")
         .passwordEncoder(bCryptPasswordEncoder());
   }
 

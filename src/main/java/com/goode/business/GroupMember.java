@@ -2,11 +2,16 @@ package com.goode.business;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Table(name = "group_members")
 @Entity
@@ -15,20 +20,26 @@ import lombok.NoArgsConstructor;
 public class GroupMember {
 
   @Id
-  @Column(name = "id")
+  @Column(name = "id_group_member")
   @NotNull
   private int id;
 
-  @Column(name = "id_account")
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "id_account")
+  @OnDelete(action = OnDeleteAction.CASCADE)
   @NotNull
-  private int id_account;
+  private Account account;
 
-  @Column(name = "id_group")
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "id_group")
+  @OnDelete(action = OnDeleteAction.CASCADE)
   @NotNull
-  private int id_group;
+  private Group group;
 
-  @Column(name = "id_role")
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "id_access_role")
+  @OnDelete(action = OnDeleteAction.NO_ACTION)
   @NotNull
-  private int id_role;
+  private AccessRole accessRole;
 
 }

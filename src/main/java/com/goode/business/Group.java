@@ -1,9 +1,11 @@
 package com.goode.business;
 
 import java.sql.Timestamp;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
@@ -16,7 +18,7 @@ import lombok.NoArgsConstructor;
 public class Group {
 
   @Id
-  @Column(name = "id")
+  @Column(name = "id_group")
   @NotNull
   private int id;
 
@@ -53,4 +55,6 @@ public class Group {
   @NotNull
   private Timestamp creationTime;
 
+  @OneToMany(mappedBy = "group")
+  private Set<GroupMember> groupMembers;
 }
