@@ -1,5 +1,8 @@
 package com.goode.config;
 
-public class SecurityWebInitializer {
+import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer;
+
+public class SecurityWebInitializer
+    extends AbstractSecurityWebApplicationInitializer {
 
 }
