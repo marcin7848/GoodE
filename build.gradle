@@ -25,4 +25,7 @@ dependencies {
     compile group: 'org.springframework.security', name: 'spring-security-config', version: '5.0.7.RELEASE'
     compile group: 'org.projectlombok', name: 'lombok', version: '1.18.2'
     compile group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
+    compile group: 'org.json', name: 'json', version: '20180130'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.6'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.6'
 }

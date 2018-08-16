@@ -1,5 +1,6 @@
 package com.goode.business;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,9 +28,11 @@ public class AccessRole {
   @NotNull
   private String role;
 
+  @JsonIgnore
   @OneToMany(mappedBy = "accessRole")
   private Set<Account> accounts;
 
+  @JsonIgnore
   @OneToMany(mappedBy = "accessRole")
   private Set<GroupMember> groupMembers;
 }
