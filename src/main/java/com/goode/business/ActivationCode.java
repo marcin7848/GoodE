@@ -3,6 +3,8 @@ package com.goode.business;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -23,6 +25,7 @@ public class ActivationCode {
 
   @Id
   @Column(name = "id_activation_code")
+  @GeneratedValue(strategy = GenerationType.AUTO)
   @NotNull
   private int id;
 

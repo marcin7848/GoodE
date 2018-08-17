@@ -1,5 +1,6 @@
 package com.goode.service;
 
+import com.goode.Language;
 import com.goode.SendEmail;
 import com.goode.business.Account;
 import com.goode.repository.AccountRepository;
@@ -23,7 +24,8 @@ public class AccountService implements IAccountService, StandardizeService<Accou
     //accessRole.setId(2);
     //Account account = accountRepository.save(new Account(2, "teacher", "email", "password", 148820, accessRole, true, "first", "second", new Timestamp(new Date().getTime()), null, null));
 
-    sendEmail.send("marcin7848@gmail.com", "Rejestracja TODOList", "To activate your account use this code: \n");
+
+    sendEmail.send("marcin7848@gmail.com", Language.REGISTRATION_GOODE.getString(), "To activate your account use this code: \n");
 
 
 
