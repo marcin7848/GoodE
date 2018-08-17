@@ -19,16 +19,28 @@ public class AccountService implements IAccountService, StandardizeService<Accou
   private AccountRepository accountRepository;
 
   @Override
-  public ResponseEntity<?> addNew(Account entity){
+  public ResponseEntity<?> addNew(Account account){
     //AccessRole accessRole = new AccessRole();
     //accessRole.setId(2);
     //Account account = accountRepository.save(new Account(2, "teacher", "email", "password", 148820, accessRole, true, "first", "second", new Timestamp(new Date().getTime()), null, null));
 
+    if(validateAccount(account).getStatusCode() != HttpStatus.OK)
+      return validateAccount(account);
 
-    sendEmail.send("marcin7848@gmail.com", Language.REGISTRATION_GOODE.getString(), "To activate your account use this code: \n");
+    //sendEmail.send("marcin7848@gmail.com", Language.REGISTRATION_GOODE.getString(), "To activate your account use this code: \n");
 
 
 
-    return new ResponseEntity<>(entity, HttpStatus.OK);
+
+    return new ResponseEntity<>(null, HttpStatus.OK);
   }
+
+  private ResponseEntity<?> validateAccount(Account account){
+    if(account.getUsername().length() > 15 || account.getUsername().length() < 5){
+      return sendError(Language.USERNAME_LENGTH_BETWEEN.getString() + " 6 - 15", HttpStatus.BAD_REQUEST);
+    }
+
+    return new ResponseEntity<>(null, HttpStatus.OK);
+  }
+
 }

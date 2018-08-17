@@ -2,7 +2,8 @@ package com.goode;
 
 public enum Language {
 
-  REGISTRATION_GOODE("Rejestracja GoodE", "Registration GoodE");
+  REGISTRATION_GOODE("Rejestracja GoodE", "Registration GoodE"),
+  USERNAME_LENGTH_BETWEEN("Długość nazwy użytkownika musi być pomiędzy", "Username's length has to be between");
 
   private String polish;
   private String english;

@@ -18,6 +18,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.validator.constraints.Length;
 
 @Entity
 @Table(name = "accounts")
@@ -34,6 +35,7 @@ public class Account {
 
   @Column(name = "username")
   @NotNull
+  @Length(max = 15)
   private String username;
 
   @Column(name = "email")

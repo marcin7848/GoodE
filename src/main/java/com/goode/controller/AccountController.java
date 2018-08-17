@@ -18,11 +18,10 @@ public class AccountController extends BaseController<Account, AccountService> {
   @Autowired
   private AccountService accountService;
 
-  @GetMapping("/register")
+  @PostMapping("/register")
   //@PreAuthorize("hasRole('ROLE_ADMIN')")
-  public ResponseEntity<?> register(){
+  public ResponseEntity<?> register(@RequestBody Account account){
     super.initializeService(accountService);
-    Account account = new Account();
     return super.addNew(account);
   }
 }
