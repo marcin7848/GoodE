@@ -1,7 +1,6 @@
 package com.goode.controller;
 
 import com.goode.service.StandardizeService;
-import javax.transaction.Transactional;
 import lombok.NoArgsConstructor;
 import org.springframework.http.ResponseEntity;
 

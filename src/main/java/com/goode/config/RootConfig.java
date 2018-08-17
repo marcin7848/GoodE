@@ -8,7 +8,9 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -19,11 +21,12 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
-@EnableJpaRepositories( basePackages = {"com.goode.repository"})
-@PropertySource(value = { "classpath:application.properties" })
+@EnableJpaRepositories(basePackages = {"com.goode.repository"})
+@PropertySource(value = {"classpath:application.properties"})
 @EnableTransactionManagement
-@Import({ SecurityConfig.class })
-@ComponentScan(basePackages = {"com.goode.service", "com.goode.repository", "com.goode.controller", "com.goode.business"})
+@Import({SecurityConfig.class})
+@ComponentScan(basePackages = {"com.goode.service", "com.goode.repository", "com.goode.controller",
+    "com.goode.business", "com.goode"})
 public class RootConfig {
 
   @Autowired
@@ -67,6 +70,7 @@ public class RootConfig {
     properties.put("hibernate.format_sql", environment.getRequiredProperty("hibernate.format_sql"));
     return properties;
   }
+
   @Bean
   public PlatformTransactionManager transactionManager() {
 
@@ -76,4 +80,10 @@ public class RootConfig {
   }
 
 
+  @Bean
+  public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+    PropertySourcesPlaceholderConfigurer o = new PropertySourcesPlaceholderConfigurer();
+    o.setLocation(new ClassPathResource("application.properties"));
+    return o;
+  }
 }
