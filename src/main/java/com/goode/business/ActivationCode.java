@@ -29,7 +29,7 @@ public class ActivationCode {
   @NotNull
   private int id;
 
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @ManyToOne(fetch = FetchType.EAGER, optional = false)
   @JoinColumn(name = "id_account")
   @OnDelete(action = OnDeleteAction.CASCADE)
   @NotNull
@@ -38,6 +38,7 @@ public class ActivationCode {
   @Column(name = "type")
   @NotNull
   private int type;
+  //1 - for activation account (enabled -> true)
 
   @Column(name = "code")
   @NotNull

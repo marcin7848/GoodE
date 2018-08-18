@@ -12,6 +12,6 @@ public interface StandardizeService<E> {
     return new ResponseEntity<>(obj.toMap(), httpStatus);
   }
 
-  ResponseEntity<?> addNew(E entity);
+  E addNew(E entity);
 
 }

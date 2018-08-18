@@ -17,7 +17,6 @@ public class ActivationCodeController {
   @GetMapping
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   public String account(){
-    activationCodeService.addActivationCode();
     return "activation code added";
   }
 }

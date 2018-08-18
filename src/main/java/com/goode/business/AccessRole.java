@@ -1,9 +1,10 @@
 package com.goode.business;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.util.Set;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -32,10 +33,10 @@ public class AccessRole {
   private String role;
 
   @JsonIgnore
-  @OneToMany(mappedBy = "accessRole")
-  private Set<Account> accounts;
+  @OneToMany(fetch = FetchType.EAGER, mappedBy = "accessRole")
+  private List<Account> accounts;
 
   @JsonIgnore
   @OneToMany(mappedBy = "accessRole")
-  private Set<GroupMember> groupMembers;
+  private List<GroupMember> groupMembers;
 }

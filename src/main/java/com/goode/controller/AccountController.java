@@ -1,11 +1,13 @@
 package com.goode.controller;
 
+import com.goode.Language;
+import com.goode.SendEmail;
 import com.goode.business.Account;
 import com.goode.service.AccountService;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,10 +20,23 @@ public class AccountController extends BaseController<Account, AccountService> {
   @Autowired
   private AccountService accountService;
 
+  @Autowired
+  private SendEmail sendEmail;
+
   @PostMapping("/register")
   //@PreAuthorize("hasRole('ROLE_ADMIN')")
-  public ResponseEntity<?> register(@RequestBody Account account){
+  public ResponseEntity<?> register(HttpServletRequest request, @RequestBody Account account){
     super.initializeService(accountService);
-    return super.addNew(account);
+    Account newAccount = super.addNew(account);
+    if(newAccount == null)
+      return accountService.sendError(Language.ACCOUNT_NOT_CREATED.getString(), HttpStatus.BAD_REQUEST);
+
+
+    sendEmail.send(newAccount.getEmail(), Language.REGISTRATION_GOODE.getString(),
+        Language.HELLO.getString() + " " + newAccount.getUsername() + "\n" +
+            Language.EMAIL_ACTIVATION_CODE.getString() +
+            "http://" + request.getLocalName() + "/account/activate/" + newAccount.getActivationCodes().get(0));
+
+    return new ResponseEntity<>(null, HttpStatus.OK);
   }
 }

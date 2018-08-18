@@ -1,7 +1,7 @@
 package com.goode.business;
 
 import java.sql.Timestamp;
-import java.util.Set;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -35,20 +35,22 @@ public class Account {
 
   @Column(name = "username")
   @NotNull
-  @Length(max = 15)
+  @Length(min = 6, max = 15)
   private String username;
 
   @Column(name = "email")
   @NotNull
+  @Length(min = 6, max = 100)
   private String email;
 
   @Column(name = "password")
   @NotNull
+  @Length(min = 8, max = 100)
   private String password;
 
   @Column(name = "register_no")
   @NotNull
-  private int register_no;
+  private Integer register_no;
 
   @ManyToOne(fetch = FetchType.EAGER, optional = false)
   @JoinColumn(name = "id_access_role")
@@ -62,10 +64,12 @@ public class Account {
 
   @Column(name = "firstname")
   @NotNull
+  @Length(min = 2, max = 30)
   private String firstname;
 
   @Column(name = "lastname")
   @NotNull
+  @Length(min = 2, max = 30)
   private String lastname;
 
   @Column(name = "creation_time", updatable = false)
@@ -73,9 +77,9 @@ public class Account {
   private Timestamp creationTime;
 
   @OneToMany(mappedBy = "account")
-  private Set<ActivationCode> activationCodes;
+  private List<ActivationCode> activationCodes;
 
   @OneToMany(mappedBy = "account")
-  private Set<GroupMember> groupMembers;
+  private List<GroupMember> groupMembers;
 
 }
