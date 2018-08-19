@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotNull;
+import lombok.ToString;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.validator.constraints.Length;
@@ -76,10 +77,12 @@ public class Account {
   @NotNull
   private Timestamp creationTime;
 
-  @OneToMany(mappedBy = "account")
+  @OneToMany(fetch = FetchType.EAGER, mappedBy = "account")
+  @ToString.Exclude
   private List<ActivationCode> activationCodes;
 
   @OneToMany(mappedBy = "account")
+  @ToString.Exclude
   private List<GroupMember> groupMembers;
 
 }

@@ -31,11 +31,10 @@ public class AccountController extends BaseController<Account, AccountService> {
     if(newAccount == null)
       return accountService.sendError(Language.ACCOUNT_NOT_CREATED.getString(), HttpStatus.BAD_REQUEST);
 
-
     sendEmail.send(newAccount.getEmail(), Language.REGISTRATION_GOODE.getString(),
-        Language.HELLO.getString() + " " + newAccount.getUsername() + "\n" +
+        Language.HELLO.getString() + " " + newAccount.getUsername() + "!\n" +
             Language.EMAIL_ACTIVATION_CODE.getString() +
-            "http://" + request.getLocalName() + "/account/activate/" + newAccount.getActivationCodes().get(0));
+            "http://" + request.getLocalName() + "/account/activate/" + newAccount.getActivationCodes().get(0).getCode());
 
     return new ResponseEntity<>(null, HttpStatus.OK);
   }

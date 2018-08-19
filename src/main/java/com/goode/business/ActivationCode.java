@@ -15,6 +15,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.validator.constraints.Length;
 
 @Table(name = "activation_codes")
 @Entity
@@ -42,6 +43,7 @@ public class ActivationCode {
 
   @Column(name = "code")
   @NotNull
+  @Length(max = 50)
   private String code;
 
 }

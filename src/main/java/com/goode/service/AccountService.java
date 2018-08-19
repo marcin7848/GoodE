@@ -6,7 +6,9 @@ import com.goode.repository.AccessRoleRepository;
 import com.goode.repository.AccountRepository;
 import com.goode.repository.ActivationCodeRepository;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -49,7 +51,10 @@ public class AccountService implements IAccountService, StandardizeService<Accou
     if(activationCode == null)
       return null;
 
-    newAccount.setActivationCodes(activationCodeRepository.getActivationCodeById(activationCode.getId()));
+    List<ActivationCode> listActivationCodes = new ArrayList<>();
+    listActivationCodes.add(activationCode);
+
+    newAccount.setActivationCodes(listActivationCodes);
 
     return newAccount;
   }

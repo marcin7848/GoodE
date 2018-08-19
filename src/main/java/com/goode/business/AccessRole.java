@@ -14,6 +14,7 @@ import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Table(name = "access_roles")
 @Entity
@@ -34,9 +35,11 @@ public class AccessRole {
 
   @JsonIgnore
   @OneToMany(fetch = FetchType.EAGER, mappedBy = "accessRole")
+  @ToString.Exclude
   private List<Account> accounts;
 
   @JsonIgnore
   @OneToMany(mappedBy = "accessRole")
+  @ToString.Exclude
   private List<GroupMember> groupMembers;
 }
