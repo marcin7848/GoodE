@@ -77,11 +77,11 @@ public class Account {
   @NotNull
   private Timestamp creationTime;
 
-  @OneToMany(fetch = FetchType.EAGER, mappedBy = "account")
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "account")
   @ToString.Exclude
   private List<ActivationCode> activationCodes;
 
-  @OneToMany(mappedBy = "account")
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "account")
   @ToString.Exclude
   private List<GroupMember> groupMembers;
 

@@ -34,7 +34,7 @@ public class AccessRole {
   private String role;
 
   @JsonIgnore
-  @OneToMany(fetch = FetchType.EAGER, mappedBy = "accessRole")
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "accessRole")
   @ToString.Exclude
   private List<Account> accounts;
 
