@@ -24,6 +24,8 @@ import org.hibernate.validator.constraints.Length;
 @AllArgsConstructor
 public class ActivationCode {
 
+  public static final int TYPE_ACTIVATION_ACCOUNT_CODE = 1;
+
   @Id
   @Column(name = "id_activation_code")
   @GeneratedValue(strategy = GenerationType.AUTO)

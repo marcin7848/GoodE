@@ -18,8 +18,13 @@ public enum Language {
   UNKNOWN_ERROR("Nieznany błąd. Spróbuj ponownie później.", "Unknown error. Try again later."),
   HELLO("Witaj", "Hello"),
   EMAIL_ACTIVATION_CODE("By aktywować swoje konto wejdź w poniższy link:\n", "To activate your account click at the link below:\n"),
-  ACCOUNT_NOT_CREATED("Konto nie zostało utworzone. Podane dane są niepoprawne, konto z podanymi danymi już istnieje albo wewnętrzny błąd serwera.",
-      "Account has not created. The given data are incorrect, account with given data has already existed or internal server error.");
+  ACCOUNT_NOT_CREATED("Konto nie zostało utworzone. Podane dane są niepoprawne, konto z podanymi danymi już istnieje albo wystąpił wewnętrzny błąd serwera.",
+      "Account has not created. The given data are incorrect, account with given data has already existed or internal server error has occurred."),
+  INCORRECT_EMAIL("Podany email nie istnieje lub konto zostało już aktywowane.", "The given email is incorrect or the account has already activated."),
+  EMAIL_RESEND_ACTIVATION_CODE_TITLE("Kod aktywacyjny konta", "Account's activation code."),
+  EMAIL_RESEND_ACTIVATION_CODE("Właśnie wysłałeś ponownie kod aktywacyjny Twojego konta.", "You have just resent your account's activation code.");
+
+
 
   private String polish;
   private String english;

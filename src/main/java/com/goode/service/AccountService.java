@@ -47,7 +47,7 @@ public class AccountService implements IAccountService, StandardizeService<Accou
     if(newAccount == null)
       return null;
 
-    ActivationCode activationCode = activationCodeService.addNew(newAccount, 1);
+    ActivationCode activationCode = activationCodeService.addNew(newAccount, ActivationCode.TYPE_ACTIVATION_ACCOUNT_CODE);
     if(activationCode == null)
       return null;
 
@@ -74,8 +74,7 @@ public class AccountService implements IAccountService, StandardizeService<Accou
     if(!account.getUsername().matches("^[a-zA-Z0-9_]+$"))
       return false;
 
-    if(account.getEmail().length() > 100 || account.getEmail().length() < 5 ||
-        !account.getEmail().matches("^[a-zA-Z0-9._-]+@([a-zA-Z0-9-_]+\\.)+[a-zA-Z0-9-_]+$"))
+    if(!validateEmail(account.getEmail()))
       return false;
 
     if(account.getPassword().length() > 100 || account.getPassword().length() < 8)
@@ -103,4 +102,34 @@ public class AccountService implements IAccountService, StandardizeService<Accou
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     return passwordEncoder.encode(password);
   }
+
+  private boolean validateEmail(String email){
+    return email.length() <= 100 && email.length() >= 5 &&
+        email.matches("^[a-zA-Z0-9._-]+@([a-zA-Z0-9-_]+\\.)+[a-zA-Z0-9-_]+$");
+  }
+
+  public Account resendActivationCode(String email){
+    if(!validateEmail(email))
+      return null;
+
+    Account account = accountRepository.findAccountByEmail(email);
+    if(account == null)
+      return null;
+
+    if(account.isEnabled())
+      return null;
+
+    ActivationCode activationCode = activationCodeService.addNew(account, ActivationCode.TYPE_ACTIVATION_ACCOUNT_CODE);
+
+    if(activationCode == null)
+      return null;
+
+    List<ActivationCode> listActivationCodes = new ArrayList<>();
+    listActivationCodes.add(activationCode);
+    account.setActivationCodes(listActivationCodes);
+
+    return account;
+
+  }
+
 }
