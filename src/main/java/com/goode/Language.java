@@ -23,7 +23,9 @@ public enum Language {
   INCORRECT_EMAIL_ACTIVATION_CODE("Podany email nie istnieje lub konto zostało już aktywowane.", "The given email is incorrect or the account has already activated."),
   EMAIL_RESEND_ACTIVATION_CODE_TITLE("Kod aktywacyjny konta", "Account's activation code."),
   EMAIL_RESEND_ACTIVATION_CODE("Właśnie wysłałeś ponownie kod aktywacyjny Twojego konta.", "You have just resent your account's activation code."),
-  RESEND_ACTIVATION_CODE_TO_MANY("Wysłałeś za dużo kodów aktywacyjnych. Poczekaj 2 godziny i spróbuj ponownie.", "You sent too many activation codes. Wait 2 hours and try again.");
+  RESEND_ACTIVATION_CODE_TO_MANY("Wysłałeś za dużo kodów aktywacyjnych. Poczekaj 2 godziny i spróbuj ponownie.", "You sent too many activation codes. Wait 2 hur ours and try again."),
+  ACCOUNT_NOT_ACTIVATED("Podany kod aktywacyjny nie jest poprawny lub konto nie mogło zostać aktywowane.", "The given activation code is not correct or your account cannot be activate."),
+  ACCOUNT_ACTIVATED("Twoje konto zostało aktywowane. Możesz się teraz zalogować.", "Your account has activated. You can log in now.");
 
 
   private String polish;

@@ -6,6 +6,7 @@ public interface IAccountService {
 
   Account resendActivationCodeValidation(String email);
   Account resendActivationCode(Account account);
+  boolean activateAccount(String activationCode);
 
 
 }

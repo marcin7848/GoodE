@@ -15,6 +15,7 @@ public class ActivationCodeService implements IActivationCodeService{
   @Autowired
   ActivationCodeRepository activationCodeRepository;
 
+  @Override
   public ActivationCode addNew(Account account, int type){
     ActivationCode activationCode = new ActivationCode();
     activationCode.setAccount(account);
@@ -36,8 +37,21 @@ public class ActivationCodeService implements IActivationCodeService{
         salt.append(SALTCHARS.charAt(index));
       }
       code = salt.toString();
-    }while(!activationCodeRepository.getActivationCodeByCode(code).isEmpty());
+    }while(activationCodeRepository.getActivationCodeByCode(code) != null);
 
     return code;
   }
+
+  @Override
+  public boolean validateActivationCode(String activationCode) {
+    if(activationCode.length() != 50)
+      return false;
+
+    if(!activationCode.matches("^[a-zA-Z0-9!@$*()]+$"))
+      return false;
+
+    return true;
+  }
+
+
 }

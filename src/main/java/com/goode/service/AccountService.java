@@ -140,7 +140,31 @@ public class AccountService implements IAccountService, StandardizeService<Accou
     account.setActivationCodes(listActivationCodes);
 
     return account;
+  }
 
+  @Override
+  public boolean activateAccount(String activationCode){
+    if(!activationCodeService.validateActivationCode(activationCode))
+      return false;
+
+    ActivationCode activationCode1 = activationCodeRepository.getActivationCodeByCode(activationCode);
+
+    if(activationCode1 == null)
+      return false;
+
+    Account account = activationCode1.getAccount();
+    account.setEnabled(true);
+
+    Account updatedAccount = accountRepository.save(account);
+
+    if(updatedAccount == null)
+      return false;
+
+    List<ActivationCode> activationCodeList = activationCodeRepository.getActivationCodesByAccountAndType(updatedAccount, ActivationCode.TYPE_ACTIVATION_ACCOUNT_CODE);
+
+    activationCodeRepository.deleteAll(activationCodeList);
+
+    return true;
   }
 
 }
