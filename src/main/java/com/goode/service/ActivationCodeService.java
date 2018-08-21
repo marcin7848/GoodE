@@ -3,6 +3,8 @@ package com.goode.service;
 import com.goode.business.Account;
 import com.goode.business.ActivationCode;
 import com.goode.repository.ActivationCodeRepository;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Random;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ public class ActivationCodeService implements IActivationCodeService{
     activationCode.setAccount(account);
     activationCode.setType(type);
     activationCode.setCode(generateRandomString(50));
+    activationCode.setCreationTime(new Timestamp(new Date().getTime()));
 
     return activationCodeRepository.save(activationCode);
   }

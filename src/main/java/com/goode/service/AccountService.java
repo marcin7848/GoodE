@@ -108,15 +108,26 @@ public class AccountService implements IAccountService, StandardizeService<Accou
         email.matches("^[a-zA-Z0-9._-]+@([a-zA-Z0-9-_]+\\.)+[a-zA-Z0-9-_]+$");
   }
 
-  public Account resendActivationCode(String email){
-    if(!validateEmail(email))
+  public Account resendActivationCodeValidation(String email) {
+    if (!validateEmail(email))
       return null;
 
     Account account = accountRepository.findAccountByEmail(email);
-    if(account == null)
+    if (account == null)
       return null;
 
-    if(account.isEnabled())
+    if (account.isEnabled())
+      return null;
+
+    return account;
+  }
+
+  public Account resendActivationCode(Account account) {
+    List<ActivationCode> listToDelete = activationCodeRepository.getAllAddedAtLeastXHoursAgo(account.getId(), ActivationCode.TYPE_ACTIVATION_ACCOUNT_CODE, 2);
+    activationCodeRepository.deleteAll(listToDelete);
+
+    List<ActivationCode> list = activationCodeRepository.getActivationCodesByAccountAndType(account, ActivationCode.TYPE_ACTIVATION_ACCOUNT_CODE);
+    if(list.size() > 3)
       return null;
 
     ActivationCode activationCode = activationCodeService.addNew(account, ActivationCode.TYPE_ACTIVATION_ACCOUNT_CODE);

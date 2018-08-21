@@ -4,5 +4,8 @@ import com.goode.business.Account;
 
 public interface IAccountService {
 
-  Account resendActivationCode(String email);
+  Account resendActivationCodeValidation(String email);
+  Account resendActivationCode(Account account);
+
+
 }

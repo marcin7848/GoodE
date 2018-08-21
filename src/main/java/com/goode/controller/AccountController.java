@@ -42,9 +42,13 @@ public class AccountController extends BaseController<Account, AccountService> {
 
   @PostMapping("/activate/resendActivationCode")
   public ResponseEntity<?> resendActivationCode(HttpServletRequest request, @RequestParam("email") String email){
-    Account account = accountService.resendActivationCode(email);
+    Account account = accountService.resendActivationCodeValidation(email);
     if(account == null)
-      return accountService.sendError(Language.INCORRECT_EMAIL.getString(), HttpStatus.BAD_REQUEST);
+      return accountService.sendError(Language.INCORRECT_EMAIL_ACTIVATION_CODE.getString(), HttpStatus.BAD_REQUEST);
+
+    account = accountService.resendActivationCode(account);
+    if(account == null)
+      return accountService.sendError(Language.RESEND_ACTIVATION_CODE_TO_MANY.getString(), HttpStatus.INTERNAL_SERVER_ERROR);
 
     sendEmail.send(account.getEmail(), Language.EMAIL_RESEND_ACTIVATION_CODE_TITLE.getString(),
         Language.HELLO.getString() + " " + account.getUsername() + "!\n" +

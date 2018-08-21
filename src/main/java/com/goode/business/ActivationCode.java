@@ -1,5 +1,6 @@
 package com.goode.business;
 
+import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -41,11 +42,14 @@ public class ActivationCode {
   @Column(name = "type")
   @NotNull
   private int type;
-  //1 - for activation account (enabled -> true)
 
   @Column(name = "code")
   @NotNull
   @Length(max = 50)
   private String code;
+
+  @Column(name = "creation_time")
+  @NotNull
+  private Timestamp creationTime;
 
 }

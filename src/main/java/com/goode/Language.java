@@ -20,10 +20,10 @@ public enum Language {
   EMAIL_ACTIVATION_CODE("By aktywować swoje konto wejdź w poniższy link:\n", "To activate your account click at the link below:\n"),
   ACCOUNT_NOT_CREATED("Konto nie zostało utworzone. Podane dane są niepoprawne, konto z podanymi danymi już istnieje albo wystąpił wewnętrzny błąd serwera.",
       "Account has not created. The given data are incorrect, account with given data has already existed or internal server error has occurred."),
-  INCORRECT_EMAIL("Podany email nie istnieje lub konto zostało już aktywowane.", "The given email is incorrect or the account has already activated."),
+  INCORRECT_EMAIL_ACTIVATION_CODE("Podany email nie istnieje lub konto zostało już aktywowane.", "The given email is incorrect or the account has already activated."),
   EMAIL_RESEND_ACTIVATION_CODE_TITLE("Kod aktywacyjny konta", "Account's activation code."),
-  EMAIL_RESEND_ACTIVATION_CODE("Właśnie wysłałeś ponownie kod aktywacyjny Twojego konta.", "You have just resent your account's activation code.");
-
+  EMAIL_RESEND_ACTIVATION_CODE("Właśnie wysłałeś ponownie kod aktywacyjny Twojego konta.", "You have just resent your account's activation code."),
+  RESEND_ACTIVATION_CODE_TO_MANY("Wysłałeś za dużo kodów aktywacyjnych. Poczekaj 2 godziny i spróbuj ponownie.", "You sent too many activation codes. Wait 2 hours and try again.");
 
 
   private String polish;
