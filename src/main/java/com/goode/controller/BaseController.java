@@ -1,9 +1,7 @@
 package com.goode.controller;
 
 import com.goode.service.StandardizeService;
-import javax.transaction.Transactional;
 import lombok.NoArgsConstructor;
-import org.springframework.http.ResponseEntity;
 
 @NoArgsConstructor
 public class BaseController<E, S extends StandardizeService<E>> {
@@ -15,7 +13,7 @@ public class BaseController<E, S extends StandardizeService<E>> {
     return this;
   }
 
-  public ResponseEntity<?> addNew(E entity){
+  public E addNew(E entity){
     return service.addNew(entity);
   }
 

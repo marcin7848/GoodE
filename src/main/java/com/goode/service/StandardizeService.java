@@ -1,9 +1,17 @@
 package com.goode.service;
 
+import org.json.JSONObject;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public interface StandardizeService<E> {
 
-  ResponseEntity<?> addNew(E entity);
+  default ResponseEntity<?> sendError(String error, HttpStatus httpStatus){
+    JSONObject obj = new JSONObject();
+    obj.put("error", error);
+    return new ResponseEntity<>(obj.toMap(), httpStatus);
+  }
+
+  E addNew(E entity);
 
 }

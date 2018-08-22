@@ -1,8 +1,11 @@
 package com.goode.business;
 
+import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -13,6 +16,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.validator.constraints.Length;
 
 @Table(name = "activation_codes")
 @Entity
@@ -21,12 +25,17 @@ import org.hibernate.annotations.OnDeleteAction;
 @AllArgsConstructor
 public class ActivationCode {
 
+  public static final int TYPE_ACTIVATION_ACCOUNT_CODE = 1;
+  public static final int TYPE_RESET_PASSWORD_CODE = 2;
+
+
   @Id
   @Column(name = "id_activation_code")
+  @GeneratedValue(strategy = GenerationType.AUTO)
   @NotNull
   private int id;
 
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @ManyToOne(fetch = FetchType.EAGER, optional = false)
   @JoinColumn(name = "id_account")
   @OnDelete(action = OnDeleteAction.CASCADE)
   @NotNull
@@ -38,6 +47,11 @@ public class ActivationCode {
 
   @Column(name = "code")
   @NotNull
+  @Length(max = 50)
   private String code;
+
+  @Column(name = "creation_time")
+  @NotNull
+  private Timestamp creationTime;
 
 }
