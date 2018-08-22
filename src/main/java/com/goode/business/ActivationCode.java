@@ -26,6 +26,8 @@ import org.hibernate.validator.constraints.Length;
 public class ActivationCode {
 
   public static final int TYPE_ACTIVATION_ACCOUNT_CODE = 1;
+  public static final int TYPE_RESET_PASSWORD_CODE = 2;
+
 
   @Id
   @Column(name = "id_activation_code")

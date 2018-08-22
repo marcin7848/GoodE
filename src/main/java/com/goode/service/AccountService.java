@@ -77,7 +77,7 @@ public class AccountService implements IAccountService, StandardizeService<Accou
     if(!validateEmail(account.getEmail()))
       return false;
 
-    if(account.getPassword().length() > 100 || account.getPassword().length() < 8)
+    if(!validatePassword(account.getPassword()))
       return false;
 
     if(account.getRegister_no() < 1)
@@ -104,10 +104,21 @@ public class AccountService implements IAccountService, StandardizeService<Accou
   }
 
   private boolean validateEmail(String email){
+    if(email == null)
+      return false;
+
     return email.length() <= 100 && email.length() >= 5 &&
         email.matches("^[a-zA-Z0-9._-]+@([a-zA-Z0-9-_]+\\.)+[a-zA-Z0-9-_]+$");
   }
 
+  private boolean validatePassword(String password){
+    if(password == null)
+      return false;
+
+    return password.length() <= 40 && password.length() >= 8;
+  }
+
+  @Override
   public Account resendActivationCodeValidation(String email) {
     if (!validateEmail(email))
       return null;
@@ -122,15 +133,16 @@ public class AccountService implements IAccountService, StandardizeService<Accou
     return account;
   }
 
-  public Account resendActivationCode(Account account) {
-    List<ActivationCode> listToDelete = activationCodeRepository.getAllAddedAtLeastXHoursAgo(account.getId(), ActivationCode.TYPE_ACTIVATION_ACCOUNT_CODE, 2);
+  @Override
+  public Account generateActivationCode(Account account, int type) {
+    List<ActivationCode> listToDelete = activationCodeRepository.getAllAddedAtLeastXHoursAgo(account.getId(), type, 2);
     activationCodeRepository.deleteAll(listToDelete);
 
-    List<ActivationCode> list = activationCodeRepository.getActivationCodesByAccountAndType(account, ActivationCode.TYPE_ACTIVATION_ACCOUNT_CODE);
+    List<ActivationCode> list = activationCodeRepository.getActivationCodesByAccountAndType(account, type);
     if(list.size() > 3)
       return null;
 
-    ActivationCode activationCode = activationCodeService.addNew(account, ActivationCode.TYPE_ACTIVATION_ACCOUNT_CODE);
+    ActivationCode activationCode = activationCodeService.addNew(account, type);
 
     if(activationCode == null)
       return null;
@@ -147,7 +159,7 @@ public class AccountService implements IAccountService, StandardizeService<Accou
     if(!activationCodeService.validateActivationCode(activationCode))
       return false;
 
-    ActivationCode activationCode1 = activationCodeRepository.getActivationCodeByCode(activationCode);
+    ActivationCode activationCode1 = activationCodeRepository.getActivationCodeByCodeAndType(activationCode, ActivationCode.TYPE_ACTIVATION_ACCOUNT_CODE);
 
     if(activationCode1 == null)
       return false;
@@ -161,6 +173,55 @@ public class AccountService implements IAccountService, StandardizeService<Accou
       return false;
 
     List<ActivationCode> activationCodeList = activationCodeRepository.getActivationCodesByAccountAndType(updatedAccount, ActivationCode.TYPE_ACTIVATION_ACCOUNT_CODE);
+
+    activationCodeRepository.deleteAll(activationCodeList);
+
+    return true;
+  }
+
+  @Override
+  public Account sendResetPasswordValidation(String email){
+    if (!validateEmail(email))
+      return null;
+
+    Account account = accountRepository.findAccountByEmail(email);
+    if (account == null)
+      return null;
+
+    return account;
+  }
+
+
+  @Override
+  public ActivationCode resetPasswordRequest(String activationCode){
+    if(!activationCodeService.validateActivationCode(activationCode))
+      return null;
+
+    ActivationCode activationCode1 = activationCodeRepository.getActivationCodeByCodeAndType(activationCode, ActivationCode.TYPE_RESET_PASSWORD_CODE);
+
+    if(activationCode1 == null)
+      return null;
+
+    return activationCode1;
+  }
+
+  @Override
+  public boolean resetPassword(String activationCode, String newPassword){
+    ActivationCode activationCode1 = this.resetPasswordRequest(activationCode);
+    if(activationCode1 == null)
+      return false;
+
+    if(!validatePassword(newPassword))
+      return false;
+
+    Account account = activationCode1.getAccount();
+    account.setPassword(hashPassword(newPassword));
+
+    Account updatedAccount = accountRepository.save(account);
+    if(updatedAccount == null)
+      return false;
+
+    List<ActivationCode> activationCodeList = activationCodeRepository.getActivationCodesByAccountAndType(updatedAccount, ActivationCode.TYPE_RESET_PASSWORD_CODE);
 
     activationCodeRepository.deleteAll(activationCodeList);
 

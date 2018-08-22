@@ -3,13 +3,13 @@ package com.goode.controller;
 import com.goode.Language;
 import com.goode.SendEmail;
 import com.goode.business.Account;
+import com.goode.business.ActivationCode;
 import com.goode.service.AccountService;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,7 +37,7 @@ public class AccountController extends BaseController<Account, AccountService> {
 
     sendEmail.send(newAccount.getEmail(), Language.REGISTRATION_GOODE.getString(),
         Language.HELLO.getString() + " " + newAccount.getUsername() + "!\n" +
-            Language.EMAIL_ACTIVATION_CODE.getString() +
+            Language.EMAIL_ACTIVATION_ACCOUNT_CODE.getString() +
             "http://" + request.getLocalName() + "/account/activate/" + newAccount.getActivationCodes().get(0).getCode());
 
     return new ResponseEntity<>(null, HttpStatus.OK);
@@ -49,14 +49,14 @@ public class AccountController extends BaseController<Account, AccountService> {
     if(account == null)
       return accountService.sendError(Language.INCORRECT_EMAIL_ACTIVATION_CODE.getString(), HttpStatus.BAD_REQUEST);
 
-    account = accountService.resendActivationCode(account);
+    account = accountService.generateActivationCode(account, ActivationCode.TYPE_ACTIVATION_ACCOUNT_CODE);
     if(account == null)
       return accountService.sendError(Language.RESEND_ACTIVATION_CODE_TO_MANY.getString(), HttpStatus.INTERNAL_SERVER_ERROR);
 
     sendEmail.send(account.getEmail(), Language.EMAIL_RESEND_ACTIVATION_CODE_TITLE.getString(),
         Language.HELLO.getString() + " " + account.getUsername() + "!\n" +
             Language.EMAIL_RESEND_ACTIVATION_CODE.getString() + " " +
-            Language.EMAIL_ACTIVATION_CODE.getString() +
+            Language.EMAIL_ACTIVATION_ACCOUNT_CODE.getString() +
             "http://" + request.getLocalName() + "/account/activate/" + account.getActivationCodes().get(0).getCode());
 
     return new ResponseEntity<>(null, HttpStatus.OK);
@@ -66,6 +66,40 @@ public class AccountController extends BaseController<Account, AccountService> {
   public ResponseEntity<?> activateAccount(@PathVariable("activationCode") String activationCode){
     if(!accountService.activateAccount(activationCode))
       return accountService.sendError(Language.ACCOUNT_NOT_ACTIVATED.getString(), HttpStatus.BAD_REQUEST);
+
+    return new ResponseEntity<>(null, HttpStatus.OK);
+  }
+
+  @PostMapping("/sendResetPasswordRequest")
+  public ResponseEntity<?> sendResetPassword(HttpServletRequest request, @RequestParam("email") String email){
+    Account account = accountService.sendResetPasswordValidation(email);
+    if(account == null)
+      return accountService.sendError(Language.EMAIL_INCORRECT.getString(), HttpStatus.BAD_REQUEST);
+
+    account = accountService.generateActivationCode(account, ActivationCode.TYPE_RESET_PASSWORD_CODE);
+    if(account == null)
+      return accountService.sendError(Language.RESEND_ACTIVATION_CODE_TO_MANY.getString(), HttpStatus.INTERNAL_SERVER_ERROR);
+
+    sendEmail.send(account.getEmail(), Language.EMAIL_RESET_PASSWORD_TITLE.getString(),
+        Language.HELLO.getString() + " " + account.getUsername() + "!\n" +
+            Language.EMAIL_RESET_PASSWORD.getString() +
+            "http://" + request.getLocalName() + "/account/resetPassword/" + account.getActivationCodes().get(0).getCode());
+
+    return new ResponseEntity<>(null, HttpStatus.OK);
+  }
+
+  @GetMapping("/resetPassword/{resetPasswordCode}")
+  public ResponseEntity<?> resetPasswordRequest(@PathVariable("resetPasswordCode") String resetPasswordCode){
+    if(accountService.resetPasswordRequest(resetPasswordCode) == null)
+      return accountService.sendError(Language.ACTIVATION_CODE_INCORRECT.getString(), HttpStatus.BAD_REQUEST);
+
+    return new ResponseEntity<>(null, HttpStatus.OK);
+  }
+
+  @PostMapping("/resetPassword/{resetPasswordCode}")
+  public ResponseEntity<?> resetPassword(@PathVariable("resetPasswordCode") String activationCode, @RequestParam("password") String password){
+    if(!accountService.resetPassword(activationCode, password))
+      return accountService.sendError(Language.RESET_PASSWORD_ERROR.getString(), HttpStatus.INTERNAL_SERVER_ERROR);
 
     return new ResponseEntity<>(null, HttpStatus.OK);
   }
