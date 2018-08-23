@@ -50,7 +50,7 @@ public class ActivationCode {
   @Length(max = 50)
   private String code;
 
-  @Column(name = "creation_time")
+  @Column(name = "creation_time", updatable = false)
   @NotNull
   private Timestamp creationTime;
 

@@ -45,4 +45,7 @@ public class GroupMember {
   @NotNull
   private AccessRole accessRole;
 
+  @Column(name = "accepted")
+  @NotNull
+  private boolean accepted;
 }

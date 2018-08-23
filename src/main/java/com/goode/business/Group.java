@@ -1,7 +1,7 @@
 package com.goode.business;
 
 import java.sql.Timestamp;
-import java.util.Set;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -47,8 +47,8 @@ public class Group {
   @NotNull
   private boolean is_show;
 
-  @Column(name = "id_parent")
-  private int id_parent;
+  @Column(name = "id_group_parent")
+  private int id_group_parent;
 
   @Column(name = "order")
   @NotNull
@@ -59,5 +59,5 @@ public class Group {
   private Timestamp creationTime;
 
   @OneToMany(mappedBy = "group")
-  private Set<GroupMember> groupMembers;
+  private List<GroupMember> groupMembers;
 }
