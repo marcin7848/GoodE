@@ -28,6 +28,8 @@ import org.hibernate.validator.constraints.Length;
 @AllArgsConstructor
 public class Account {
 
+  public static final int MAIN_ADMINISTRATOR_ID = 1; //for safety, block some actions e.g. change accessRole for main admin
+
   @Id
   @Column(name = "id_account")
   @GeneratedValue(strategy = GenerationType.AUTO)

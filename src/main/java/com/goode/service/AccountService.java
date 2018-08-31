@@ -1,15 +1,19 @@
 package com.goode.service;
 
+import com.goode.business.AccessRole;
 import com.goode.business.Account;
 import com.goode.business.ActivationCode;
 import com.goode.repository.AccessRoleRepository;
 import com.goode.repository.AccountRepository;
 import com.goode.repository.ActivationCodeRepository;
+import java.security.Principal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,6 +32,14 @@ public class AccountService implements AccountServiceI, StandardizeService<Accou
 
   @Autowired
   private ActivationCodeService activationCodeService;
+
+  public Account getAccountByPrincipal(Principal principal){
+    return accountRepository.findAccountByUsername(principal.getName()) ;
+  }
+
+  public Account getAccountById(int id_account){
+    return accountRepository.findAccountById(id_account);
+  }
 
   @Override
   public Account addNew(Account account){
@@ -226,6 +238,30 @@ public class AccountService implements AccountServiceI, StandardizeService<Accou
     activationCodeRepository.deleteAll(activationCodeList);
 
     return true;
+  }
+
+  @Override
+  public boolean changeAccessRole(int accountId, String role){
+    if(accountId == Account.MAIN_ADMINISTRATOR_ID)
+      return false;
+
+    Account loggedAccount = accountRepository.findAccountByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+
+    if(loggedAccount == null || (loggedAccount.getId() != Account.MAIN_ADMINISTRATOR_ID && role.equals(AccessRole.ROLE_ADMIN)))
+      return false; //cannot set ROLE_ADMIN if you are not main admin
+
+    Account account = accountRepository.findAccountById(accountId);
+    if(account == null || (loggedAccount.getId() != Account.MAIN_ADMINISTRATOR_ID && account.getAccessRole().getRole().equals(AccessRole.ROLE_ADMIN)))
+      return false; //cannot change to other role for ADMIN if you are not a main admin
+
+    AccessRole accessRole = accessRoleRepository.getAccessRoleByRole(role);
+    if(accessRole == null)
+      return false;
+
+    account.setAccessRole(accessRole);
+
+    account = accountRepository.save(account);
+    return account != null;
   }
 
 }

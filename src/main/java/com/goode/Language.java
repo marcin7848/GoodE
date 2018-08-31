@@ -31,8 +31,13 @@ public enum Language {
       "You have just sent a request for reset password to Your account. To reset password click at the link below:\n"),
   ACTIVATION_CODE_INCORRECT("Podany kod jest niepoprawny.", "The given code is not correct."),
   RESET_PASSWORD_ERROR("Błąd podczas resetowania hasła. Możliwe, że podałeś niewłaściwe nowe hasło. Spróbuj ponownie później.",
-      "Error while resetting password. It is possible that you have given incorrect new password. Try again later.");
-
+      "Error while resetting password. It is possible that you have given incorrect new password. Try again later."),
+  CHANGE_ACCESS_ROLE_ERROR("Błąd podczas zmiany roli dostępu. Spróbuj ponownie później.",
+      "Error while changing access role. Try again later."),
+  CANNOT_CHANGE_ACCESS_ROLE_FOR_ADMIN("Nie możesz zmienić roli dostępu głównemu adminitratorowi.",
+      "You cannot change access role for main admin."),
+  CANNOT_CHANGE_ACCESS_ROLE_FOR_YURSELF("Nie możesz zmienić samemu sobie roli dostępu.",
+      "You cannot change access role for yourself.");
 
   private String polish;
   private String english;
