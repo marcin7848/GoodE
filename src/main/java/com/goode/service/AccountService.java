@@ -15,7 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AccountService implements IAccountService, StandardizeService<Account>{
+public class AccountService implements AccountServiceI, StandardizeService<Account>{
 
   @Autowired
   private AccountRepository accountRepository;

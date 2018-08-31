@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ActivationCodeService implements IActivationCodeService{
+public class ActivationCodeService implements ActivationCodeServiceI {
 
   @Autowired
   ActivationCodeRepository activationCodeRepository;

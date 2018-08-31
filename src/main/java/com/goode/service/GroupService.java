@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class GroupService implements IGroupService, StandardizeService<Group> {
+public class GroupService implements GroupServiceI, StandardizeService<Group> {
 
   @Autowired
   GroupRepository groupRepository;
