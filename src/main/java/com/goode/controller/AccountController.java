@@ -4,7 +4,7 @@ import com.goode.Language;
 import com.goode.SendEmail;
 import com.goode.business.Account;
 import com.goode.business.ActivationCode;
-import com.goode.service.AccountServiceI;
+import com.goode.service.AccountService;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,16 +19,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/account")
-public class AccountController extends BaseController<Account, AccountServiceI> {
+public class AccountController extends BaseController<Account, AccountService> {
 
   @Autowired
-  private AccountServiceI accountService;
+  private AccountService accountService;
 
   @Autowired
   private SendEmail sendEmail;
 
   @PostMapping("/register")
-  //@PreAuthorize("hasRole('ROLE_ADMIN')")
   public ResponseEntity<?> register(HttpServletRequest request, @RequestBody Account account){
     super.initializeService(accountService);
     Account newAccount = super.addNew(account);
