@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -41,17 +42,17 @@ public class Account {
   private int id;
 
   @Column(name = "username")
-  @NotNull(groups = {ValidationStepOne.class, ValidationStepTwo.class})
+  @NotBlank(groups = {ValidationStepOne.class, ValidationStepTwo.class})
   @Length(min = 6, max = 15, groups = {ValidationStepOne.class, ValidationStepTwo.class})
   private String username;
 
   @Column(name = "email")
-  @NotNull(groups = {ValidationStepOne.class, ValidationStepTwo.class})
+  @NotBlank(groups = {ValidationStepOne.class, ValidationStepTwo.class})
   @Length(min = 6, max = 100, groups = {ValidationStepOne.class, ValidationStepTwo.class})
   private String email;
 
   @Column(name = "password")
-  @NotNull(groups = {ValidationStepOne.class, ValidationStepTwo.class})
+  @NotBlank(groups = {ValidationStepOne.class, ValidationStepTwo.class})
   @Length(min = 8, max = 100, groups = {ValidationStepOne.class, ValidationStepTwo.class})
   private String password;
 
@@ -70,12 +71,12 @@ public class Account {
   private boolean enabled;
 
   @Column(name = "firstname")
-  @NotNull(groups = {ValidationStepOne.class, ValidationStepTwo.class})
+  @NotBlank(groups = {ValidationStepOne.class, ValidationStepTwo.class})
   @Length(min = 2, max = 30, groups = {ValidationStepOne.class, ValidationStepTwo.class})
   private String firstname;
 
   @Column(name = "lastname")
-  @NotNull(groups = {ValidationStepOne.class, ValidationStepTwo.class})
+  @NotBlank(groups = {ValidationStepOne.class, ValidationStepTwo.class})
   @Length(min = 2, max = 30, groups = {ValidationStepOne.class, ValidationStepTwo.class})
   private String lastname;
 

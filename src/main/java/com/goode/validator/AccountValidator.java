@@ -8,7 +8,7 @@ import org.springframework.validation.Errors;
 @Component
 public class AccountValidator extends BaseValidator  {
 
-  public void validateId(Object target, Errors errors) {
+  public void validateAccount(Object target, Errors errors) {
     Account account = (Account) target;
 
     if(account.getId() == 1) {
