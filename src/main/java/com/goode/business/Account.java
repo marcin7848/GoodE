@@ -30,6 +30,10 @@ public class Account {
 
   public static final int MAIN_ADMINISTRATOR_ID = 1; //for safety, block some actions e.g. change accessRole for main admin
 
+  public interface ValidationStepOne {}
+
+  interface ValidationStepTwo {}
+
   @Id
   @Column(name = "id_account")
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -37,46 +41,46 @@ public class Account {
   private int id;
 
   @Column(name = "username")
-  @NotNull
-  @Length(min = 6, max = 15)
+  @NotNull(groups = {ValidationStepOne.class, ValidationStepTwo.class})
+  @Length(min = 6, max = 15, groups = {ValidationStepOne.class, ValidationStepTwo.class})
   private String username;
 
   @Column(name = "email")
-  @NotNull
-  @Length(min = 6, max = 100)
+  @NotNull(groups = {ValidationStepOne.class, ValidationStepTwo.class})
+  @Length(min = 6, max = 100, groups = {ValidationStepOne.class, ValidationStepTwo.class})
   private String email;
 
   @Column(name = "password")
-  @NotNull
-  @Length(min = 8, max = 100)
+  @NotNull(groups = {ValidationStepOne.class, ValidationStepTwo.class})
+  @Length(min = 8, max = 100, groups = {ValidationStepOne.class, ValidationStepTwo.class})
   private String password;
 
   @Column(name = "register_no")
-  @NotNull
+  @NotNull(groups = {ValidationStepOne.class, ValidationStepTwo.class})
   private Integer register_no;
 
   @ManyToOne(fetch = FetchType.EAGER, optional = false)
   @JoinColumn(name = "id_access_role")
   @OnDelete(action = OnDeleteAction.NO_ACTION)
-  @NotNull
+  @NotNull(groups = {ValidationStepTwo.class})
   private AccessRole accessRole;
 
   @Column(name = "enabled")
-  @NotNull
+  @NotNull(groups = {ValidationStepTwo.class})
   private boolean enabled;
 
   @Column(name = "firstname")
-  @NotNull
-  @Length(min = 2, max = 30)
+  @NotNull(groups = {ValidationStepOne.class, ValidationStepTwo.class})
+  @Length(min = 2, max = 30, groups = {ValidationStepOne.class, ValidationStepTwo.class})
   private String firstname;
 
   @Column(name = "lastname")
-  @NotNull
-  @Length(min = 2, max = 30)
+  @NotNull(groups = {ValidationStepOne.class, ValidationStepTwo.class})
+  @Length(min = 2, max = 30, groups = {ValidationStepOne.class, ValidationStepTwo.class})
   private String lastname;
 
   @Column(name = "creation_time", updatable = false)
-  @NotNull
+  @NotNull(groups = {ValidationStepTwo.class})
   private Timestamp creationTime;
 
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "account")
