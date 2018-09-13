@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -33,7 +34,7 @@ public class Account {
 
   public interface ValidationStepOne {}
 
-  interface ValidationStepTwo {}
+  public interface ValidationStepTwo {}
 
   @Id
   @Column(name = "id_account")
@@ -58,6 +59,7 @@ public class Account {
 
   @Column(name = "register_no")
   @NotNull(groups = {ValidationStepOne.class, ValidationStepTwo.class})
+  @Min(value = 1, groups = {ValidationStepOne.class, ValidationStepTwo.class})
   private Integer register_no;
 
   @ManyToOne(fetch = FetchType.EAGER, optional = false)

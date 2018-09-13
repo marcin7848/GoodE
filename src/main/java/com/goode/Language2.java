@@ -23,7 +23,9 @@ public abstract class Language2 {
     switch (code){
       case "NotNull": return getMessage("validate.NotNull", getMessage(field));
       case "NotBlank": return getMessage("validate.NotBlank", getMessage(field));
-      case "Length": return translateErrorLength(field, defaultError);
+      case "Length": return translateErrorLength(field, defaultError); //"length must be between 6 and 15"
+      case "Min": return "sad"; //"must be greater than or equal to 1
+      case "Max": return "SAdsa"; // "must be less than or equal to 1"
     }
 
     return getMessage(code, args);
@@ -32,5 +34,7 @@ public abstract class Language2 {
   private static String translateErrorLength(String field, String defaultError){
     return "regEx";
     //pobranie regexem 2 cyfr i komentarz, że liczba musi być pomiędzy min i max, chyba, że max to: 2147483647 to wtedy, że liczba musi być min i tyle
+
+
   }
 }
