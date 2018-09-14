@@ -1,20 +1,22 @@
 package com.goode.controller;
 
+import com.goode.ErrorMessage;
 import com.goode.Language;
+import com.goode.Language2;
 import com.goode.SendEmail;
 import com.goode.business.AccessRole;
 import com.goode.business.Account;
 import com.goode.business.ActivationCode;
 import com.goode.service.AccountService;
-import java.security.Principal;
+import com.goode.validator.AccountValidator;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,18 +34,32 @@ public class AccountController extends BaseController<Account, AccountService> {
   @Autowired
   private SendEmail sendEmail;
 
+  @Autowired
+  private AccountValidator accountValidator;
+
   @PostMapping("/register")
-  public ResponseEntity<?> register(HttpServletRequest request, @RequestBody Account account) {
+  public ResponseEntity<?> register(HttpServletRequest request,
+      @Validated(Account.ValidationStepOne.class) @RequestBody Account account,
+      BindingResult result) {
     super.initializeService(accountService);
-    Account newAccount = super.addNew(account);
-    if (newAccount == null) {
-      return accountService
-          .sendError(Language.ACCOUNT_NOT_CREATED.getString(), HttpStatus.BAD_REQUEST);
+
+    accountValidator.validateAccount(account, result);
+
+    if (result.hasErrors()) {
+      return ErrorMessage.send(Language2
+          .translateError(result.getFieldError().getField(), result.getFieldError().getCode(),
+              result.getFieldError().getDefaultMessage(),
+              Language2.getMessage(result.getFieldError().getField())), HttpStatus.BAD_REQUEST);
     }
 
-    sendEmail.send(newAccount.getEmail(), Language.REGISTRATION_GOODE.getString(),
-        Language.HELLO.getString() + " " + newAccount.getUsername() + "!\n" +
-            Language.EMAIL_ACTIVATION_ACCOUNT_CODE.getString() +
+    Account newAccount = super.addNew(account);
+    if (newAccount == null) {
+      return ErrorMessage.send(Language2.getMessage("error.account.notCreated"), HttpStatus.BAD_REQUEST);
+    }
+
+    sendEmail.send(newAccount.getEmail(), Language2.getMessage("email.registration.title"),
+        Language2.getMessage("hello") + " " + newAccount.getUsername() + "!\n" +
+            Language2.getMessage("email.registration.activationLink") + "\n" +
             "http://" + request.getLocalName() + "/account/activate/" + newAccount
             .getActivationCodes().get(0).getCode());
 
