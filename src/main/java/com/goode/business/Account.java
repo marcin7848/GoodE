@@ -75,12 +75,12 @@ public class Account {
   @Column(name = "firstname")
   @NotBlank(groups = {ValidationStepOne.class, ValidationStepTwo.class})
   @Length(min = 2, max = 30, groups = {ValidationStepOne.class, ValidationStepTwo.class})
-  private String firstname;
+  private String firstName;
 
   @Column(name = "lastname")
   @NotBlank(groups = {ValidationStepOne.class, ValidationStepTwo.class})
   @Length(min = 2, max = 30, groups = {ValidationStepOne.class, ValidationStepTwo.class})
-  private String lastname;
+  private String lastName;
 
   @Column(name = "creation_time", updatable = false)
   @NotNull(groups = {ValidationStepTwo.class})

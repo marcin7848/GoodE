@@ -44,9 +44,6 @@ public class AccountService implements AccountServiceI, StandardizeService<Accou
   @Override
   public Account addNew(Account account){
 
-    if(!validateAccount(account))
-      return null;
-
     if(!accountRepository.findByUsernameOrEmail(account.getUsername(), account.getEmail()).isEmpty())
       return null;
 
@@ -69,45 +66,6 @@ public class AccountService implements AccountServiceI, StandardizeService<Accou
     newAccount.setActivationCodes(listActivationCodes);
 
     return newAccount;
-  }
-
-  private boolean validateAccount(Account account){
-    if(account.getUsername() == null || account.getUsername().isEmpty() ||
-        account.getEmail() == null || account.getEmail().isEmpty() ||
-        account.getPassword() == null || account.getPassword().isEmpty() ||
-        account.getRegister_no() == null ||
-        account.getFirstname() == null || account.getFirstname().isEmpty() ||
-        account.getLastname() == null || account.getLastname().isEmpty())
-      return false;
-
-    if(account.getUsername().length() > 15 || account.getUsername().length() < 5)
-      return false;
-
-    if(!account.getUsername().matches("^[a-zA-Z0-9_]+$"))
-      return false;
-
-    if(!validateEmail(account.getEmail()))
-      return false;
-
-    if(!validatePassword(account.getPassword()))
-      return false;
-
-    if(account.getRegister_no() < 1)
-      return false;
-
-    if(account.getFirstname().length() < 2 || account.getFirstname().length() > 30)
-      return false;
-
-    if(account.getLastname().length() < 2 || account.getLastname().length() > 30)
-      return false;
-
-    if(!account.getFirstname().matches("^[a-zA-Z-]+$"))
-      return false;
-
-    if(!account.getLastname().matches("^[a-zA-Z-]+$"))
-      return false;
-
-    return true;
   }
 
   private String hashPassword(String password){

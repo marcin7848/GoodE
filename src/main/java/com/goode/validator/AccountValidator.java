@@ -9,11 +9,24 @@ import org.springframework.validation.Errors;
 public class AccountValidator extends BaseValidator  {
 
   public void validateAccount(Object target, Errors errors) {
-    Account account = (Account) target;
+    if(!errors.hasErrors()) {
+      Account account = (Account) target;
 
-    if(account.getId() == 1) {
-      errors.rejectValue("id", "bad ID");
+      if (!account.getUsername().matches("^[a-zA-Z0-9_]+$")) {
+        errors.rejectValue("username", "validate.lettersNumbersAndUnderscoreOnly");
+      }
+
+      if (!account.getEmail().matches("^[a-zA-Z0-9._-]+@([a-zA-Z0-9-_]+\\.)+[a-zA-Z0-9-_]+$")) {
+        errors.rejectValue("email", "validate.email.incorrect");
+      }
+
+      if (!account.getFirstName().matches("^[a-zA-Z-]+$")) {
+        errors.rejectValue("firstName", "validate.lettersOnly");
+      }
+
+      if (!account.getLastName().matches("^[a-zA-Z-]+$")) {
+        errors.rejectValue("lastName", "validate.lettersOnly");
+      }
     }
-
   }
 }
