@@ -1,6 +1,7 @@
 package com.goode.controller;
 
 import com.goode.ErrorMessage;
+import com.goode.ErrorCode;
 import com.goode.Language;
 import com.goode.Language2;
 import com.goode.SendEmail;
@@ -59,7 +60,7 @@ public class AccountController extends BaseController<Account, AccountService> {
 
     sendEmail.send(newAccount.getEmail(), Language2.getMessage("email.registration.title"),
         Language2.getMessage("hello") + " " + newAccount.getUsername() + "!\n" +
-            Language2.getMessage("email.registration.activationLink") + "\n" +
+            Language2.getMessage("email.activationLink") + "\n" +
             "http://" + request.getLocalName() + "/account/activate/" + newAccount
             .getActivationCodes().get(0).getCode());
 
@@ -69,23 +70,24 @@ public class AccountController extends BaseController<Account, AccountService> {
   @PostMapping("/resendActivationCode")
   public ResponseEntity<?> resendActivationCode(HttpServletRequest request,
       @RequestParam("email") String email) {
-    Account account = accountService.resendActivationCodeValidation(email);
-    if (account == null) {
-      return accountService
-          .sendError(Language.INCORRECT_EMAIL_ACTIVATION_CODE.getString(), HttpStatus.BAD_REQUEST);
+
+    ErrorCode errorCode = new ErrorCode();
+    Account account = accountValidator.validateAccountActivation(email, errorCode) ;
+
+    if (errorCode.hasErrors()) {
+      return ErrorMessage.send(Language2.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
     }
 
     account = accountService
         .generateActivationCode(account, ActivationCode.TYPE_ACTIVATION_ACCOUNT_CODE);
     if (account == null) {
-      return accountService.sendError(Language.RESEND_ACTIVATION_CODE_TO_MANY.getString(),
-          HttpStatus.INTERNAL_SERVER_ERROR);
+      return ErrorMessage.send(Language2.getMessage("error.activationCode.send.tooMany"), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    sendEmail.send(account.getEmail(), Language.EMAIL_RESEND_ACTIVATION_CODE_TITLE.getString(),
-        Language.HELLO.getString() + " " + account.getUsername() + "!\n" +
-            Language.EMAIL_RESEND_ACTIVATION_CODE.getString() + " " +
-            Language.EMAIL_ACTIVATION_ACCOUNT_CODE.getString() +
+    sendEmail.send(account.getEmail(), Language2.getMessage("email.activationCode.title"),
+        Language2.getMessage("hello") + " " + account.getUsername() + "!\n" +
+            Language2.getMessage("email.activationCode.request") + " " +
+            Language2.getMessage("email.activationLink") + "\n" +
             "http://" + request.getLocalName() + "/account/activate/" + account.getActivationCodes()
             .get(0).getCode());
 

@@ -89,21 +89,6 @@ public class AccountService implements AccountServiceI, StandardizeService<Accou
   }
 
   @Override
-  public Account resendActivationCodeValidation(String email) {
-    if (!validateEmail(email))
-      return null;
-
-    Account account = accountRepository.findAccountByEmail(email);
-    if (account == null)
-      return null;
-
-    if (account.isEnabled())
-      return null;
-
-    return account;
-  }
-
-  @Override
   public Account generateActivationCode(Account account, int type) {
     List<ActivationCode> listToDelete = activationCodeRepository.getAllAddedAtLeastXHoursAgo(account.getId(), type, 2);
     activationCodeRepository.deleteAll(listToDelete);
