@@ -36,6 +36,8 @@ public abstract class Language2 {
         return translateErrorLength(field, defaultError);
       case "Max":
         return translateErrorLength(field, defaultError);
+      case "Pattern":
+        return translatePattern(field);
     }
 
     return getMessage(code, args);
@@ -63,5 +65,16 @@ public abstract class Language2 {
     }
 
     return translate;
+  }
+
+  private static String translatePattern(String field){
+    switch(field){
+      case "username": return getMessage("validate.lettersNumbersAndUnderscoreOnly", getMessage(field));
+      case "email": return getMessage("validate.email.incorrect");
+      case "firstName": return getMessage("validate.lettersOnly", getMessage(field));
+      case "lastName": return getMessage("validate.lettersOnly", getMessage(field));
+    }
+
+    return getMessage("error.unknown");
   }
 }

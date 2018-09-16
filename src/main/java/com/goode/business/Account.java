@@ -14,6 +14,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -45,11 +46,13 @@ public class Account {
   @Column(name = "username")
   @NotBlank(groups = {ValidationStepOne.class, ValidationStepTwo.class})
   @Length(min = 6, max = 15, groups = {ValidationStepOne.class, ValidationStepTwo.class})
+  @Pattern(regexp = "^[a-zA-Z0-9_]+$", groups = {ValidationStepOne.class, ValidationStepTwo.class})
   private String username;
 
   @Column(name = "email")
   @NotBlank(groups = {ValidationStepOne.class, ValidationStepTwo.class})
   @Length(min = 6, max = 100, groups = {ValidationStepOne.class, ValidationStepTwo.class})
+  @Pattern(regexp = "^[a-zA-Z0-9._-]+@([a-zA-Z0-9-_]+\\.)+[a-zA-Z0-9-_]+$", groups = {ValidationStepOne.class, ValidationStepTwo.class})
   private String email;
 
   @Column(name = "password")
@@ -75,11 +78,13 @@ public class Account {
   @Column(name = "firstname")
   @NotBlank(groups = {ValidationStepOne.class, ValidationStepTwo.class})
   @Length(min = 2, max = 30, groups = {ValidationStepOne.class, ValidationStepTwo.class})
+  @Pattern(regexp = "^[a-zA-Z-]+$", groups = {ValidationStepOne.class, ValidationStepTwo.class})
   private String firstName;
 
   @Column(name = "lastname")
   @NotBlank(groups = {ValidationStepOne.class, ValidationStepTwo.class})
   @Length(min = 2, max = 30, groups = {ValidationStepOne.class, ValidationStepTwo.class})
+  @Pattern(regexp = "^[a-zA-Z-]+$", groups = {ValidationStepOne.class, ValidationStepTwo.class})
   private String lastName;
 
   @Column(name = "creation_time", updatable = false)

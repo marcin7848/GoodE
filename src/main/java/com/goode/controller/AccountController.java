@@ -44,8 +44,6 @@ public class AccountController extends BaseController<Account, AccountService> {
       BindingResult result) {
     super.initializeService(accountService);
 
-    accountValidator.validateAccount(account, result);
-
     if (result.hasErrors()) {
       return ErrorMessage.send(Language2
           .translateError(result.getFieldError().getField(), result.getFieldError().getCode(),
