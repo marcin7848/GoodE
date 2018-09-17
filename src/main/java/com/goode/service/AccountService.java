@@ -110,16 +110,8 @@ public class AccountService implements AccountServiceI, StandardizeService<Accou
   }
 
   @Override
-  public boolean activateAccount(String activationCode){
-    if(!activationCodeService.validateActivationCode(activationCode))
-      return false;
-
-    ActivationCode activationCode1 = activationCodeRepository.getActivationCodeByCodeAndType(activationCode, ActivationCode.TYPE_ACTIVATION_ACCOUNT_CODE);
-
-    if(activationCode1 == null)
-      return false;
-
-    Account account = activationCode1.getAccount();
+  public boolean activateAccount(ActivationCode activationCode){
+    Account account = activationCode.getAccount();
     account.setEnabled(true);
 
     Account updatedAccount = accountRepository.save(account);

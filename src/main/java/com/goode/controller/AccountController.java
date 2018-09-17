@@ -10,6 +10,7 @@ import com.goode.business.Account;
 import com.goode.business.ActivationCode;
 import com.goode.service.AccountService;
 import com.goode.validator.AccountValidator;
+import com.goode.validator.ActivationCodeValidator;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,6 +38,9 @@ public class AccountController extends BaseController<Account, AccountService> {
 
   @Autowired
   private AccountValidator accountValidator;
+
+  @Autowired
+  private ActivationCodeValidator activationCodeValidator;
 
   @PostMapping("/register")
   public ResponseEntity<?> register(HttpServletRequest request,
@@ -93,10 +97,16 @@ public class AccountController extends BaseController<Account, AccountService> {
   }
 
   @GetMapping("/activate/{activationCode}")
-  public ResponseEntity<?> activateAccount(@PathVariable("activationCode") String activationCode) {
+  public ResponseEntity<?> activateAccount(@PathVariable("activationCode") String code) {
+    ErrorCode errorCode = new ErrorCode();
+    ActivationCode activationCode = activationCodeValidator.validateCode(code, ActivationCode.TYPE_ACTIVATION_ACCOUNT_CODE, errorCode);
+
+    if (errorCode.hasErrors()) {
+      return ErrorMessage.send(Language2.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
+    }
+
     if (!accountService.activateAccount(activationCode)) {
-      return accountService
-          .sendError(Language.ACCOUNT_NOT_ACTIVATED.getString(), HttpStatus.BAD_REQUEST);
+      return ErrorMessage.send(Language2.getMessage("error.account.notActivated"), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     return new ResponseEntity<>(null, HttpStatus.OK);

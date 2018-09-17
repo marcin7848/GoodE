@@ -7,7 +7,7 @@ import java.security.Principal;
 public interface AccountServiceI {
 
   Account generateActivationCode(Account account, int type);
-  boolean activateAccount(String activationCode);
+  boolean activateAccount(ActivationCode activationCode);
   Account sendResetPasswordValidation(String resetPassword);
   ActivationCode resetPasswordRequest(String activationCode);
   boolean resetPassword(String activationCode, String newPassword);
