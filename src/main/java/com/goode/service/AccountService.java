@@ -133,15 +133,8 @@ public class AccountService implements AccountServiceI, StandardizeService<Accou
   }
 
   @Override
-  public boolean resetPassword(String activationCode, String newPassword){
-    ActivationCode activationCode1 = this.resetPasswordRequest(activationCode);
-    if(activationCode1 == null)
-      return false;
-
-    if(!validatePassword(newPassword))
-      return false;
-
-    Account account = activationCode1.getAccount();
+  public boolean resetPassword(ActivationCode activationCode, String newPassword){
+    Account account = activationCode.getAccount();
     account.setPassword(hashPassword(newPassword));
 
     Account updatedAccount = accountRepository.save(account);

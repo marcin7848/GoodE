@@ -25,6 +25,21 @@ public abstract class Language2 {
 
   public static String translateError(String field, String code, String defaultError,
       String... args) {
+
+    if(code.matches("^(.*?)NotNull(.*?)$")){
+      code = "NotNull";
+    } else if (code.matches("^(.*?)NotBlank(.*?)$")) {
+      code = "NotBlank";
+    } else if (code.matches("^(.*?)Length(.*?)$")) {
+      code = "Length";
+    } else if (code.matches("^(.*?)Min(.*?)$")) {
+      code = "Min";
+    } else if (code.matches("^(.*?)Max(.*?)$")) {
+      code = "Max";
+    } else if (code.matches("^(.*?)Pattern(.*?)$")) {
+      code = "Pattern";
+    }
+
     switch (code) {
       case "NotNull":
         return getMessage("validate.NotNull", getMessage(field));

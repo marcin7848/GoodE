@@ -1,6 +1,7 @@
 package com.goode.validator;
 
 import com.goode.ErrorCode;
+import com.goode.Language2;
 import com.goode.business.Account;
 
 import com.goode.repository.AccountRepository;
@@ -13,19 +14,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AccountValidator extends BaseValidator  {
+public class AccountValidator extends BaseValidator {
 
   @Autowired
   private AccountRepository accountRepository;
 
-  public Account validateEmail(String email, ErrorCode errorCode){
+  public Account validateEmail(String email, ErrorCode errorCode) {
     Account account = new Account();
     account.setEmail(email);
     ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     Validator validator = factory.getValidator();
-    Set<ConstraintViolation<Account>> errors = validator.validateProperty(account, "email", Account.ValidationStepTwo.class);
+    Set<ConstraintViolation<Account>> errors = validator
+        .validateProperty(account, "email", Account.ValidationStepTwo.class);
 
-    if(!errors.isEmpty()) {
+    if (!errors.isEmpty()) {
       errorCode.rejectValue("email", "validate.email.incorrect");
       return null;
     }
@@ -39,13 +41,33 @@ public class AccountValidator extends BaseValidator  {
     return account;
   }
 
-  public Account validateAccountActivation(String email, ErrorCode errorCode){
+  public void validatePassword(String password, ErrorCode errorCode) {
+    Account account = new Account();
+    account.setPassword(password);
+    ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+    Validator validator = factory.getValidator();
+    Set<ConstraintViolation<Account>> errors = validator
+        .validateProperty(account, "password", Account.ValidationStepTwo.class);
+
+    if (!errors.isEmpty()) {
+      ConstraintViolation<Account> accountConstraintViolation = errors.iterator().next();
+      errorCode.rejectValue("password", Language2
+              .translateError(accountConstraintViolation.getPropertyPath().toString(),
+                  accountConstraintViolation.getMessageTemplate(),
+                  accountConstraintViolation.getMessage(),
+                  accountConstraintViolation.getPropertyPath().toString(),
+                  Language2.getMessage(accountConstraintViolation.getPropertyPath().toString()))
+          );
+    }
+  }
+
+  public Account validateAccountActivation(String email, ErrorCode errorCode) {
     Account account = validateEmail(email, errorCode);
-    if(account == null){
+    if (account == null) {
       return null;
     }
 
-    if (account.isEnabled()){
+    if (account.isEnabled()) {
       errorCode.rejectValue("email", "validate.email.account.activation.alreadyEnabled");
       return null;
     }

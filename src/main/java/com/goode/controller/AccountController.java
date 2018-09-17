@@ -151,11 +151,22 @@ public class AccountController extends BaseController<Account, AccountService> {
   }
 
   @PostMapping("/resetPassword/{resetPasswordCode}")
-  public ResponseEntity<?> resetPassword(@PathVariable("resetPasswordCode") String activationCode,
+  public ResponseEntity<?> resetPassword(@PathVariable("resetPasswordCode") String resetPasswordCode,
       @RequestParam("password") String password) {
+    ErrorCode errorCode = new ErrorCode();
+    ActivationCode activationCode = activationCodeValidator.validateCode(resetPasswordCode, ActivationCode.TYPE_RESET_PASSWORD_CODE, errorCode);
+    if(errorCode.hasErrors()){
+      return ErrorMessage.send(Language2.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
+    }
+
+    accountValidator.validatePassword(password, errorCode);
+
+    if(errorCode.hasErrors()){
+      return ErrorMessage.send(Language2.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
+    }
+
     if (!accountService.resetPassword(activationCode, password)) {
-      return accountService
-          .sendError(Language.RESET_PASSWORD_ERROR.getString(), HttpStatus.INTERNAL_SERVER_ERROR);
+      return ErrorMessage.send(Language2.getMessage("error.account.resetPassword"), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     return new ResponseEntity<>(null, HttpStatus.OK);
