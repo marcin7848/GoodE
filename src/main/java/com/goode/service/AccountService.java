@@ -73,14 +73,6 @@ public class AccountService implements AccountServiceI, StandardizeService<Accou
     return passwordEncoder.encode(password);
   }
 
-  private boolean validateEmail(String email){
-    if(email == null)
-      return false;
-
-    return email.length() <= 100 && email.length() >= 5 &&
-        email.matches("^[a-zA-Z0-9._-]+@([a-zA-Z0-9-_]+\\.)+[a-zA-Z0-9-_]+$");
-  }
-
   private boolean validatePassword(String password){
     if(password == null)
       return false;
@@ -124,18 +116,6 @@ public class AccountService implements AccountServiceI, StandardizeService<Accou
     activationCodeRepository.deleteAll(activationCodeList);
 
     return true;
-  }
-
-  @Override
-  public Account sendResetPasswordValidation(String email){
-    if (!validateEmail(email))
-      return null;
-
-    Account account = accountRepository.findAccountByEmail(email);
-    if (account == null)
-      return null;
-
-    return account;
   }
 
 

@@ -115,21 +115,23 @@ public class AccountController extends BaseController<Account, AccountService> {
   @PostMapping("/sendResetPasswordRequest")
   public ResponseEntity<?> sendResetPassword(HttpServletRequest request,
       @RequestParam("email") String email) {
-    Account account = accountService.sendResetPasswordValidation(email);
-    if (account == null) {
-      return accountService.sendError(Language.EMAIL_INCORRECT.getString(), HttpStatus.BAD_REQUEST);
+    ErrorCode errorCode = new ErrorCode();
+    Account account = accountValidator.validateEmail(email, errorCode);
+
+    if (errorCode.hasErrors()) {
+      return ErrorMessage.send(Language2.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
     }
 
     account = accountService
         .generateActivationCode(account, ActivationCode.TYPE_RESET_PASSWORD_CODE);
     if (account == null) {
-      return accountService.sendError(Language.RESEND_ACTIVATION_CODE_TO_MANY.getString(),
+      return ErrorMessage.send(Language2.getMessage("error.activationCode.send.tooMany"),
           HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    sendEmail.send(account.getEmail(), Language.EMAIL_RESET_PASSWORD_TITLE.getString(),
-        Language.HELLO.getString() + " " + account.getUsername() + "!\n" +
-            Language.EMAIL_RESET_PASSWORD.getString() +
+    sendEmail.send(account.getEmail(), Language2.getMessage("email.account.resetPassword.title"),
+        Language2.getMessage("hello") + " " + account.getUsername() + "!\n" +
+            Language2.getMessage("email.account.resetPassword.body") + "\n" +
             "http://" + request.getLocalName() + "/account/resetPassword/" + account
             .getActivationCodes().get(0).getCode());
 
@@ -139,9 +141,10 @@ public class AccountController extends BaseController<Account, AccountService> {
   @GetMapping("/resetPassword/{resetPasswordCode}")
   public ResponseEntity<?> resetPasswordRequest(
       @PathVariable("resetPasswordCode") String resetPasswordCode) {
-    if (accountService.resetPasswordRequest(resetPasswordCode) == null) {
-      return accountService
-          .sendError(Language.ACTIVATION_CODE_INCORRECT.getString(), HttpStatus.BAD_REQUEST);
+    ErrorCode errorCode = new ErrorCode();
+    ActivationCode activationCode = activationCodeValidator.validateCode(resetPasswordCode, ActivationCode.TYPE_RESET_PASSWORD_CODE, errorCode);
+    if(errorCode.hasErrors()){
+      return ErrorMessage.send(Language2.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
     }
 
     return new ResponseEntity<>(null, HttpStatus.OK);

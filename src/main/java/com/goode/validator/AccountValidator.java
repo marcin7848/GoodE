@@ -18,7 +18,7 @@ public class AccountValidator extends BaseValidator  {
   @Autowired
   private AccountRepository accountRepository;
 
-  public Account validateAccountActivation(String email, ErrorCode errorCode){
+  public Account validateEmail(String email, ErrorCode errorCode){
     Account account = new Account();
     account.setEmail(email);
     ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
@@ -33,6 +33,15 @@ public class AccountValidator extends BaseValidator  {
     account = accountRepository.findAccountByEmail(email);
     if (account == null) {
       errorCode.rejectValue("email", "validate.email.incorrect");
+      return null;
+    }
+
+    return account;
+  }
+
+  public Account validateAccountActivation(String email, ErrorCode errorCode){
+    Account account = validateEmail(email, errorCode);
+    if(account == null){
       return null;
     }
 
