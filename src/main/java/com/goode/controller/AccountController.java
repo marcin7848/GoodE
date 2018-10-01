@@ -9,6 +9,7 @@ import com.goode.business.AccessRole;
 import com.goode.business.Account;
 import com.goode.business.ActivationCode;
 import com.goode.service.AccountService;
+import com.goode.validator.AccessRoleValidator;
 import com.goode.validator.AccountValidator;
 import com.goode.validator.ActivationCodeValidator;
 import javax.servlet.http.HttpServletRequest;
@@ -42,6 +43,9 @@ public class AccountController extends BaseController<Account, AccountService> {
   @Autowired
   private ActivationCodeValidator activationCodeValidator;
 
+  @Autowired
+  private AccessRoleValidator accessRoleValidator;
+
   @PostMapping("/register")
   public ResponseEntity<?> register(HttpServletRequest request,
       @Validated(Account.ValidationStepOne.class) @RequestBody Account account,
@@ -57,7 +61,8 @@ public class AccountController extends BaseController<Account, AccountService> {
 
     Account newAccount = super.addNew(account);
     if (newAccount == null) {
-      return ErrorMessage.send(Language2.getMessage("error.account.notCreated"), HttpStatus.BAD_REQUEST);
+      return ErrorMessage
+          .send(Language2.getMessage("error.account.notCreated"), HttpStatus.BAD_REQUEST);
     }
 
     sendEmail.send(newAccount.getEmail(), Language2.getMessage("email.registration.title"),
@@ -74,7 +79,7 @@ public class AccountController extends BaseController<Account, AccountService> {
       @RequestParam("email") String email) {
 
     ErrorCode errorCode = new ErrorCode();
-    Account account = accountValidator.validateAccountActivation(email, errorCode) ;
+    Account account = accountValidator.validateAccountActivation(email, errorCode);
 
     if (errorCode.hasErrors()) {
       return ErrorMessage.send(Language2.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
@@ -83,7 +88,8 @@ public class AccountController extends BaseController<Account, AccountService> {
     account = accountService
         .generateActivationCode(account, ActivationCode.TYPE_ACTIVATION_ACCOUNT_CODE);
     if (account == null) {
-      return ErrorMessage.send(Language2.getMessage("error.activationCode.send.tooMany"), HttpStatus.INTERNAL_SERVER_ERROR);
+      return ErrorMessage.send(Language2.getMessage("error.activationCode.send.tooMany"),
+          HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     sendEmail.send(account.getEmail(), Language2.getMessage("email.activationCode.title"),
@@ -99,14 +105,16 @@ public class AccountController extends BaseController<Account, AccountService> {
   @GetMapping("/activate/{activationCode}")
   public ResponseEntity<?> activateAccount(@PathVariable("activationCode") String code) {
     ErrorCode errorCode = new ErrorCode();
-    ActivationCode activationCode = activationCodeValidator.validateCode(code, ActivationCode.TYPE_ACTIVATION_ACCOUNT_CODE, errorCode);
+    ActivationCode activationCode = activationCodeValidator
+        .validateCode(code, ActivationCode.TYPE_ACTIVATION_ACCOUNT_CODE, errorCode);
 
     if (errorCode.hasErrors()) {
       return ErrorMessage.send(Language2.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
     }
 
     if (!accountService.activateAccount(activationCode)) {
-      return ErrorMessage.send(Language2.getMessage("error.account.notActivated"), HttpStatus.INTERNAL_SERVER_ERROR);
+      return ErrorMessage.send(Language2.getMessage("error.account.notActivated"),
+          HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     return new ResponseEntity<>(null, HttpStatus.OK);
@@ -142,8 +150,9 @@ public class AccountController extends BaseController<Account, AccountService> {
   public ResponseEntity<?> resetPasswordRequest(
       @PathVariable("resetPasswordCode") String resetPasswordCode) {
     ErrorCode errorCode = new ErrorCode();
-    ActivationCode activationCode = activationCodeValidator.validateCode(resetPasswordCode, ActivationCode.TYPE_RESET_PASSWORD_CODE, errorCode);
-    if(errorCode.hasErrors()){
+    ActivationCode activationCode = activationCodeValidator
+        .validateCode(resetPasswordCode, ActivationCode.TYPE_RESET_PASSWORD_CODE, errorCode);
+    if (errorCode.hasErrors()) {
       return ErrorMessage.send(Language2.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
     }
 
@@ -151,22 +160,25 @@ public class AccountController extends BaseController<Account, AccountService> {
   }
 
   @PostMapping("/resetPassword/{resetPasswordCode}")
-  public ResponseEntity<?> resetPassword(@PathVariable("resetPasswordCode") String resetPasswordCode,
+  public ResponseEntity<?> resetPassword(
+      @PathVariable("resetPasswordCode") String resetPasswordCode,
       @RequestParam("password") String password) {
     ErrorCode errorCode = new ErrorCode();
-    ActivationCode activationCode = activationCodeValidator.validateCode(resetPasswordCode, ActivationCode.TYPE_RESET_PASSWORD_CODE, errorCode);
-    if(errorCode.hasErrors()){
+    ActivationCode activationCode = activationCodeValidator
+        .validateCode(resetPasswordCode, ActivationCode.TYPE_RESET_PASSWORD_CODE, errorCode);
+    if (errorCode.hasErrors()) {
       return ErrorMessage.send(Language2.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
     }
 
     accountValidator.validatePassword(password, errorCode);
 
-    if(errorCode.hasErrors()){
+    if (errorCode.hasErrors()) {
       return ErrorMessage.send(Language2.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
     }
 
     if (!accountService.resetPassword(activationCode, password)) {
-      return ErrorMessage.send(Language2.getMessage("error.account.resetPassword"), HttpStatus.INTERNAL_SERVER_ERROR);
+      return ErrorMessage.send(Language2.getMessage("error.account.resetPassword"),
+          HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     return new ResponseEntity<>(null, HttpStatus.OK);
@@ -177,8 +189,15 @@ public class AccountController extends BaseController<Account, AccountService> {
   public ResponseEntity<?> changeAccessRole(@PathVariable("accountId") int accountId,
       @RequestParam("accessRole") String accessRole) {
 
-    if (!accountService.changeAccessRole(accountId, accessRole)) {
-      return accountService.sendError(Language.CHANGE_ACCESS_ROLE_ERROR.getString(),
+    ErrorCode errorCode = new ErrorCode();
+    Account account = accessRoleValidator.validateChangeAccountAccessRole(accountId, accessRole, errorCode);
+
+    if (errorCode.hasErrors()) {
+      return ErrorMessage.send(Language2.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
+    }
+
+    if (!accountService.changeAccessRole(account, accessRole)) {
+      return ErrorMessage.send(Language2.getMessage("error.account.changeAccessRole.internalError"),
           HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

@@ -10,7 +10,7 @@ public interface AccountServiceI {
   boolean activateAccount(ActivationCode activationCode);
   ActivationCode resetPasswordRequest(String activationCode);
   boolean resetPassword(ActivationCode activationCode, String newPassword);
-  boolean changeAccessRole(int accountId, String role);
+  boolean changeAccessRole(Account account, String role);
   Account getAccountByPrincipal(Principal principal);
   Account getAccountById(int id_account);
 

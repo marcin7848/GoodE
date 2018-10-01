@@ -159,25 +159,7 @@ public class AccountService implements AccountServiceI, StandardizeService<Accou
   }
 
   @Override
-  public boolean changeAccessRole(int accountId, String role) {
-    if (accountId == Account.MAIN_ADMINISTRATOR_ID) {
-      return false;
-    }
-
-    Account loggedAccount = accountRepository
-        .findAccountByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-
-    if (loggedAccount == null || (loggedAccount.getId() != Account.MAIN_ADMINISTRATOR_ID && role
-        .equals(AccessRole.ROLE_ADMIN))) {
-      return false; //cannot set ROLE_ADMIN if you are not main admin
-    }
-
-    Account account = accountRepository.findAccountById(accountId);
-    if (account == null || (loggedAccount.getId() != Account.MAIN_ADMINISTRATOR_ID && account
-        .getAccessRole().getRole().equals(AccessRole.ROLE_ADMIN))) {
-      return false; //cannot change to other role for ADMIN if you are not a main admin
-    }
-
+  public boolean changeAccessRole(Account account, String role) {
     AccessRole accessRole = accessRoleRepository.getAccessRoleByRole(role);
     if (accessRole == null) {
       return false;
