@@ -23,6 +23,10 @@ import lombok.ToString;
 @AllArgsConstructor
 public class AccessRole {
 
+  public static final String ROLE_ADMIN = "ROLE_ADMIN";
+  public static final String ROLE_TEACHER = "ROLE_TEACHER";
+  public static final String ROLE_STUDENT = "ROLE_STUDENT";
+
   @Id
   @Column(name = "id_access_role")
   @GeneratedValue(strategy = GenerationType.AUTO)

@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,7 +28,6 @@ public class ActivationCode {
 
   public static final int TYPE_ACTIVATION_ACCOUNT_CODE = 1;
   public static final int TYPE_RESET_PASSWORD_CODE = 2;
-
 
   @Id
   @Column(name = "id_activation_code")
@@ -48,9 +48,10 @@ public class ActivationCode {
   @Column(name = "code")
   @NotNull
   @Length(max = 50)
+  @Pattern(regexp = "^[a-zA-Z0-9!@$*()]+$")
   private String code;
 
-  @Column(name = "creation_time")
+  @Column(name = "creation_time", updatable = false)
   @NotNull
   private Timestamp creationTime;
 

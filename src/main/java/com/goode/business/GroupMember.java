@@ -27,22 +27,25 @@ public class GroupMember {
   @NotNull
   private int id;
 
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @ManyToOne(fetch = FetchType.EAGER, optional = false)
   @JoinColumn(name = "id_account")
   @OnDelete(action = OnDeleteAction.CASCADE)
   @NotNull
   private Account account;
 
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @ManyToOne(fetch = FetchType.EAGER, optional = false)
   @JoinColumn(name = "id_group")
   @OnDelete(action = OnDeleteAction.CASCADE)
   @NotNull
   private Group group;
 
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @ManyToOne(fetch = FetchType.EAGER, optional = false)
   @JoinColumn(name = "id_access_role")
   @OnDelete(action = OnDeleteAction.NO_ACTION)
   @NotNull
   private AccessRole accessRole;
 
+  @Column(name = "accepted")
+  @NotNull
+  private boolean accepted;
 }
