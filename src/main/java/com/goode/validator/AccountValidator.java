@@ -1,7 +1,7 @@
 package com.goode.validator;
 
 import com.goode.ErrorCode;
-import com.goode.Language2;
+import com.goode.Language;
 import com.goode.business.Account;
 
 import com.goode.repository.AccountRepository;
@@ -51,12 +51,12 @@ public class AccountValidator extends BaseValidator {
 
     if (!errors.isEmpty()) {
       ConstraintViolation<Account> accountConstraintViolation = errors.iterator().next();
-      errorCode.rejectValue("password", Language2
+      errorCode.rejectValue("password", Language
               .translateError(accountConstraintViolation.getPropertyPath().toString(),
                   accountConstraintViolation.getMessageTemplate(),
                   accountConstraintViolation.getMessage(),
                   accountConstraintViolation.getPropertyPath().toString(),
-                  Language2.getMessage(accountConstraintViolation.getPropertyPath().toString()))
+                  Language.getMessage(accountConstraintViolation.getPropertyPath().toString()))
           );
     }
   }

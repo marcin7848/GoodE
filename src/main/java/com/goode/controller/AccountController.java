@@ -3,7 +3,6 @@ package com.goode.controller;
 import com.goode.ErrorMessage;
 import com.goode.ErrorCode;
 import com.goode.Language;
-import com.goode.Language2;
 import com.goode.SendEmail;
 import com.goode.business.AccessRole;
 import com.goode.business.Account;
@@ -53,21 +52,21 @@ public class AccountController extends BaseController<Account, AccountService> {
     super.initializeService(accountService);
 
     if (result.hasErrors()) {
-      return ErrorMessage.send(Language2
+      return ErrorMessage.send(Language
           .translateError(result.getFieldError().getField(), result.getFieldError().getCode(),
               result.getFieldError().getDefaultMessage(),
-              Language2.getMessage(result.getFieldError().getField())), HttpStatus.BAD_REQUEST);
+              Language.getMessage(result.getFieldError().getField())), HttpStatus.BAD_REQUEST);
     }
 
     Account newAccount = super.addNew(account);
     if (newAccount == null) {
       return ErrorMessage
-          .send(Language2.getMessage("error.account.notCreated"), HttpStatus.BAD_REQUEST);
+          .send(Language.getMessage("error.account.notCreated"), HttpStatus.BAD_REQUEST);
     }
 
-    sendEmail.send(newAccount.getEmail(), Language2.getMessage("email.registration.title"),
-        Language2.getMessage("hello") + " " + newAccount.getUsername() + "!\n" +
-            Language2.getMessage("email.activationLink") + "\n" +
+    sendEmail.send(newAccount.getEmail(), Language.getMessage("email.registration.title"),
+        Language.getMessage("hello") + " " + newAccount.getUsername() + "!\n" +
+            Language.getMessage("email.activationLink") + "\n" +
             "http://" + request.getLocalName() + "/account/activate/" + newAccount
             .getActivationCodes().get(0).getCode());
 
@@ -82,20 +81,20 @@ public class AccountController extends BaseController<Account, AccountService> {
     Account account = accountValidator.validateAccountActivation(email, errorCode);
 
     if (errorCode.hasErrors()) {
-      return ErrorMessage.send(Language2.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
+      return ErrorMessage.send(Language.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
     }
 
     account = accountService
         .generateActivationCode(account, ActivationCode.TYPE_ACTIVATION_ACCOUNT_CODE);
     if (account == null) {
-      return ErrorMessage.send(Language2.getMessage("error.activationCode.send.tooMany"),
+      return ErrorMessage.send(Language.getMessage("error.activationCode.send.tooMany"),
           HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    sendEmail.send(account.getEmail(), Language2.getMessage("email.activationCode.title"),
-        Language2.getMessage("hello") + " " + account.getUsername() + "!\n" +
-            Language2.getMessage("email.activationCode.request") + " " +
-            Language2.getMessage("email.activationLink") + "\n" +
+    sendEmail.send(account.getEmail(), Language.getMessage("email.activationCode.title"),
+        Language.getMessage("hello") + " " + account.getUsername() + "!\n" +
+            Language.getMessage("email.activationCode.request") + " " +
+            Language.getMessage("email.activationLink") + "\n" +
             "http://" + request.getLocalName() + "/account/activate/" + account.getActivationCodes()
             .get(0).getCode());
 
@@ -109,11 +108,11 @@ public class AccountController extends BaseController<Account, AccountService> {
         .validateCode(code, ActivationCode.TYPE_ACTIVATION_ACCOUNT_CODE, errorCode);
 
     if (errorCode.hasErrors()) {
-      return ErrorMessage.send(Language2.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
+      return ErrorMessage.send(Language.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
     }
 
     if (!accountService.activateAccount(activationCode)) {
-      return ErrorMessage.send(Language2.getMessage("error.account.notActivated"),
+      return ErrorMessage.send(Language.getMessage("error.account.notActivated"),
           HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
@@ -127,19 +126,19 @@ public class AccountController extends BaseController<Account, AccountService> {
     Account account = accountValidator.validateEmail(email, errorCode);
 
     if (errorCode.hasErrors()) {
-      return ErrorMessage.send(Language2.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
+      return ErrorMessage.send(Language.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
     }
 
     account = accountService
         .generateActivationCode(account, ActivationCode.TYPE_RESET_PASSWORD_CODE);
     if (account == null) {
-      return ErrorMessage.send(Language2.getMessage("error.activationCode.send.tooMany"),
+      return ErrorMessage.send(Language.getMessage("error.activationCode.send.tooMany"),
           HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    sendEmail.send(account.getEmail(), Language2.getMessage("email.account.resetPassword.title"),
-        Language2.getMessage("hello") + " " + account.getUsername() + "!\n" +
-            Language2.getMessage("email.account.resetPassword.body") + "\n" +
+    sendEmail.send(account.getEmail(), Language.getMessage("email.account.resetPassword.title"),
+        Language.getMessage("hello") + " " + account.getUsername() + "!\n" +
+            Language.getMessage("email.account.resetPassword.body") + "\n" +
             "http://" + request.getLocalName() + "/account/resetPassword/" + account
             .getActivationCodes().get(0).getCode());
 
@@ -153,7 +152,7 @@ public class AccountController extends BaseController<Account, AccountService> {
     ActivationCode activationCode = activationCodeValidator
         .validateCode(resetPasswordCode, ActivationCode.TYPE_RESET_PASSWORD_CODE, errorCode);
     if (errorCode.hasErrors()) {
-      return ErrorMessage.send(Language2.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
+      return ErrorMessage.send(Language.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
     }
 
     return new ResponseEntity<>(null, HttpStatus.OK);
@@ -167,17 +166,17 @@ public class AccountController extends BaseController<Account, AccountService> {
     ActivationCode activationCode = activationCodeValidator
         .validateCode(resetPasswordCode, ActivationCode.TYPE_RESET_PASSWORD_CODE, errorCode);
     if (errorCode.hasErrors()) {
-      return ErrorMessage.send(Language2.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
+      return ErrorMessage.send(Language.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
     }
 
     accountValidator.validatePassword(password, errorCode);
 
     if (errorCode.hasErrors()) {
-      return ErrorMessage.send(Language2.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
+      return ErrorMessage.send(Language.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
     }
 
     if (!accountService.resetPassword(activationCode, password)) {
-      return ErrorMessage.send(Language2.getMessage("error.account.resetPassword"),
+      return ErrorMessage.send(Language.getMessage("error.account.resetPassword"),
           HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
@@ -193,11 +192,11 @@ public class AccountController extends BaseController<Account, AccountService> {
     Account account = accessRoleValidator.validateChangeAccountAccessRole(accountId, accessRole, errorCode);
 
     if (errorCode.hasErrors()) {
-      return ErrorMessage.send(Language2.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
+      return ErrorMessage.send(Language.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
     }
 
     if (!accountService.changeAccessRole(account, accessRole)) {
-      return ErrorMessage.send(Language2.getMessage("error.account.changeAccessRole.internalError"),
+      return ErrorMessage.send(Language.getMessage("error.account.changeAccessRole.internalError"),
           HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
