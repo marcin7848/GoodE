@@ -203,4 +203,9 @@ public class AccountController extends BaseController<Account, AccountService> {
     return new ResponseEntity<>(null, HttpStatus.OK);
   }
 
+  @GetMapping("/getAll")
+  public ResponseEntity<?> getAll(){
+    return new ResponseEntity<>(accountService.getAllAccounts(), HttpStatus.OK);
+  }
+
 }

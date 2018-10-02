@@ -41,6 +41,10 @@ public class AccountService implements AccountServiceI, StandardizeService<Accou
     return accountRepository.findAccountById(id_account);
   }
 
+  public Iterable<Account> getAllAccounts(){
+    return accountRepository.findAll();
+  }
+
   @Override
   public Account addNew(Account account) {
 

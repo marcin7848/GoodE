@@ -1,5 +1,6 @@
 package com.goode.business;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.sql.Timestamp;
 import java.util.List;
 import javax.persistence.Column;
@@ -93,10 +94,12 @@ public class Account {
 
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "account")
   @ToString.Exclude
+  @JsonIgnore
   private List<ActivationCode> activationCodes;
 
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "account")
   @ToString.Exclude
+  @JsonIgnore
   private List<GroupMember> groupMembers;
 
 }
