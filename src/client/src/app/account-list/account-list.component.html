@@ -1,0 +1,11 @@
+<mat-card>
+  <mat-card-header>Account List</mat-card-header>
+  <mat-card-content>
+    <mat-list>
+        <input matInput placeholder="Favorite food" value="Sushi">
+      <mat-list-item *ngFor="let account of accounts">
+        <h3 mat-line>{{account.username}}</h3>
+      </mat-list-item>
+    </mat-list>
+  </mat-card-content>
+</mat-card>
