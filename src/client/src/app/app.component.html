@@ -1,5 +1,11 @@
-<mat-toolbar color="primary">
-  <span>Welcome to {{title}}!</span>
-</mat-toolbar>
+<div class="container-fluid">
+  <div class="col-md-offset-1">
+    <h1>
+      Welcome to {{title}}!
+    </h1>
+  </div>
 
-<app-account-list></app-account-list>
+  <div class='container'>
+    <router-outlet></router-outlet>
+  </div>
+</div>

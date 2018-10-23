@@ -11,6 +11,7 @@ import com.goode.service.AccountService;
 import com.goode.validator.AccessRoleValidator;
 import com.goode.validator.AccountValidator;
 import com.goode.validator.ActivationCodeValidator;
+import java.security.Principal;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/account")
 public class AccountController extends BaseController<Account, AccountService> {
@@ -45,6 +47,14 @@ public class AccountController extends BaseController<Account, AccountService> {
 
   @Autowired
   private AccessRoleValidator accessRoleValidator;
+
+  @GetMapping("/getLoggedAccount")
+  public ResponseEntity<?> getLoggedUser(Principal principal){
+    Account account = accountService.getAccountByPrincipal(principal);
+    if(account == null)
+      account = new Account();
+    return new ResponseEntity<>(account, HttpStatus.OK);
+  }
 
   @PostMapping("/register")
   public ResponseEntity<?> register(HttpServletRequest request,
@@ -205,7 +215,6 @@ public class AccountController extends BaseController<Account, AccountService> {
   }
 
   @GetMapping("/getAll")
-  @CrossOrigin(origins = "http://localhost:4200")
   public ResponseEntity<?> getAll(){
     return new ResponseEntity<>(accountService.getAllAccounts(), HttpStatus.OK);
   }

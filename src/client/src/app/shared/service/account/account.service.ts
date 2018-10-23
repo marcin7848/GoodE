@@ -2,12 +2,17 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {Observable} from "rxjs";
 
+import {Account} from "../../model/Account";
 
 @Injectable()
 export class AccountService {
   constructor(private http: HttpClient) {
   }
-  getAll(): Observable<any> {
-    return this.http.get('//localhost:8081/account/getAll');
+
+  private baseUri = '//localhost:8081/account';
+
+  public getLoggedAccount(){
+    return this.http.get<Account>(this.baseUri + "/getLoggedAccount")
   }
+
 }

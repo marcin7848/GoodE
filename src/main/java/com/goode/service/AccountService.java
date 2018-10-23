@@ -34,7 +34,9 @@ public class AccountService implements AccountServiceI, StandardizeService<Accou
   private ActivationCodeService activationCodeService;
 
   public Account getAccountByPrincipal(Principal principal) {
-    return accountRepository.findAccountByUsername(principal.getName());
+    if(principal != null)
+      return accountRepository.findAccountByUsername(principal.getName());
+    return null;
   }
 
   public Account getAccountById(int id_account) {
