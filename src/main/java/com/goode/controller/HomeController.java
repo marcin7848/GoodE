@@ -26,8 +26,11 @@ public class HomeController {
 
   @GetMapping
   public ResponseEntity<?> home(){
-    Account loggedAccount = accountRepository
-        .findAccountByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+    Account loggedAccount = null;
+    if(SecurityContextHolder.getContext().getAuthentication() != null) {
+      loggedAccount = accountRepository
+          .findAccountByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+    }
 
     JSONObject obj = new JSONObject();
     if(loggedAccount == null) {

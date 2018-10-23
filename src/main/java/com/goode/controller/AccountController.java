@@ -215,6 +215,7 @@ public class AccountController extends BaseController<Account, AccountService> {
   }
 
   @GetMapping("/getAll")
+  @PreAuthorize("hasRole('" + AccessRole.ROLE_ADMIN + "')")
   public ResponseEntity<?> getAll(){
     return new ResponseEntity<>(accountService.getAllAccounts(), HttpStatus.OK);
   }
