@@ -2,10 +2,12 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 
 import {Account} from "../../model/Account";
+import { CookieService } from 'ngx-cookie-service';
 
 @Injectable()
 export class AccountService {
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,
+              private cookieService: CookieService) {
   }
 
   private baseUri = '//localhost:8081/account';
@@ -22,7 +24,8 @@ export class AccountService {
 
 
   public getLoggedAccount(){
-    return this.http.get<Account>(this.baseUri + "/getLoggedAccount")
+
+    return this.http.get<Account>(this.baseUri + "/getLoggedAccount" )
   }
 
 }

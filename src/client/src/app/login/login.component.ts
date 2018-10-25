@@ -3,6 +3,7 @@ import {Router} from "@angular/router";
 import {AccountService} from "../shared/service/account/account.service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {first} from "rxjs/operators";
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +19,8 @@ export class LoginComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
-    private accountService: AccountService) {}
+    private accountService: AccountService,
+    private cookieService: CookieService) {}
 
   ngOnInit() {
     this.loginForm = this.formBuilder.group({
@@ -43,10 +45,11 @@ export class LoginComponent implements OnInit {
     .pipe(first())
     .subscribe(
       data => {
-        console.log(data);
+        console.log(data['access_token']);
+        this.cookieService.set("Authorization", data['access_token']);
       },
       error => {
-        this.error = error.toString();
+        this.error = "Niepoprawne dane!";
         this.loading = false;
       });
   }
