@@ -5,11 +5,10 @@ import { AccountService } from './shared/service/account/account.service';
 import { HttpClientModule } from '@angular/common/http';
 
 import { MatButtonModule, MatCardModule, MatInputModule, MatListModule, MatToolbarModule } from '@angular/material';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HomeComponent } from './home/home.component';
-import {RouterModule, Routes} from "@angular/router";
 import {routing} from "./app.routing";
 import { LoginComponent } from './login/login.component';
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -25,7 +24,9 @@ import { LoginComponent } from './login/login.component';
     MatCardModule,
     MatInputModule,
     MatListModule,
-    MatToolbarModule
+    MatToolbarModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [AccountService],
   bootstrap: [AppComponent]

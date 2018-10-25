@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin
 @RestController
 @RequestMapping("/account")
 public class AccountController extends BaseController<Account, AccountService> {
@@ -51,8 +51,11 @@ public class AccountController extends BaseController<Account, AccountService> {
   @GetMapping("/getLoggedAccount")
   public ResponseEntity<?> getLoggedUser(Principal principal){
     Account account = accountService.getAccountByPrincipal(principal);
-    if(account == null)
+    if(account == null) {
       account = new Account();
+      account.setUsername("");
+    }
+
     return new ResponseEntity<>(account, HttpStatus.OK);
   }
 

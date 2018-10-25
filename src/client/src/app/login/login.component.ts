@@ -1,8 +1,8 @@
 import {Component, OnInit} from "@angular/core";
-import {ActivatedRoute, Router} from "@angular/router";
-import {HttpClient} from "@angular/common/http";
-import {Observable} from "rxjs";
+import {Router} from "@angular/router";
+import {AccountService} from "../shared/service/account/account.service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {first} from "rxjs/operators";
 
 @Component({
   selector: 'app-login',
@@ -10,35 +10,44 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-
-  model: any = {};
-
-  constructor(private route: ActivatedRoute,
-              private router: Router,
-              private http: HttpClient) {
-  }
-
   loginForm: FormGroup;
-  submitted: boolean = false;
-  invalidLogin: boolean = false;
-  constructor(private formBuilder: FormBuilder, private router: Router, private authService: AuthenticationService) { }
+  loading = false;
+  submitted = false;
+  error = '';
 
-  onSubmit() {
-    this.submitted = true;
-    if (this.loginForm.invalid) {
-      return;
-    }
-    if(this.loginForm.controls.email.value == 'dhiraj@gmail.com' && this.loginForm.controls.password.value == 'password') {
-      this.router.navigate(['list-user']);
-    }else {
-      this.invalidLogin = true;
-    }
-  }
+  constructor(
+    private formBuilder: FormBuilder,
+    private router: Router,
+    private accountService: AccountService) {}
 
   ngOnInit() {
     this.loginForm = this.formBuilder.group({
-      email: ['', Validators.required],
+      username: ['', Validators.required],
       password: ['', Validators.required]
     });
+
+  }
+
+  get f() { return this.loginForm.controls; }
+
+  onSubmit() {
+    this.submitted = true;
+
+    // stop here if form is invalid
+    if (this.loginForm.invalid) {
+      return;
+    }
+
+    this.loading = true;
+    this.accountService.getLoginToken(this.f.username.value, this.f.password.value)
+    .pipe(first())
+    .subscribe(
+      data => {
+        console.log(data);
+      },
+      error => {
+        this.error = error.toString();
+        this.loading = false;
+      });
   }
 }
