@@ -94,8 +94,7 @@ public class AccountController extends BaseController<Account, AccountService> {
 
   @PostMapping("/resendActivationCode")
   public ResponseEntity<?> resendActivationCode(HttpServletRequest request,
-      @RequestBody Map<String, Object> emailObj,
-      BindingResult result) {
+      @RequestBody Map<String, Object> emailObj) {
 
     String email = (String)emailObj.get("email");
 
@@ -144,7 +143,10 @@ public class AccountController extends BaseController<Account, AccountService> {
 
   @PostMapping("/sendResetPasswordRequest")
   public ResponseEntity<?> sendResetPassword(HttpServletRequest request,
-      @RequestParam("email") String email) {
+      @RequestBody Map<String, Object> emailObj) {
+
+    String email = (String)emailObj.get("email");
+
     ErrorCode errorCode = new ErrorCode();
     Account account = accountValidator.validateEmail(email, errorCode);
 
