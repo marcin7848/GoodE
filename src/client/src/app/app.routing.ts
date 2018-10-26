@@ -4,6 +4,8 @@ import {LoginComponent} from "./component/account/login/login.component";
 import {RegisterComponent} from "./component/account/register/register.component";
 import {ResendActivationCodeComponent} from "./component/account/resend-activation-code/resend-activation-code.component";
 import {ActivateAccountComponent} from "./component/account/activate-account/activate-account.component";
+import {ResetPasswordRequestComponent} from "./component/account/reset-password-request/reset-password-request.component";
+import {ResetPasswordComponent} from "./component/account/reset-password/reset-password.component";
 
 const routes: Routes = [
   {path : '', component : HomeComponent},
@@ -13,6 +15,8 @@ const routes: Routes = [
   {path : 'register', component : RegisterComponent},
   {path : 'account/resendActivationCode', component : ResendActivationCodeComponent},
   {path : 'account/activate/:activationCode', component : ActivateAccountComponent},
+  {path : 'account/sendResetPasswordRequest', component : ResetPasswordRequestComponent},
+  {path : 'account/resetPassword/:resetPasswordCode', component : ResetPasswordComponent},
 ];
 
 export const routing = RouterModule.forRoot(routes);

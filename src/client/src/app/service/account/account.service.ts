@@ -41,4 +41,18 @@ export class AccountService {
     return this.http.get<any>(this.baseUri + "/activate/" + activationCode);
   }
 
+  public sendResetPasswordRequest(emailV: string){
+    const body = {email: emailV};
+    return this.http.post<any>(this.baseUri + "/sendResetPasswordRequest", body);
+  }
+
+  public checkResetPasswordCode(resetPasswordCode: string){
+    return this.http.get<any>(this.baseUri + "/resetPassword/" + resetPasswordCode);
+  }
+
+  public resetPassword(resetPasswordCode: string, passwordV: string){
+    const body = {password: passwordV};
+    return this.http.post<any>(this.baseUri + "/resetPassword/" + resetPasswordCode, body);
+  }
+
 }

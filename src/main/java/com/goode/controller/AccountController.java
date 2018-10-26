@@ -186,7 +186,10 @@ public class AccountController extends BaseController<Account, AccountService> {
   @PostMapping("/resetPassword/{resetPasswordCode}")
   public ResponseEntity<?> resetPassword(
       @PathVariable("resetPasswordCode") String resetPasswordCode,
-      @RequestParam("password") String password) {
+      @RequestBody Map<String, Object> passwordObj) {
+
+    String password = (String)passwordObj.get("password");
+
     ErrorCode errorCode = new ErrorCode();
     ActivationCode activationCode = activationCodeValidator
         .validateCode(resetPasswordCode, ActivationCode.TYPE_RESET_PASSWORD_CODE, errorCode);

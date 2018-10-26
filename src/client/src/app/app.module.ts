@@ -14,6 +14,8 @@ import {Interceptor} from "./app.interceptor";
 import { RegisterComponent } from './component/account/register/register.component';
 import { ResendActivationCodeComponent } from './component/account/resend-activation-code/resend-activation-code.component';
 import { ActivateAccountComponent } from './component/account/activate-account/activate-account.component';
+import { ResetPasswordRequestComponent } from './component/account/reset-password-request/reset-password-request.component';
+import { ResetPasswordComponent } from './component/account/reset-password/reset-password.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +24,9 @@ import { ActivateAccountComponent } from './component/account/activate-account/a
     LoginComponent,
     RegisterComponent,
     ResendActivationCodeComponent,
-    ActivateAccountComponent
+    ActivateAccountComponent,
+    ResetPasswordRequestComponent,
+    ResetPasswordComponent
   ],
   imports: [
     routing,
