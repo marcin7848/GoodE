@@ -19,7 +19,10 @@ export class HomeComponent implements OnInit {
     this.accountService.getLoggedAccount().
     subscribe(data => {
       this.loggedAccount = data;
-    })
+    },
+      error => {
+        console.log("Nie mozna pobrac!");
+      })
   }
 
 }

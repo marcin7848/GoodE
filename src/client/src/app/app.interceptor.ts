@@ -10,30 +10,33 @@ import {
 } from "@angular/common/http";
 import {Observable} from "rxjs";
 import { CookieService } from 'ngx-cookie-service';
+import {Router} from "@angular/router";
 
 @Injectable()
 export class Interceptor implements HttpInterceptor {
-  constructor(private cookieService: CookieService) { }
+  constructor(private cookieService: CookieService,
+              private router: Router) { }
   intercept(
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    const updatedRequest = request.clone({
-      headers: request.headers.set("Authorization", "Bearer " + this.cookieService.get("Authorization"))
-    });
-    
+
+    let updatedRequest = request;
+
+    if(request.headers.get("Authorization") == null && this.cookieService.get("Authorization") != null){
+      updatedRequest = request.clone({
+        headers: request.headers.set("Authorization", "Bearer " + this.cookieService.get("Authorization"))
+      });
+    }
+
     return next.handle(updatedRequest).pipe(
       tap(
         event => {
-          //logging the http response to browser's console in case of a success
-          if (event instanceof HttpResponse) {
-            console.log("api call success :", event);
-          }
         },
         error => {
-          //logging the http response to browser's console in case of a failuer
-          if (event instanceof HttpResponse) {
-            console.log("api call error :", event);
+          if(error['error']['error'] != null && error['error']['error'] != "invalid_grant"){
+            this.cookieService.delete("Authorization");
+            this.router.navigate(['/login', "expired"]);
           }
         }
       )

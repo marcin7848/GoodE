@@ -1,6 +1,9 @@
 <h2>Login</h2>
 <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
   <div class="form-group">
+    <div *ngIf="expired">
+      Dane wygasły. Zaloguj się ponownie.
+    </div>
     <label for="username">Username</label>
     <input type="text" formControlName="username" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.username.errors }" />
     <div *ngIf="submitted && f.username.errors" class="invalid-feedback">

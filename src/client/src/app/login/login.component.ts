@@ -1,5 +1,5 @@
 import {Component, OnInit} from "@angular/core";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {AccountService} from "../shared/service/account/account.service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {first} from "rxjs/operators";
@@ -15,14 +15,29 @@ export class LoginComponent implements OnInit {
   loading = false;
   submitted = false;
   error = '';
+  expired = false;
 
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
+    private route: ActivatedRoute,
     private accountService: AccountService,
     private cookieService: CookieService) {}
 
   ngOnInit() {
+    if(this.router.url === '/logout'){
+      this.cookieService.delete("Authorization");
+      this.router.navigate(['/']);
+    }
+
+    if(this.cookieService.get("Authorization")){
+      this.router.navigate(['/']);
+    }
+
+    this.route.params.subscribe(params => {
+      this.expired = !!params['expired'];
+    });
+
     this.loginForm = this.formBuilder.group({
       username: ['', Validators.required],
       password: ['', Validators.required]
@@ -45,10 +60,10 @@ export class LoginComponent implements OnInit {
     .pipe(first())
     .subscribe(
       data => {
-        console.log(data['access_token']);
         this.cookieService.set("Authorization", data['access_token']);
       },
       error => {
+        console.log(error);
         this.error = "Niepoprawne dane!";
         this.loading = false;
       });
