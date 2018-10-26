@@ -1,9 +1,9 @@
 import { RouterModule, Routes } from '@angular/router';
-import {HomeComponent} from "./home/home.component";
-import {LoginComponent} from "./login/login.component";
-import {RegisterComponent} from "./register/register.component";
-import {ResendActivationCodeComponent} from "./resend-activation-code/resend-activation-code.component";
-import {ActivateAccountComponent} from "./activate-account/activate-account.component";
+import {HomeComponent} from "./component/home/home.component";
+import {LoginComponent} from "./component/account/login/login.component";
+import {RegisterComponent} from "./component/account/register/register.component";
+import {ResendActivationCodeComponent} from "./component/account/resend-activation-code/resend-activation-code.component";
+import {ActivateAccountComponent} from "./component/account/activate-account/activate-account.component";
 
 const routes: Routes = [
   {path : '', component : HomeComponent},

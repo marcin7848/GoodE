@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {AccountService} from "../shared/service/account/account.service";
+import {AccountService} from "../../../service/account/account.service";
 import {ActivatedRoute} from "@angular/router";
 import {first} from "rxjs/operators";
 

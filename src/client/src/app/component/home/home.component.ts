@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
-import {Account} from "../shared/model/Account";
-import {AccountService} from "../shared/service/account/account.service";
+import {Account} from "../../model/Account";
+import {AccountService} from "../../service/account/account.service";
 import {Router} from "@angular/router";
 
 @Component({

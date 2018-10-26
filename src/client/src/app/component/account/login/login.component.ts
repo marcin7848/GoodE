@@ -1,6 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
-import {AccountService} from "../shared/service/account/account.service";
+import {AccountService} from "../../../service/account/account.service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {first} from "rxjs/operators";
 import { CookieService } from 'ngx-cookie-service';
