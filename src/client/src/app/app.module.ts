@@ -11,12 +11,16 @@ import { LoginComponent } from './login/login.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { CookieService } from 'ngx-cookie-service';
 import {Interceptor} from "./app.interceptor";
+import { RegisterComponent } from './register/register.component';
+import { ResendActivationCodeComponent } from './resend-activation-code/resend-activation-code.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
-    LoginComponent
+    LoginComponent,
+    RegisterComponent,
+    ResendActivationCodeComponent
   ],
   imports: [
     routing,

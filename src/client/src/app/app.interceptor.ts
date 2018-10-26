@@ -23,9 +23,22 @@ export class Interceptor implements HttpInterceptor {
 
     let updatedRequest = request;
 
-    if(request.headers.get("Authorization") == null && this.cookieService.get("Authorization") != null){
-      updatedRequest = request.clone({
-        headers: request.headers.set("Authorization", "Bearer " + this.cookieService.get("Authorization"))
+    if(!updatedRequest.headers.get("Content-Type")){
+      updatedRequest = updatedRequest.clone({
+        headers: updatedRequest.headers.set('Content-Type', 'application/json')
+      });
+    }
+
+    if(!updatedRequest.headers.get("Authorization") && this.cookieService.get("Authorization")){
+      updatedRequest = updatedRequest.clone({
+        headers: updatedRequest.headers.set("Authorization", "Bearer " + this.cookieService.get("Authorization"))
+      });
+    }
+
+    if(this.cookieService.get("Language") && (this.cookieService.get("Language") == "pl" || this.cookieService.get("Language") == "en")
+    && !updatedRequest.url.match(/\/oauth\/token/g)) {
+      updatedRequest = updatedRequest.clone({
+        url: updatedRequest.url + '?lang=' + this.cookieService.get("Language")
       });
     }
 
@@ -34,7 +47,8 @@ export class Interceptor implements HttpInterceptor {
         event => {
         },
         error => {
-          if(error['error']['error'] != null && error['error']['error'] != "invalid_grant"){
+          console.log(error);
+          if(error['status'] == 401 && error['error']['error'] != "invalid_grant"){
             this.cookieService.delete("Authorization");
             this.router.navigate(['/login', "expired"]);
           }

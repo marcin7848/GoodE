@@ -12,8 +12,10 @@ import com.goode.validator.AccessRoleValidator;
 import com.goode.validator.AccountValidator;
 import com.goode.validator.ActivationCodeValidator;
 import java.security.Principal;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,6 +34,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/account")
 public class AccountController extends BaseController<Account, AccountService> {
+
+  @Value("${angular.host}")
+  private String angularHost;
 
   @Autowired
   private AccountService accountService;
@@ -80,8 +85,8 @@ public class AccountController extends BaseController<Account, AccountService> {
 
     sendEmail.send(newAccount.getEmail(), Language.getMessage("email.registration.title"),
         Language.getMessage("hello") + " " + newAccount.getUsername() + "!\n" +
-            Language.getMessage("email.activationLink") + "\n" +
-            "http://" + request.getLocalName() + "/account/activate/" + newAccount
+            Language.getMessage("email.activationLink") + "\n"
+            + angularHost + "/account/activate/" + newAccount
             .getActivationCodes().get(0).getCode());
 
     return new ResponseEntity<>(null, HttpStatus.OK);
@@ -89,7 +94,10 @@ public class AccountController extends BaseController<Account, AccountService> {
 
   @PostMapping("/resendActivationCode")
   public ResponseEntity<?> resendActivationCode(HttpServletRequest request,
-      @RequestParam("email") String email) {
+      @RequestBody Map<String, Object> emailObj,
+      BindingResult result) {
+
+    String email = (String)emailObj.get("email");
 
     ErrorCode errorCode = new ErrorCode();
     Account account = accountValidator.validateAccountActivation(email, errorCode);
@@ -109,10 +117,11 @@ public class AccountController extends BaseController<Account, AccountService> {
         Language.getMessage("hello") + " " + account.getUsername() + "!\n" +
             Language.getMessage("email.activationCode.request") + " " +
             Language.getMessage("email.activationLink") + "\n" +
-            "http://" + request.getLocalName() + "/account/activate/" + account.getActivationCodes()
+            angularHost + "/account/activate/" + account.getActivationCodes()
             .get(0).getCode());
 
     return new ResponseEntity<>(null, HttpStatus.OK);
+
   }
 
   @GetMapping("/activate/{activationCode}")
@@ -153,7 +162,7 @@ public class AccountController extends BaseController<Account, AccountService> {
     sendEmail.send(account.getEmail(), Language.getMessage("email.account.resetPassword.title"),
         Language.getMessage("hello") + " " + account.getUsername() + "!\n" +
             Language.getMessage("email.account.resetPassword.body") + "\n" +
-            "http://" + request.getLocalName() + "/account/resetPassword/" + account
+            angularHost + "/account/resetPassword/" + account
             .getActivationCodes().get(0).getCode());
 
     return new ResponseEntity<>(null, HttpStatus.OK);
