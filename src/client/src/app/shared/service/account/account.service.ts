@@ -37,4 +37,8 @@ export class AccountService {
     return this.http.post<any>(this.baseUri + "/resendActivationCode", body);
   }
 
+  public activateAccount(activationCode: string){
+    return this.http.get<any>(this.baseUri + "/activate/" + activationCode);
+  }
+
 }

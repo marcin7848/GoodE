@@ -13,6 +13,7 @@ import { CookieService } from 'ngx-cookie-service';
 import {Interceptor} from "./app.interceptor";
 import { RegisterComponent } from './register/register.component';
 import { ResendActivationCodeComponent } from './resend-activation-code/resend-activation-code.component';
+import { ActivateAccountComponent } from './activate-account/activate-account.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { ResendActivationCodeComponent } from './resend-activation-code/resend-a
     HomeComponent,
     LoginComponent,
     RegisterComponent,
-    ResendActivationCodeComponent
+    ResendActivationCodeComponent,
+    ActivateAccountComponent
   ],
   imports: [
     routing,
