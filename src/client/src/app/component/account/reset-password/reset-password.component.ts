@@ -17,7 +17,7 @@ export class ResetPasswordComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder,
               private accountService: AccountService,
-              private route: ActivatedRoute,) { }
+              private route: ActivatedRoute) { }
 
   ngOnInit() {
 

@@ -6,6 +6,7 @@ import {ResendActivationCodeComponent} from "./component/account/resend-activati
 import {ActivateAccountComponent} from "./component/account/activate-account/activate-account.component";
 import {ResetPasswordRequestComponent} from "./component/account/reset-password-request/reset-password-request.component";
 import {ResetPasswordComponent} from "./component/account/reset-password/reset-password.component";
+import {ChangeAccessRoleComponent} from "./component/account/change-access-role/change-access-role.component";
 
 const routes: Routes = [
   {path : '', component : HomeComponent},
@@ -17,6 +18,7 @@ const routes: Routes = [
   {path : 'account/activate/:activationCode', component : ActivateAccountComponent},
   {path : 'account/sendResetPasswordRequest', component : ResetPasswordRequestComponent},
   {path : 'account/resetPassword/:resetPasswordCode', component : ResetPasswordComponent},
+  {path : 'account/changeAccessRole', component : ChangeAccessRoleComponent},
 ];
 
 export const routing = RouterModule.forRoot(routes);

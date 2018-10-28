@@ -16,6 +16,7 @@ import { ResendActivationCodeComponent } from './component/account/resend-activa
 import { ActivateAccountComponent } from './component/account/activate-account/activate-account.component';
 import { ResetPasswordRequestComponent } from './component/account/reset-password-request/reset-password-request.component';
 import { ResetPasswordComponent } from './component/account/reset-password/reset-password.component';
+import { ChangeAccessRoleComponent } from './component/account/change-access-role/change-access-role.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { ResetPasswordComponent } from './component/account/reset-password/reset
     ResendActivationCodeComponent,
     ActivateAccountComponent,
     ResetPasswordRequestComponent,
-    ResetPasswordComponent
+    ResetPasswordComponent,
+    ChangeAccessRoleComponent
   ],
   imports: [
     routing,

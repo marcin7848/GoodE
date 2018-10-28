@@ -211,13 +211,23 @@ public class AccountController extends BaseController<Account, AccountService> {
     return new ResponseEntity<>(null, HttpStatus.OK);
   }
 
-  @PostMapping("/{accountId}/changeAccessRole")
+  @PostMapping("/{username}/changeAccessRole")
   @PreAuthorize("hasRole('" + AccessRole.ROLE_ADMIN + "')")
-  public ResponseEntity<?> changeAccessRole(@PathVariable("accountId") int accountId,
-      @RequestParam("accessRole") String accessRole) {
+  public ResponseEntity<?> changeAccessRole(@PathVariable("username") String username,
+      @RequestBody Map<String, Object> accessRoleObj) {
+
+    String accessRole = (String) accessRoleObj.get("accessRole");
+
+    Account account = accountService.getAccountByUsername(username);
+
+    if(account == null){
+      return ErrorMessage.send(Language.getMessage("error.account.badUsername"), HttpStatus.BAD_REQUEST);
+    }
+
+    int accountId = account.getId();
 
     ErrorCode errorCode = new ErrorCode();
-    Account account = accessRoleValidator.validateChangeAccountAccessRole(accountId, accessRole, errorCode);
+    account = accessRoleValidator.validateChangeAccountAccessRole(accountId, accessRole, errorCode);
 
     if (errorCode.hasErrors()) {
       return ErrorMessage.send(Language.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
@@ -236,5 +246,12 @@ public class AccountController extends BaseController<Account, AccountService> {
   public ResponseEntity<?> getAll(){
     return new ResponseEntity<>(accountService.getAllAccounts(), HttpStatus.OK);
   }
+
+  @GetMapping("/getAllAccessRole")
+  @PreAuthorize("hasRole('" + AccessRole.ROLE_ADMIN + "')")
+  public ResponseEntity<?> getAllAccessRole(){
+    return new ResponseEntity<>(accountService.getAllAccessRole(), HttpStatus.OK);
+  }
+
 
 }

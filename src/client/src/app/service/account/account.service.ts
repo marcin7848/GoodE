@@ -55,4 +55,13 @@ export class AccountService {
     return this.http.post<any>(this.baseUri + "/resetPassword/" + resetPasswordCode, body);
   }
 
+  public getAllAccessRole(){
+    return this.http.get<any>(this.baseUri + "/getAllAccessRole");
+  }
+
+  public changeAccessRole(usernameV: string, accessRoleV: string){
+    const body = {accessRole: accessRoleV};
+    return this.http.post<any>(this.baseUri + "/" + usernameV + "/changeAccessRole", body);
+  }
+
 }
