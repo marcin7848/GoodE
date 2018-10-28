@@ -6,6 +6,7 @@ import com.goode.Language;
 import com.goode.SendEmail;
 import com.goode.business.AccessRole;
 import com.goode.business.Account;
+import com.goode.business.Account.RegisterValidation;
 import com.goode.business.ActivationCode;
 import com.goode.service.AccountService;
 import com.goode.validator.AccessRoleValidator;
@@ -27,7 +28,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin
@@ -66,7 +66,7 @@ public class AccountController extends BaseController<Account, AccountService> {
 
   @PostMapping("/register")
   public ResponseEntity<?> register(HttpServletRequest request,
-      @Validated(Account.ValidationStepOne.class) @RequestBody Account account,
+      @Validated(RegisterValidation.class) @RequestBody Account account,
       BindingResult result) {
     super.initializeService(accountService);
 

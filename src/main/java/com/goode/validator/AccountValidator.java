@@ -4,6 +4,7 @@ import com.goode.ErrorCode;
 import com.goode.Language;
 import com.goode.business.Account;
 
+import com.goode.business.Account.FullValidation;
 import com.goode.repository.AccountRepository;
 import java.util.Set;
 import javax.validation.ConstraintViolation;
@@ -25,7 +26,7 @@ public class AccountValidator extends BaseValidator {
     ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     Validator validator = factory.getValidator();
     Set<ConstraintViolation<Account>> errors = validator
-        .validateProperty(account, "email", Account.ValidationStepTwo.class);
+        .validateProperty(account, "email", FullValidation.class);
 
     if (!errors.isEmpty()) {
       errorCode.rejectValue("email", "validate.email.incorrect");
@@ -47,7 +48,7 @@ public class AccountValidator extends BaseValidator {
     ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     Validator validator = factory.getValidator();
     Set<ConstraintViolation<Account>> errors = validator
-        .validateProperty(account, "password", Account.ValidationStepTwo.class);
+        .validateProperty(account, "password", FullValidation.class);
 
     if (!errors.isEmpty()) {
       ConstraintViolation<Account> accountConstraintViolation = errors.iterator().next();
