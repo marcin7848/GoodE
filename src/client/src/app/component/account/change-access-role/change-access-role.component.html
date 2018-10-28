@@ -1,0 +1,13 @@
+<h2>Change access role</h2>
+<div *ngIf="accessGranted">
+  <form [formGroup]="formG" (ngSubmit)="onSubmit()">
+    Username: <input type="text" formControlName="username" class="form-control" /><br />
+    Nowa rola:
+    <select formControlName="accessRole">
+      <option [value]="accessRole.role" *ngFor="let accessRole of accessRoles">{{accessRole.role}}</option>
+    </select>
+    <br />
+    <button class="btn btn-primary">Change access role</button><br />
+  </form>
+</div>
+Message: {{message}}
