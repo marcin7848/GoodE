@@ -1,5 +1,6 @@
 package com.goode.service;
 
+import com.goode.ErrorCode;
 import com.goode.business.AccessRole;
 import com.goode.business.Account;
 import com.goode.business.ActivationCode;
@@ -45,7 +46,8 @@ public class AccountService implements AccountServiceI, StandardizeService<Accou
     return accountRepository.findAccountById(id_account);
   }
 
-  public List<AccessRole> getAllAccessRole(){
+  @Override
+  public Iterable<AccessRole> getAllAccessRole(){
     return accessRoleRepository.findAll();
   }
 
@@ -54,18 +56,18 @@ public class AccountService implements AccountServiceI, StandardizeService<Accou
     return accountRepository.findAccountByUsername(username);
   }
 
+  @Override
+  public List<Account> getAccountByUsernameOrEmail(String username, String email) {
+    return accountRepository.findAccountByUsernameOrEmail(username, email);
+  }
+
+  @Override
   public Iterable<Account> getAllAccounts(){
     return accountRepository.findAll();
   }
 
   @Override
   public Account addNew(Account account) {
-
-    if (!accountRepository.findByUsernameOrEmail(account.getUsername(), account.getEmail())
-        .isEmpty()) {
-      return null;
-    }
-
     account.setEnabled(false);
     account.setAccessRole(accessRoleRepository.getAccessRoleById(3));
     account.setCreationTime(new Timestamp(new Date().getTime()));

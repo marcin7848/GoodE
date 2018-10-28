@@ -26,6 +26,7 @@ import org.hibernate.validator.constraints.Length;
 public class Group {
 
   public interface FullValidation {}
+  public interface AddNewValidation {}
 
   @Id
   @Column(name = "id_group")
@@ -34,30 +35,30 @@ public class Group {
   private int id;
 
   @Column(name = "name")
-  @NotBlank(groups = {FullValidation.class})
-  @Length(min = 4, max = 40, groups = {FullValidation.class})
-  @Pattern(regexp = "^[\\p{L}0-9_\\-\\/ +]+$", groups = {FullValidation.class})
+  @NotBlank(groups = {FullValidation.class, AddNewValidation.class})
+  @Length(min = 4, max = 40, groups = {FullValidation.class, AddNewValidation.class})
+  @Pattern(regexp = "^[\\p{L}0-9_\\-\\/ +]+$", groups = {FullValidation.class, AddNewValidation.class})
   private String name;
 
   @Column(name = "description")
-  @Length(max = 100, groups = {FullValidation.class})
+  @Length(max = 100, groups = {FullValidation.class, AddNewValidation.class})
   private String description;
 
   @Column(name = "password")
-  @Length(max = 15, groups = {FullValidation.class})
+  @Length(max = 15, groups = {FullValidation.class, AddNewValidation.class})
   private String password;
 
   @Column(name = "possible_to_join")
-  @NotNull(groups = {FullValidation.class})
+  @NotNull(groups = {FullValidation.class, AddNewValidation.class})
   private boolean possibleToJoin;
 
   @Column(name = "acceptance")
-  @NotNull(groups = {FullValidation.class})
+  @NotNull(groups = {FullValidation.class, AddNewValidation.class})
   private boolean acceptance;
 
-  @Column(name = "show")
-  @NotNull(groups = {FullValidation.class})
-  private boolean show;
+  @Column(name = "hidden")
+  @NotNull(groups = {FullValidation.class, AddNewValidation.class})
+  private boolean hidden;
 
   @Column(name = "id_group_parent")
   private int idGroupParent;

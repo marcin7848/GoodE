@@ -77,6 +77,12 @@ public class AccountController extends BaseController<Account, AccountService> {
               Language.getMessage(result.getFieldError().getField())), HttpStatus.BAD_REQUEST);
     }
 
+    if (!accountService.getAccountByUsernameOrEmail(account.getUsername(), account.getEmail())
+        .isEmpty()) {
+      return ErrorMessage
+          .send(Language.getMessage("error.account.alreadyExists"), HttpStatus.BAD_REQUEST);
+    }
+
     Account newAccount = super.addNew(account);
     if (newAccount == null) {
       return ErrorMessage

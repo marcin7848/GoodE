@@ -1,8 +1,10 @@
 package com.goode.service;
 
+import com.goode.business.AccessRole;
 import com.goode.business.Account;
 import com.goode.business.ActivationCode;
 import java.security.Principal;
+import java.util.List;
 
 public interface AccountServiceI {
 
@@ -14,5 +16,7 @@ public interface AccountServiceI {
   ActivationCode resetPasswordRequest(String activationCode);
   boolean resetPassword(ActivationCode activationCode, String newPassword);
   boolean changeAccessRole(Account account, String role);
-
+  Iterable<AccessRole> getAllAccessRole();
+  Iterable<Account> getAllAccounts();
+  List<Account> getAccountByUsernameOrEmail(String username, String email);
 }
