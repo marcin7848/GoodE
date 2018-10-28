@@ -33,12 +33,29 @@ public class AccountService implements AccountServiceI, StandardizeService<Accou
   @Autowired
   private ActivationCodeService activationCodeService;
 
+  @Override
   public Account getAccountByPrincipal(Principal principal) {
-    return accountRepository.findAccountByUsername(principal.getName());
+    if(principal != null)
+      return accountRepository.findAccountByUsername(principal.getName());
+    return null;
   }
 
+  @Override
   public Account getAccountById(int id_account) {
     return accountRepository.findAccountById(id_account);
+  }
+
+  public List<AccessRole> getAllAccessRole(){
+    return accessRoleRepository.findAll();
+  }
+
+  @Override
+  public Account getAccountByUsername(String username) {
+    return accountRepository.findAccountByUsername(username);
+  }
+
+  public Iterable<Account> getAllAccounts(){
+    return accountRepository.findAll();
   }
 
   @Override

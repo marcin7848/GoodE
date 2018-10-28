@@ -28,7 +28,7 @@ public class ActivationCodeService implements ActivationCodeServiceI {
 
   private String generateRandomString(int length){
     String code;
-    String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@$*()";
+    String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
     do {
       StringBuilder salt = new StringBuilder();
       Random rnd = new Random();

@@ -32,9 +32,6 @@ public class RootConfig {
   @Autowired
   private Environment environment;
 
-  @Autowired
-  private DataSource dataSource;
-
   @Bean
   public DataSource dataSource() {
     DriverManagerDataSource dataSource = new DriverManagerDataSource();

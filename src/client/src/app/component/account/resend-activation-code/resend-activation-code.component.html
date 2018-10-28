@@ -1,0 +1,6 @@
+<h2>Resend activation code</h2>
+<form [formGroup]="resendActivationCodeForm" (ngSubmit)="onSubmit()">
+  Email: <input type="text" formControlName="email" class="form-control" /><br />
+  <button class="btn btn-primary">Resend activation code</button><br />
+  Message: {{message}}
+</form>
