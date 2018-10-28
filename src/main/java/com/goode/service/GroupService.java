@@ -12,6 +12,11 @@ public class GroupService implements GroupServiceI, StandardizeService<Group> {
   GroupRepository groupRepository;
 
   @Override
+  public Group getGroupByName(String name){
+    return groupRepository.findGroupByName(name);
+  }
+
+  @Override
   public Group addNew(Group group){
     return null;
   }
