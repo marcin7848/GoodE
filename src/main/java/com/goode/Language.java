@@ -88,6 +88,7 @@ public abstract class Language {
       case "email": return getMessage("validate.email.incorrect");
       case "firstName": return getMessage("validate.lettersOnly", getMessage(field));
       case "lastName": return getMessage("validate.lettersOnly", getMessage(field));
+      case "name": return getMessage("validate.titles", getMessage(field));
     }
 
     return getMessage("error.unknown");

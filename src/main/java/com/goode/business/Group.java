@@ -37,7 +37,7 @@ public class Group {
   @Column(name = "name")
   @NotBlank(groups = {FullValidation.class, AddNewValidation.class})
   @Length(min = 4, max = 40, groups = {FullValidation.class, AddNewValidation.class})
-  @Pattern(regexp = "^[\\p{L}0-9_\\-\\/ +]+$", groups = {FullValidation.class, AddNewValidation.class})
+  @Pattern(regexp = "^[\\p{L}0-9_\\-\\/ +\\.]+$", groups = {FullValidation.class, AddNewValidation.class})
   private String name;
 
   @Column(name = "description")
@@ -61,11 +61,11 @@ public class Group {
   private boolean hidden;
 
   @Column(name = "id_group_parent")
-  private int idGroupParent;
+  private Integer idGroupParent;
 
-  @Column(name = "order")
+  @Column(name = "position")
   @NotNull(groups = {FullValidation.class})
-  private int order;
+  private int position;
 
   @Column(name = "creation_time", updatable = false)
   @NotNull(groups = {FullValidation.class})

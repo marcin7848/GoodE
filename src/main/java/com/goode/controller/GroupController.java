@@ -51,7 +51,7 @@ public class GroupController extends BaseController<Group, GroupService> {
     }
 
     ErrorCode errorCode = new ErrorCode();
-    if (groupValidator.validateIdGroupParent(group.getIdGroupParent(), errorCode)) {
+    if (group.getIdGroupParent() != null && !groupValidator.validateIdGroupParent(group.getIdGroupParent(), errorCode)) {
       return ErrorMessage.send(Language.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
     }
 
@@ -60,7 +60,6 @@ public class GroupController extends BaseController<Group, GroupService> {
       return ErrorMessage
           .send(Language.getMessage("error.group.notCreated"), HttpStatus.BAD_REQUEST);
     }
-
 
     return new ResponseEntity<>(null, HttpStatus.OK);
   }
