@@ -21,9 +21,6 @@ public class GroupService implements GroupServiceI, StandardizeService<Group> {
   GroupRepository groupRepository;
 
   @Autowired
-  AccountRepository accountRepository;
-
-  @Autowired
   GroupMemberRepository groupMemberRepository;
 
   @Autowired
@@ -38,8 +35,7 @@ public class GroupService implements GroupServiceI, StandardizeService<Group> {
   public Group addNew(Group group){
     group.setCreationTime(new Timestamp(new Date().getTime()));
 
-    Account loggedAccount = accountRepository
-        .findAccountByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+    Account loggedAccount = AccountService.getLoggedAccount();
 
     int nextOrder = groupRepository.getNextPosition(loggedAccount.getId());
     if(group.getIdGroupParent() != null) {

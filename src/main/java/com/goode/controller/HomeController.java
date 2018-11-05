@@ -2,6 +2,7 @@ package com.goode.controller;
 
 import com.goode.business.Account;
 import com.goode.repository.AccountRepository;
+import com.goode.service.AccountService;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,15 +22,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/")
 public class HomeController {
 
-  @Autowired
-  AccountRepository accountRepository;
-
   @GetMapping
   public ResponseEntity<?> home(){
     Account loggedAccount = null;
     if(SecurityContextHolder.getContext().getAuthentication() != null) {
-      loggedAccount = accountRepository
-          .findAccountByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+      loggedAccount = AccountService.getLoggedAccount();
     }
 
     JSONObject obj = new JSONObject();

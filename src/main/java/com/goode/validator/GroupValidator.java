@@ -8,6 +8,7 @@ import com.goode.business.GroupMember;
 import com.goode.repository.AccountRepository;
 import com.goode.repository.GroupMemberRepository;
 import com.goode.repository.GroupRepository;
+import com.goode.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -21,9 +22,6 @@ public class GroupValidator extends BaseValidator {
   @Autowired
   GroupMemberRepository groupMemberRepository;
 
-  @Autowired
-  AccountRepository accountRepository;
-
   public boolean validateIdGroupParent(int idGroupParent, ErrorCode errorCode){
 
     Group group = groupRepository.findGroupById(idGroupParent);
@@ -33,8 +31,7 @@ public class GroupValidator extends BaseValidator {
       return false;
     }
 
-    Account loggedAccount = accountRepository
-        .findAccountByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+    Account loggedAccount = AccountService.getLoggedAccount();
 
     if(loggedAccount == null){
       errorCode.rejectValue("account", "error.authorization");
