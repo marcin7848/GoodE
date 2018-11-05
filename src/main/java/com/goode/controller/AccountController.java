@@ -6,6 +6,7 @@ import com.goode.Language;
 import com.goode.SendEmail;
 import com.goode.business.AccessRole;
 import com.goode.business.Account;
+import com.goode.business.Account.EditValidation;
 import com.goode.business.Account.RegisterValidation;
 import com.goode.business.ActivationCode;
 import com.goode.service.AccountService;
@@ -15,17 +16,23 @@ import com.goode.validator.ActivationCodeValidator;
 import java.security.Principal;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.codec.language.bm.Lang;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -259,5 +266,58 @@ public class AccountController extends BaseController<Account, AccountService> {
     return new ResponseEntity<>(accountService.getAllAccessRole(), HttpStatus.OK);
   }
 
+  @PatchMapping("/{id}/edit")
+  @PreAuthorize("hasAnyRole('"+ AccessRole.ROLE_ADMIN +"', '"+ AccessRole.ROLE_TEACHER +"', '"+ AccessRole.ROLE_STUDENT +"')")
+  public ResponseEntity<?> edit(HttpServletRequest request,
+      @PathVariable("id") int id,
+      @RequestBody Map<String, Object> accountObj) {
+    super.initializeService(accountService);
+
+    String password = (String) accountObj.get("password");
+    String currentPassword = (String) accountObj.get("currentPassword");
+
+    Account account = new Account();
+    account.setEmail((String) accountObj.get("email"));
+    account.setPassword(StringUtils.isEmpty(password) ? currentPassword : password);
+    account.setFirstName((String) accountObj.get("firstName"));
+    account.setLastName((String) accountObj.get("lastName"));
+
+    ErrorCode errorCode = new ErrorCode();
+    if(accountValidator.validateEditAccount(account, errorCode) == null){
+      return ErrorMessage.send(Language
+          .translateError(errorCode.getField(), errorCode.getCode(),
+              errorCode.getDefaultValue(), Language.getMessage(errorCode.getField())), HttpStatus.BAD_REQUEST);
+    }
+
+    Account loggedAccount = accountService.getLoggedAccount();
+    if(loggedAccount.getId() != id) {
+      return ErrorMessage
+          .send(Language.getMessage("error.account.edit.wrongIdAccount"), HttpStatus.BAD_REQUEST);
+    }
+
+    if(!BCrypt.checkpw(currentPassword, loggedAccount.getPassword())) {
+      return ErrorMessage
+          .send(Language.getMessage("error.account.edit.wrongPassword"), HttpStatus.BAD_REQUEST);
+    }
+
+    if (!account.getEmail().equals(loggedAccount.getEmail()) && accountService.getAccountByEmail(account.getEmail()) != null) {
+      return ErrorMessage
+          .send(Language.getMessage("error.account.emailExists"), HttpStatus.BAD_REQUEST);
+    }
+
+    account.setId(loggedAccount.getId());
+    account.setUsername(loggedAccount.getUsername());
+    account.setRegister_no(loggedAccount.getRegister_no());
+    account.setAccessRole(loggedAccount.getAccessRole());
+    account.setEnabled(loggedAccount.isEnabled());
+    account.setCreationTime(loggedAccount.getCreationTime());
+
+    Account editedAccount = super.edit(account);
+    if (editedAccount == null) {
+      return ErrorMessage
+          .send(Language.getMessage("error.account.edit.notEdited"), HttpStatus.BAD_REQUEST);
+    }
+    return new ResponseEntity<>(null, HttpStatus.OK);
+  }
 
 }

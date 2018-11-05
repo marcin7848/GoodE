@@ -11,6 +11,8 @@ public interface AccountServiceI {
   Account getAccountByPrincipal(Principal principal);
   Account getAccountById(int id_account);
   Account getAccountByUsername(String username);
+  Account getAccountByEmail(String email);
+  Account getLoggedAccount();
   Account generateActivationCode(Account account, int type);
   boolean activateAccount(ActivationCode activationCode);
   ActivationCode resetPasswordRequest(String activationCode);

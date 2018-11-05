@@ -35,7 +35,7 @@ public class Account {
   public static final int MAIN_ADMINISTRATOR_ID = 1; //for safety, block some actions e.g. change accessRole for main admin
 
   public interface RegisterValidation {}
-
+  public interface EditValidation {}
   public interface FullValidation {}
 
   @Id
@@ -51,15 +51,15 @@ public class Account {
   private String username;
 
   @Column(name = "email")
-  @NotBlank(groups = {RegisterValidation.class, FullValidation.class})
-  @Length(min = 6, max = 100, groups = {RegisterValidation.class, FullValidation.class})
+  @NotBlank(groups = {RegisterValidation.class, FullValidation.class, EditValidation.class})
+  @Length(min = 6, max = 100, groups = {RegisterValidation.class, FullValidation.class, EditValidation.class})
   @Pattern(regexp = "^[a-zA-Z0-9._-]+@([a-zA-Z0-9-_]+\\.)+[a-zA-Z0-9-_]+$", groups = {
-      RegisterValidation.class, FullValidation.class})
+      RegisterValidation.class, FullValidation.class, EditValidation.class})
   private String email;
 
   @Column(name = "password")
-  @NotBlank(groups = {RegisterValidation.class, FullValidation.class})
-  @Length(min = 8, max = 100, groups = {RegisterValidation.class, FullValidation.class})
+  @NotBlank(groups = {RegisterValidation.class, FullValidation.class, EditValidation.class})
+  @Length(min = 8, max = 100, groups = {RegisterValidation.class, FullValidation.class, EditValidation.class})
   private String password;
 
   @Column(name = "register_no")
@@ -78,15 +78,15 @@ public class Account {
   private boolean enabled;
 
   @Column(name = "firstname")
-  @NotBlank(groups = {RegisterValidation.class, FullValidation.class})
-  @Length(min = 2, max = 30, groups = {RegisterValidation.class, FullValidation.class})
-  @Pattern(regexp = "^[a-zA-Z-]+$", groups = {RegisterValidation.class, FullValidation.class})
+  @NotBlank(groups = {RegisterValidation.class, FullValidation.class, EditValidation.class})
+  @Length(min = 2, max = 30, groups = {RegisterValidation.class, FullValidation.class, EditValidation.class})
+  @Pattern(regexp = "^[a-zA-Z-]+$", groups = {RegisterValidation.class, FullValidation.class, EditValidation.class})
   private String firstName;
 
   @Column(name = "lastname")
-  @NotBlank(groups = {RegisterValidation.class, FullValidation.class})
-  @Length(min = 2, max = 30, groups = {RegisterValidation.class, FullValidation.class})
-  @Pattern(regexp = "^[a-zA-Z-]+$", groups = {RegisterValidation.class, FullValidation.class})
+  @NotBlank(groups = {RegisterValidation.class, FullValidation.class, EditValidation.class})
+  @Length(min = 2, max = 30, groups = {RegisterValidation.class, FullValidation.class, EditValidation.class})
+  @Pattern(regexp = "^[a-zA-Z-]+$", groups = {RegisterValidation.class, FullValidation.class, EditValidation.class})
   private String lastName;
 
   @Column(name = "creation_time", updatable = false)

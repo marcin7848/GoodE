@@ -22,11 +22,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/")
 public class HomeController {
 
+  @Autowired
+  AccountService accountService;
+
   @GetMapping
   public ResponseEntity<?> home(){
     Account loggedAccount = null;
     if(SecurityContextHolder.getContext().getAuthentication() != null) {
-      loggedAccount = AccountService.getLoggedAccount();
+      loggedAccount = accountService.getLoggedAccount();
     }
 
     JSONObject obj = new JSONObject();

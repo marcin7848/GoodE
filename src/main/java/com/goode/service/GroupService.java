@@ -26,6 +26,9 @@ public class GroupService implements GroupServiceI, StandardizeService<Group> {
   @Autowired
   AccessRoleRepository accessRoleRepository;
 
+  @Autowired
+  AccountService accountService;
+
   @Override
   public Group getGroupByName(String name){
     return groupRepository.findGroupByName(name);
@@ -35,7 +38,7 @@ public class GroupService implements GroupServiceI, StandardizeService<Group> {
   public Group addNew(Group group){
     group.setCreationTime(new Timestamp(new Date().getTime()));
 
-    Account loggedAccount = AccountService.getLoggedAccount();
+    Account loggedAccount = accountService.getLoggedAccount();
 
     int nextOrder = groupRepository.getNextPosition(loggedAccount.getId());
     if(group.getIdGroupParent() != null) {
@@ -61,4 +64,10 @@ public class GroupService implements GroupServiceI, StandardizeService<Group> {
 
     return newGroup;
   }
+
+  @Override
+  public Group edit(Group group){
+    return group;
+  }
+
 }

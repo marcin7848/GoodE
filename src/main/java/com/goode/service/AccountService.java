@@ -32,10 +32,11 @@ public class AccountService implements AccountServiceI, StandardizeService<Accou
   @Autowired
   private ActivationCodeService activationCodeService;
 
-  public static Account getLoggedAccount() {
-    return new AccountService().getAccountByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+  @Override
+  public Account getLoggedAccount() {
+    return this.getAccountByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
   }
-  
+
   @Override
   public Account getAccountByPrincipal(Principal principal) {
     if(principal != null)
@@ -61,6 +62,11 @@ public class AccountService implements AccountServiceI, StandardizeService<Accou
   @Override
   public List<Account> getAccountByUsernameOrEmail(String username, String email) {
     return accountRepository.findAccountByUsernameOrEmail(username, email);
+  }
+
+  @Override
+  public Account getAccountByEmail(String email) {
+    return accountRepository.findAccountByEmail(email);
   }
 
   @Override
@@ -92,6 +98,16 @@ public class AccountService implements AccountServiceI, StandardizeService<Accou
     newAccount.setActivationCodes(listActivationCodes);
 
     return newAccount;
+  }
+
+  @Override
+  public Account edit(Account account) {
+    account.setPassword(this.hashPassword(account.getPassword()));
+    Account editedAccount = accountRepository.save(account);
+    if (editedAccount == null) {
+      return null;
+    }
+    return editedAccount;
   }
 
   private String hashPassword(String password) {

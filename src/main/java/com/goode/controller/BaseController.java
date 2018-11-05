@@ -17,6 +17,8 @@ public class BaseController<E, S extends StandardizeService<E>> {
     return service.addNew(entity);
   }
 
-
+  public E edit(E entity){
+    return service.edit(entity);
+  }
 
 }

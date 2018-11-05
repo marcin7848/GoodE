@@ -15,13 +15,16 @@ public class AccessRoleValidator extends BaseValidator {
   @Autowired
   AccountRepository accountRepository;
 
+  @Autowired
+  AccountService accountService;
+
   public Account validateChangeAccountAccessRole(int accountId, String role, ErrorCode errorCode){
     if (accountId == Account.MAIN_ADMINISTRATOR_ID) {
       errorCode.rejectValue("accountId", "error.account.changeAccessRole.mainAdmin");
       return null;
     }
 
-    Account loggedAccount = AccountService.getLoggedAccount();
+    Account loggedAccount = accountService.getLoggedAccount();
 
     if (loggedAccount == null || (loggedAccount.getId() != Account.MAIN_ADMINISTRATOR_ID && role
         .equals(AccessRole.ROLE_ADMIN))) {

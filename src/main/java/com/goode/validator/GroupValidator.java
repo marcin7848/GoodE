@@ -22,6 +22,9 @@ public class GroupValidator extends BaseValidator {
   @Autowired
   GroupMemberRepository groupMemberRepository;
 
+  @Autowired
+  AccountService accountService;
+
   public boolean validateIdGroupParent(int idGroupParent, ErrorCode errorCode){
 
     Group group = groupRepository.findGroupById(idGroupParent);
@@ -31,7 +34,7 @@ public class GroupValidator extends BaseValidator {
       return false;
     }
 
-    Account loggedAccount = AccountService.getLoggedAccount();
+    Account loggedAccount = accountService.getLoggedAccount();
 
     if(loggedAccount == null){
       errorCode.rejectValue("account", "error.authorization");
