@@ -33,30 +33,30 @@ public class GroupService implements GroupServiceI, StandardizeService<Group> {
   AccountService accountService;
 
   @Override
-  public Group getGroupByName(String name){
+  public Group getGroupByName(String name) {
     return groupRepository.findGroupByName(name);
   }
 
   @Override
-  public Group getGroupById(int id){
+  public Group getGroupById(int id) {
     return groupRepository.findGroupById(id);
   }
 
   @Override
-  public Group addNew(Group group){
+  public Group addNew(Group group) {
     group.setCreationTime(new Timestamp(new Date().getTime()));
 
     Account loggedAccount = accountService.getLoggedAccount();
 
     int nextOrder = groupRepository.getNextPosition(loggedAccount.getId());
-    if(group.getIdGroupParent() != null) {
+    if (group.getIdGroupParent() != null) {
       nextOrder = groupRepository
           .getNextPositionWithParent(loggedAccount.getId(), group.getIdGroupParent());
     }
     group.setPosition(nextOrder);
 
     Group newGroup = groupRepository.save(group);
-    if(newGroup == null){
+    if (newGroup == null) {
       return null;
     }
 
@@ -66,7 +66,7 @@ public class GroupService implements GroupServiceI, StandardizeService<Group> {
     groupMember.setAccepted(true);
     groupMember.setAccessRole(accessRoleRepository.getAccessRoleByRole(AccessRole.ROLE_ADMIN));
 
-    if(groupMemberRepository.save(groupMember) == null){
+    if (groupMemberRepository.save(groupMember) == null) {
       return null;
     }
 
@@ -74,7 +74,7 @@ public class GroupService implements GroupServiceI, StandardizeService<Group> {
   }
 
   @Override
-  public Group edit(Group group){
+  public Group edit(Group group) {
     Group editedGroup = groupRepository.save(group);
     if (editedGroup == null) {
       return null;
@@ -83,19 +83,22 @@ public class GroupService implements GroupServiceI, StandardizeService<Group> {
   }
 
   @Override
-  public void delete(Group group){
+  public void delete(Group group) {
     Integer idGroupParent = group.getIdGroupParent();
     groupRepository.delete(group);
     List<Group> groups;
-    if(idGroupParent != null){
-      groups = groupRepository.findAllByIdAccountAndIdGroupParent(accountService.getLoggedAccount().getId(), idGroupParent);
+    if (idGroupParent != null) {
+      groups = groupRepository
+          .findAllByIdAccountAndIdGroupParent(accountService.getLoggedAccount().getId(),
+              idGroupParent);
       group.setIdGroupParent(idGroupParent);
-    }else{
-      groups = groupRepository.findAllByIdAccountAndIdGroupParentNull(accountService.getLoggedAccount().getId());
+    } else {
+      groups = groupRepository
+          .findAllByIdAccountAndIdGroupParentNull(accountService.getLoggedAccount().getId());
     }
 
     groups.sort(Comparator.comparing(Group::getPosition));
-    int i=0;
+    int i = 0;
     for (Group gr : groups) {
       gr.setPosition(i);
       i++;
@@ -105,25 +108,25 @@ public class GroupService implements GroupServiceI, StandardizeService<Group> {
   }
 
   @Override
-  public int changePositionWithChangeIdGroupParent(int idGroup, Integer newIdGroupParent){
-    if(newIdGroupParent != null && idGroup == newIdGroupParent){
+  public int changePositionWithChangeIdGroupParent(int idGroup, Integer newIdGroupParent) {
+    if (newIdGroupParent != null && idGroup == newIdGroupParent) {
       return -1;
     }
 
     Group group = groupRepository.findGroupById(idGroup);
-    if(group == null) {
+    if (group == null) {
       return -1;
     }
 
     Integer idGroupParent = group.getIdGroupParent();
 
-    if(idGroupParent == newIdGroupParent){
+    if (idGroupParent == newIdGroupParent) {
       return -1;
     }
     group.setIdGroupParent(newIdGroupParent);
     Account loggedAccount = accountService.getLoggedAccount();
     int nextOrder = groupRepository.getNextPosition(loggedAccount.getId());
-    if(newIdGroupParent != null) {
+    if (newIdGroupParent != null) {
       nextOrder = groupRepository
           .getNextPositionWithParent(loggedAccount.getId(), newIdGroupParent);
     }
@@ -132,7 +135,7 @@ public class GroupService implements GroupServiceI, StandardizeService<Group> {
 
     List<Group> groups = groupRepository.findAllByIdGroupParentOrderByPosition(idGroupParent);
     int i = 0;
-    for (Group gr:groups) {
+    for (Group gr : groups) {
       gr.setPosition(i);
       i++;
     }
@@ -148,23 +151,26 @@ public class GroupService implements GroupServiceI, StandardizeService<Group> {
       return false;
     }
 
-    if(group.getIdGroupParent() != newIdGroupParent){
+    if (group.getIdGroupParent() != newIdGroupParent) {
       this.changePositionWithChangeIdGroupParent(idGroup, newIdGroupParent);
     }
 
     List<Group> groups;
-    if(newIdGroupParent != null){
-      groups = groupRepository.findAllByIdAccountAndIdGroupParent(accountService.getLoggedAccount().getId(), newIdGroupParent);
+    if (newIdGroupParent != null) {
+      groups = groupRepository
+          .findAllByIdAccountAndIdGroupParent(accountService.getLoggedAccount().getId(),
+              newIdGroupParent);
       group.setIdGroupParent(newIdGroupParent);
-    }else{
-      groups = groupRepository.findAllByIdAccountAndIdGroupParentNull(accountService.getLoggedAccount().getId());
+    } else {
+      groups = groupRepository
+          .findAllByIdAccountAndIdGroupParentNull(accountService.getLoggedAccount().getId());
     }
 
     groups.sort(Comparator.comparing(Group::getPosition));
     groups.remove(group.getPosition());
     group.setPosition(newPosition);
     groups.add(group.getPosition(), group);
-    int i=0;
+    int i = 0;
     for (Group gr : groups) {
       gr.setPosition(i);
       i++;
@@ -174,6 +180,28 @@ public class GroupService implements GroupServiceI, StandardizeService<Group> {
     return true;
   }
 
+  public boolean joinToGroup(Group group) {
+    if(!group.isPossibleToJoin()){
+      return false;
+    }
+
+    AccessRole accessRole = accessRoleRepository.getAccessRoleByRole(AccessRole.ROLE_STUDENT);
+    Account loggedAccount = accountService.getLoggedAccount();
+    boolean accepted = !group.isAcceptance();
+
+    GroupMember groupMember = new GroupMember();
+    groupMember.setAccount(loggedAccount);
+    groupMember.setGroup(group);
+    groupMember.setAccessRole(accessRole);
+    groupMember.setAccepted(accepted);
+
+    GroupMember newGroupMember = groupMemberRepository.save(groupMember);
+    if(newGroupMember == null){
+      return false;
+    }
+
+    return true;
+  }
 
 
 }

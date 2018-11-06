@@ -12,6 +12,7 @@ import com.goode.repository.GroupMemberRepository;
 import com.goode.service.AccountService;
 import com.goode.service.GroupMemberService;
 import com.goode.service.GroupService;
+import com.goode.validator.GroupMemberValidator;
 import com.goode.validator.GroupValidator;
 import java.security.Principal;
 import java.util.Map;
@@ -46,6 +47,9 @@ public class GroupController extends BaseController<Group, GroupService> {
 
   @Autowired
   AccountService accountService;
+
+  @Autowired
+  GroupMemberValidator groupMemberValidator;
 
   @PostMapping("/addNew")
   @PreAuthorize("hasAnyRole('"+ AccessRole.ROLE_ADMIN +"', '"+ AccessRole.ROLE_TEACHER +"')")
@@ -107,11 +111,9 @@ public class GroupController extends BaseController<Group, GroupService> {
       group.setIdGroupParent(currentGroup.getIdGroupParent());
     }
 
-    GroupMember groupMember = groupMemberService.getGroupMemberByGroupAndAccount(group, accountService.getLoggedAccount());
-    if(groupMember == null || (!groupMember.getAccessRole().getRole().equals(AccessRole.ROLE_ADMIN)
-        && !groupMember.getAccessRole().getRole().equals(AccessRole.ROLE_TEACHER))){
-      return ErrorMessage
-          .send(Language.getMessage("error.group.edit.noPermissions"), HttpStatus.BAD_REQUEST);
+    ErrorCode errorCode = new ErrorCode();
+    if (!groupMemberValidator.validatePermissionToGroup(group, false, errorCode)) {
+      return ErrorMessage.send(Language.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
     }
 
     if(groupService.getGroupByName(group.getName()) != null && !currentGroup.getName()
@@ -120,7 +122,6 @@ public class GroupController extends BaseController<Group, GroupService> {
           .send(Language.getMessage("error.group.alreadyExists"), HttpStatus.BAD_REQUEST);
     }
 
-    ErrorCode errorCode = new ErrorCode();
     if (group.getIdGroupParent() != null && !groupValidator.validateIdGroupParent(group.getIdGroupParent(), errorCode)) {
       return ErrorMessage.send(Language.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
     }
@@ -161,11 +162,9 @@ public class GroupController extends BaseController<Group, GroupService> {
           .send(Language.getMessage("error.group.changePosition.badPosition"), HttpStatus.BAD_REQUEST);
     }
 
-    GroupMember groupMember = groupMemberService.getGroupMemberByGroupAndAccount(group, accountService.getLoggedAccount());
-    if(groupMember == null || (!groupMember.getAccessRole().getRole().equals(AccessRole.ROLE_ADMIN)
-        && !groupMember.getAccessRole().getRole().equals(AccessRole.ROLE_TEACHER))){
-      return ErrorMessage
-          .send(Language.getMessage("error.group.changePosition.noPermissions"), HttpStatus.BAD_REQUEST);
+    ErrorCode errorCode = new ErrorCode();
+    if (!groupMemberValidator.validatePermissionToGroup(group, false, errorCode)) {
+      return ErrorMessage.send(Language.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
     }
 
     boolean changed = groupService.changePosition(group.getId(), newPosition, newIdGroupParent);
@@ -187,15 +186,44 @@ public class GroupController extends BaseController<Group, GroupService> {
           .send(Language.getMessage("error.group.badId"), HttpStatus.BAD_REQUEST);
     }
 
-    GroupMember groupMember = groupMemberService.getGroupMemberByGroupAndAccount(group, accountService.getLoggedAccount());
-    if(groupMember == null || !groupMember.getAccessRole().getRole().equals(AccessRole.ROLE_ADMIN)){
-      return ErrorMessage
-          .send(Language.getMessage("error.group.delete.noPermissions"), HttpStatus.BAD_REQUEST);
+    ErrorCode errorCode = new ErrorCode();
+    if (!groupMemberValidator.validatePermissionToGroup(group, true, errorCode)) {
+      return ErrorMessage.send(Language.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
     }
 
     groupService.delete(group);
 
     return new ResponseEntity<>(null, HttpStatus.OK);
   }
+
+  @PostMapping("/{id}/join")
+  @PreAuthorize("hasAnyRole('"+ AccessRole.ROLE_ADMIN +"', '"+ AccessRole.ROLE_TEACHER +"', '"+ AccessRole.ROLE_STUDENT +"')")
+  public ResponseEntity<?> joinToGroup(@PathVariable("id") int id) {
+
+    Group group = groupService.getGroupById(id);
+    if(group == null){
+      return ErrorMessage
+          .send(Language.getMessage("error.group.badId"), HttpStatus.BAD_REQUEST);
+    }
+
+    ErrorCode errorCode = new ErrorCode();
+    if (!groupMemberValidator.validateJoinToGroup(group, errorCode)) {
+      return ErrorMessage.send(Language.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
+    }
+
+    if(!groupService.joinToGroup(group)){
+      return ErrorMessage
+          .send(Language.getMessage("error.group.joinToGroup.internalError"), HttpStatus.BAD_REQUEST);
+    }
+
+    if(group.isAcceptance()){
+      return ErrorMessage
+          .send(Language.getMessage("group.joinToGroup.needAcceptance"), HttpStatus.BAD_REQUEST);
+    }
+
+    return new ResponseEntity<>(null, HttpStatus.OK);
+  }
+
+
 
 }
