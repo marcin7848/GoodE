@@ -5,12 +5,10 @@ import com.goode.business.AccessRole;
 import com.goode.business.Account;
 import com.goode.business.Group;
 import com.goode.business.GroupMember;
-import com.goode.repository.AccountRepository;
 import com.goode.repository.GroupMemberRepository;
 import com.goode.repository.GroupRepository;
 import com.goode.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -41,7 +39,7 @@ public class GroupValidator extends BaseValidator {
       return false;
     }
 
-    GroupMember groupMember = groupMemberRepository.getGroupMemberByGroupAndAccount(group, loggedAccount);
+    GroupMember groupMember = groupMemberRepository.findGroupMemberByGroupAndAccount(group, loggedAccount);
     AccessRole accessRole = groupMember.getAccessRole();
 
     if(!accessRole.getRole().equals(AccessRole.ROLE_ADMIN) && !accessRole.getRole()

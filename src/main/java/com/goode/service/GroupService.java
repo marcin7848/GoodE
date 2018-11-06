@@ -10,6 +10,7 @@ import com.goode.repository.GroupMemberRepository;
 import com.goode.repository.GroupRepository;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,11 @@ public class GroupService implements GroupServiceI, StandardizeService<Group> {
   @Override
   public Group getGroupByName(String name){
     return groupRepository.findGroupByName(name);
+  }
+
+  @Override
+  public Group getGroupById(int id){
+    return groupRepository.findGroupById(id);
   }
 
   @Override
@@ -67,7 +73,47 @@ public class GroupService implements GroupServiceI, StandardizeService<Group> {
 
   @Override
   public Group edit(Group group){
-    return group;
+    Group editedGroup = groupRepository.save(group);
+    if (editedGroup == null) {
+      return null;
+    }
+    return editedGroup;
+  }
+
+  public int changePositionWithChangeIdGroupParent(int id, Integer newIdGroupParent){
+    if(newIdGroupParent != null && id == newIdGroupParent){
+      return -1;
+    }
+
+    Group group = groupRepository.findGroupById(id);
+    if(group == null) {
+      return -1;
+    }
+
+    Integer idGroupParent = group.getIdGroupParent();
+
+    if(idGroupParent == newIdGroupParent){
+      return -1;
+    }
+    group.setIdGroupParent(newIdGroupParent);
+    Account loggedAccount = accountService.getLoggedAccount();
+    int nextOrder = groupRepository.getNextPosition(loggedAccount.getId());
+    if(newIdGroupParent != null) {
+      nextOrder = groupRepository
+          .getNextPositionWithParent(loggedAccount.getId(), newIdGroupParent);
+    }
+    group.setPosition(nextOrder);
+    groupRepository.save(group);
+
+    List<Group> groups = groupRepository.findAllByIdGroupParentOrderByPosition(idGroupParent);
+    int i = 0;
+    for (Group gr:groups) {
+      gr.setPosition(i);
+      i++;
+    }
+
+    groupRepository.saveAll(groups);
+    return nextOrder;
   }
 
 }

@@ -7,6 +7,6 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface GroupMemberRepository extends CrudRepository<GroupMember, Long> {
 
-  GroupMember getGroupMemberByGroupAndAccount(Group group, Account account);
+  GroupMember findGroupMemberByGroupAndAccount(Group group, Account account);
 
 }
