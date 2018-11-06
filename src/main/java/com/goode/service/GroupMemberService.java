@@ -4,6 +4,7 @@ import com.goode.business.Account;
 import com.goode.business.Group;
 import com.goode.business.GroupMember;
 import com.goode.repository.GroupMemberRepository;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,5 +19,9 @@ public class GroupMemberService implements GroupMemberServiceI {
     return groupMemberRepository.findGroupMemberByGroupAndAccount(group, account);
   }
 
+  @Override
+  public List<GroupMember> getGroupMembersByAccount(Account account){
+    return groupMemberRepository.findGroupMembersByAccount(account);
+  }
 
 }

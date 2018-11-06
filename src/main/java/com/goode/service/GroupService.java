@@ -9,6 +9,8 @@ import com.goode.repository.AccountRepository;
 import com.goode.repository.GroupMemberRepository;
 import com.goode.repository.GroupRepository;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,12 +82,13 @@ public class GroupService implements GroupServiceI, StandardizeService<Group> {
     return editedGroup;
   }
 
-  public int changePositionWithChangeIdGroupParent(int id, Integer newIdGroupParent){
-    if(newIdGroupParent != null && id == newIdGroupParent){
+  @Override
+  public int changePositionWithChangeIdGroupParent(int idGroup, Integer newIdGroupParent){
+    if(newIdGroupParent != null && idGroup == newIdGroupParent){
       return -1;
     }
 
-    Group group = groupRepository.findGroupById(id);
+    Group group = groupRepository.findGroupById(idGroup);
     if(group == null) {
       return -1;
     }
@@ -115,5 +118,39 @@ public class GroupService implements GroupServiceI, StandardizeService<Group> {
     groupRepository.saveAll(groups);
     return nextOrder;
   }
+
+  public boolean changePosition(int idGroup, int newPosition, Integer newIdGroupParent) {
+    Group group = groupRepository.findGroupById(idGroup);
+    if (group == null) {
+      return false;
+    }
+
+
+    if(group.getIdGroupParent() != newIdGroupParent){
+      this.changePositionWithChangeIdGroupParent(idGroup, newIdGroupParent);
+    }
+
+    List<Group> groups;
+    if(newIdGroupParent != null){
+      groups = groupRepository.findAllByIdAccountAndIdGroupParent(accountService.getLoggedAccount().getId(), newIdGroupParent);
+      group.setIdGroupParent(newIdGroupParent);
+    }else{
+      groups = groupRepository.findAllByIdAccountAndIdGroupParentNull(accountService.getLoggedAccount().getId());
+    }
+
+    groups.sort(Comparator.comparing(Group::getPosition));
+    groups.remove(group.getPosition());
+    group.setPosition(newPosition);
+    groups.add(group.getPosition(), group);
+    int i=0;
+    for (Group gr : groups) {
+      gr.setPosition(i);
+      i++;
+    }
+
+    groupRepository.saveAll(groups);
+    return true;
+  }
+
 
 }

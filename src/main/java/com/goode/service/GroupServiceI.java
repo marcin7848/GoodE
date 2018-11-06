@@ -6,4 +6,5 @@ public interface GroupServiceI {
 
   Group getGroupByName(String name);
   Group getGroupById(int id);
+  int changePositionWithChangeIdGroupParent(int id, Integer newIdGroupParent);
 }

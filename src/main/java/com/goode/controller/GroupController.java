@@ -15,6 +15,7 @@ import com.goode.service.GroupService;
 import com.goode.validator.GroupValidator;
 import java.security.Principal;
 import java.util.Map;
+import javax.persistence.criteria.CriteriaBuilder.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -95,7 +96,7 @@ public class GroupController extends BaseController<Group, GroupService> {
     Group currentGroup = groupService.getGroupById(id);
     if(currentGroup == null){
       return ErrorMessage
-          .send(Language.getMessage("error.group.edit.badId"), HttpStatus.BAD_REQUEST);
+          .send(Language.getMessage("error.group.badId"), HttpStatus.BAD_REQUEST);
     }
 
     group.setId(currentGroup.getId());
@@ -139,5 +140,40 @@ public class GroupController extends BaseController<Group, GroupService> {
     return new ResponseEntity<>(null, HttpStatus.OK);
   }
 
+  @PatchMapping("/{id}/changePosition/{newPosition}")
+  @PreAuthorize("hasAnyRole('"+ AccessRole.ROLE_ADMIN +"', '"+ AccessRole.ROLE_TEACHER +"')")
+  public ResponseEntity<?> changePosition(@PathVariable("id") int id,
+      @PathVariable("newPosition") int newPosition,
+      @RequestBody Map<String, Object> newIdGroupParentObj) {
+
+    //TODO: dodać implementację w angularze, pamiętać o przekazywaniu newIdGroupParent
+    Integer newIdGroupParent = (Integer) newIdGroupParentObj.get("newIdGroupParent");
+
+    Group group = groupService.getGroupById(id);
+    if(group == null){
+      return ErrorMessage
+          .send(Language.getMessage("error.group.badId"), HttpStatus.BAD_REQUEST);
+    }
+
+    if(newPosition < 0){
+      return ErrorMessage
+          .send(Language.getMessage("error.group.changePosition.badPosition"), HttpStatus.BAD_REQUEST);
+    }
+
+    GroupMember groupMember = groupMemberService.getGroupMemberByGroupAndAccount(group, accountService.getLoggedAccount());
+    if(groupMember == null || (!groupMember.getAccessRole().getRole().equals(AccessRole.ROLE_ADMIN)
+        && !groupMember.getAccessRole().getRole().equals(AccessRole.ROLE_TEACHER))){
+      return ErrorMessage
+          .send(Language.getMessage("error.group.changePosition.noPermissions"), HttpStatus.BAD_REQUEST);
+    }
+
+    boolean changed = groupService.changePosition(group.getId(), newPosition, newIdGroupParent);
+    if(!changed){
+      return ErrorMessage
+          .send(Language.getMessage("error.group.notChangedPosition"), HttpStatus.BAD_REQUEST);
+    }
+
+    return new ResponseEntity<>(null, HttpStatus.OK);
+  }
 
 }
