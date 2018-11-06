@@ -110,6 +110,10 @@ public class AccountService implements AccountServiceI, StandardizeService<Accou
     return editedAccount;
   }
 
+  @Override
+  public void delete(Account account){
+  }
+
   private String hashPassword(String password) {
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     return passwordEncoder.encode(password);

@@ -22,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -172,6 +173,27 @@ public class GroupController extends BaseController<Group, GroupService> {
       return ErrorMessage
           .send(Language.getMessage("error.group.notChangedPosition"), HttpStatus.BAD_REQUEST);
     }
+
+    return new ResponseEntity<>(null, HttpStatus.OK);
+  }
+
+  @DeleteMapping("/{id}/delete")
+  @PreAuthorize("hasAnyRole('"+ AccessRole.ROLE_ADMIN +"', '"+ AccessRole.ROLE_TEACHER +"')")
+  public ResponseEntity<?> delete(@PathVariable("id") int id) {
+
+    Group group = groupService.getGroupById(id);
+    if(group == null){
+      return ErrorMessage
+          .send(Language.getMessage("error.group.badId"), HttpStatus.BAD_REQUEST);
+    }
+
+    GroupMember groupMember = groupMemberService.getGroupMemberByGroupAndAccount(group, accountService.getLoggedAccount());
+    if(groupMember == null || !groupMember.getAccessRole().getRole().equals(AccessRole.ROLE_ADMIN)){
+      return ErrorMessage
+          .send(Language.getMessage("error.group.delete.noPermissions"), HttpStatus.BAD_REQUEST);
+    }
+
+    groupService.delete(group);
 
     return new ResponseEntity<>(null, HttpStatus.OK);
   }

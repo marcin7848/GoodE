@@ -83,6 +83,28 @@ public class GroupService implements GroupServiceI, StandardizeService<Group> {
   }
 
   @Override
+  public void delete(Group group){
+    Integer idGroupParent = group.getIdGroupParent();
+    groupRepository.delete(group);
+    List<Group> groups;
+    if(idGroupParent != null){
+      groups = groupRepository.findAllByIdAccountAndIdGroupParent(accountService.getLoggedAccount().getId(), idGroupParent);
+      group.setIdGroupParent(idGroupParent);
+    }else{
+      groups = groupRepository.findAllByIdAccountAndIdGroupParentNull(accountService.getLoggedAccount().getId());
+    }
+
+    groups.sort(Comparator.comparing(Group::getPosition));
+    int i=0;
+    for (Group gr : groups) {
+      gr.setPosition(i);
+      i++;
+    }
+
+    groupRepository.saveAll(groups);
+  }
+
+  @Override
   public int changePositionWithChangeIdGroupParent(int idGroup, Integer newIdGroupParent){
     if(newIdGroupParent != null && idGroup == newIdGroupParent){
       return -1;
@@ -119,12 +141,12 @@ public class GroupService implements GroupServiceI, StandardizeService<Group> {
     return nextOrder;
   }
 
+  @Override
   public boolean changePosition(int idGroup, int newPosition, Integer newIdGroupParent) {
     Group group = groupRepository.findGroupById(idGroup);
     if (group == null) {
       return false;
     }
-
 
     if(group.getIdGroupParent() != newIdGroupParent){
       this.changePositionWithChangeIdGroupParent(idGroup, newIdGroupParent);
@@ -151,6 +173,7 @@ public class GroupService implements GroupServiceI, StandardizeService<Group> {
     groupRepository.saveAll(groups);
     return true;
   }
+
 
 
 }
