@@ -5,6 +5,7 @@ import com.goode.business.Account;
 import com.goode.business.Group;
 import com.goode.business.GroupMember;
 import com.goode.repository.AccessRoleRepository;
+import com.goode.repository.AccountRepository;
 import com.goode.repository.GroupMemberRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class GroupMemberService implements GroupMemberServiceI {
 
   @Autowired
   AccessRoleRepository accessRoleRepository;
+
+  @Autowired
+  AccountRepository accountRepository;
 
   @Override
   public GroupMember getGroupMemberByGroupAndAccount(Group group, Account account){
@@ -66,5 +70,27 @@ public class GroupMemberService implements GroupMemberServiceI {
 
     return true;
   }
+
+  @Override
+  public void removeAccountTeacherIfNotTeacherForAnyGroup(Account account){
+    AccessRole accessRoleAdmin = accessRoleRepository.getAccessRoleByRole(AccessRole.ROLE_ADMIN);
+    AccessRole accessRoleTeacher = accessRoleRepository.getAccessRoleByRole(AccessRole.ROLE_TEACHER);
+    List<GroupMember> groupMembers = groupMemberRepository.findGroupMemberByAccountWithAdminAndTeacherRights(account.getId(), accessRoleAdmin.getId(), accessRoleTeacher.getId());
+
+    if(groupMembers.isEmpty() && !account.getAccessRole().getRole().equals(AccessRole.ROLE_ADMIN)){
+      AccessRole accessRoleStudent = accessRoleRepository.getAccessRoleByRole(AccessRole.ROLE_STUDENT);
+      account.setAccessRole(accessRoleStudent);
+      accountRepository.save(account);
+    }
+  }
+
+  @Override
+  public boolean leaveGroup(GroupMember groupMember){
+    Account account = groupMember.getAccount();
+    groupMemberRepository.delete(groupMember);
+    this.removeAccountTeacherIfNotTeacherForAnyGroup(account);
+    return true;
+  }
+
 
 }

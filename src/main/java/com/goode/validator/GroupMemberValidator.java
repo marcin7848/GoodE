@@ -60,11 +60,32 @@ public class GroupMemberValidator extends BaseValidator {
     }
 
     if (!this.validatePermissionToGroup(group, true, errorCode)) {
+      errorCode.rejectValue("accessRole", errorCode.getCode());
       return false;
     }
 
     if(!newAccessRole.equals(AccessRole.ROLE_TEACHER) && !newAccessRole.equals(AccessRole.ROLE_STUDENT)){
       errorCode.rejectValue("accessRole", "error.groupMember.changeAccessRole.badAccessRole");
+      return false;
+    }
+
+    return true;
+  }
+
+  public boolean validateLeaveGroup(Group group, ErrorCode errorCode){
+    if(group == null){
+      errorCode.rejectValue("group", "error.group.badId");
+      return false;
+    }
+
+    GroupMember groupMember = groupMemberService.getGroupMemberByGroupAndAccount(group, accountService.getLoggedAccount());
+    if(groupMember == null){
+      errorCode.rejectValue("groupMember", "error.groupMember.leave.badMember");
+      return false;
+    }
+
+    if(groupMember.getAccessRole().getRole().equals(AccessRole.ROLE_ADMIN)){
+      errorCode.rejectValue("accessRole", "error.groupMember.leave.adminCannotLeave");
       return false;
     }
 

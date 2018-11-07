@@ -274,7 +274,28 @@ public class GroupController extends BaseController<Group, GroupService> {
 
     if(!groupMemberService.changeAccessRoleToGroup(groupMember, newAccessRole)){
       return ErrorMessage
-          .send(Language.getMessage("error.group.changeAccessRole.internalError"), HttpStatus.INTERNAL_SERVER_ERROR);
+          .send(Language.getMessage("error.groupMember.changeAccessRole.internalError"), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    return new ResponseEntity<>(null, HttpStatus.OK);
+  }
+
+  @DeleteMapping("/{id}/leave")
+  @PreAuthorize("hasAnyRole('"+ AccessRole.ROLE_ADMIN +"', '"+ AccessRole.ROLE_TEACHER +"', '"+ AccessRole.ROLE_STUDENT +"')")
+  public ResponseEntity<?> leaveGroup(@PathVariable("id") int id) {
+
+    Group group = groupService.getGroupById(id);
+
+    ErrorCode errorCode = new ErrorCode();
+    if(!groupMemberValidator.validateLeaveGroup(group, errorCode)){
+      return ErrorMessage.send(Language.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
+    }
+
+    GroupMember groupMember = groupMemberService.getGroupMemberByGroupAndAccount(group, accountService.getLoggedAccount());
+
+    if(!groupMemberService.leaveGroup(groupMember)){
+      return ErrorMessage
+          .send(Language.getMessage("error.groupMember.leave.internalError"), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     return new ResponseEntity<>(null, HttpStatus.OK);
