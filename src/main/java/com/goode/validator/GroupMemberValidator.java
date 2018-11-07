@@ -48,4 +48,27 @@ public class GroupMemberValidator extends BaseValidator {
     return true;
   }
 
+  public boolean validateChangeAccessRoleToGroup(Group group, GroupMember groupMember, String newAccessRole, ErrorCode errorCode){
+    if(group == null){
+      errorCode.rejectValue("group", "error.group.badId");
+      return false;
+    }
+
+    if(groupMember == null || groupMember.getGroup().getId() != group.getId()){
+      errorCode.rejectValue("groupMember", "error.groupMember.memberNotCorrect");
+      return false;
+    }
+
+    if (!this.validatePermissionToGroup(group, true, errorCode)) {
+      return false;
+    }
+
+    if(!newAccessRole.equals(AccessRole.ROLE_TEACHER) && !newAccessRole.equals(AccessRole.ROLE_STUDENT)){
+      errorCode.rejectValue("accessRole", "error.groupMember.changeAccessRole.badAccessRole");
+      return false;
+    }
+
+    return true;
+  }
+
 }

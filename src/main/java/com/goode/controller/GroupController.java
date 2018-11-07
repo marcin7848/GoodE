@@ -8,6 +8,7 @@ import com.goode.business.Account;
 import com.goode.business.Group;
 import com.goode.business.Group.AddNewValidation;
 import com.goode.business.GroupMember;
+import com.goode.repository.AccessRoleRepository;
 import com.goode.repository.GroupMemberRepository;
 import com.goode.service.AccountService;
 import com.goode.service.GroupMemberService;
@@ -51,6 +52,9 @@ public class GroupController extends BaseController<Group, GroupService> {
   @Autowired
   GroupMemberValidator groupMemberValidator;
 
+  @Autowired
+  AccessRoleRepository accessRoleRepository;
+
   @PostMapping("/addNew")
   @PreAuthorize("hasAnyRole('"+ AccessRole.ROLE_ADMIN +"')")
   public ResponseEntity<?> addNew(@Validated(AddNewValidation.class) @RequestBody Group group,
@@ -77,7 +81,7 @@ public class GroupController extends BaseController<Group, GroupService> {
     Group newGroup = groupService.addNew(group);
     if(newGroup == null){
       return ErrorMessage
-          .send(Language.getMessage("error.group.notCreated"), HttpStatus.BAD_REQUEST);
+          .send(Language.getMessage("error.group.notCreated"), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     return new ResponseEntity<>(null, HttpStatus.OK);
@@ -136,7 +140,7 @@ public class GroupController extends BaseController<Group, GroupService> {
     Group editedGroup = groupService.edit(group);
     if(editedGroup == null){
       return ErrorMessage
-          .send(Language.getMessage("error.group.notEdited"), HttpStatus.BAD_REQUEST);
+          .send(Language.getMessage("error.group.notEdited"), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     return new ResponseEntity<>(null, HttpStatus.OK);
@@ -170,7 +174,7 @@ public class GroupController extends BaseController<Group, GroupService> {
     boolean changed = groupService.changePosition(group.getId(), newPosition, newIdGroupParent);
     if(!changed){
       return ErrorMessage
-          .send(Language.getMessage("error.group.notChangedPosition"), HttpStatus.BAD_REQUEST);
+          .send(Language.getMessage("error.group.notChangedPosition"), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     return new ResponseEntity<>(null, HttpStatus.OK);
@@ -213,7 +217,7 @@ public class GroupController extends BaseController<Group, GroupService> {
 
     if(!groupService.joinToGroup(group)){
       return ErrorMessage
-          .send(Language.getMessage("error.group.joinToGroup.internalError"), HttpStatus.BAD_REQUEST);
+          .send(Language.getMessage("error.group.joinToGroup.internalError"), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     if(group.isAcceptance()){
@@ -224,10 +228,10 @@ public class GroupController extends BaseController<Group, GroupService> {
     return new ResponseEntity<>(null, HttpStatus.OK);
   }
 
-  @PatchMapping("/{id}/acceptMember/{idAccount}")
+  @PatchMapping("/{id}/member/{idGroupMember}/accept")
   @PreAuthorize("hasAnyRole('"+ AccessRole.ROLE_ADMIN +"', '"+ AccessRole.ROLE_TEACHER +"')")
   public ResponseEntity<?> acceptNewMember(@PathVariable("id") int id,
-      @PathVariable("idAccount") int idAccount) {
+      @PathVariable("idGroupMember") int idGroupMember) {
 
     Group group = groupService.getGroupById(id);
     if(group == null){
@@ -235,10 +239,10 @@ public class GroupController extends BaseController<Group, GroupService> {
           .send(Language.getMessage("error.group.badId"), HttpStatus.BAD_REQUEST);
     }
 
-    Account account = accountService.getAccountById(idAccount);
-    if(account == null){
+    GroupMember groupMember = groupMemberService.getGroupMemberById(idGroupMember);
+    if(groupMember == null || groupMember.getGroup().getId() != group.getId()){
       return ErrorMessage
-          .send(Language.getMessage("error.account.badId"), HttpStatus.BAD_REQUEST);
+          .send(Language.getMessage("error.groupMember.memberNotCorrect"), HttpStatus.BAD_REQUEST);
     }
 
     ErrorCode errorCode = new ErrorCode();
@@ -246,13 +250,34 @@ public class GroupController extends BaseController<Group, GroupService> {
       return ErrorMessage.send(Language.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
     }
 
-    if(!groupMemberService.acceptNewMember(group, account)){
+    if(!groupMemberService.acceptNewMember(groupMember)){
       return ErrorMessage
-          .send(Language.getMessage("error.group.accept.internalError"), HttpStatus.BAD_REQUEST);
+          .send(Language.getMessage("error.group.accept.internalError"), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     return new ResponseEntity<>(null, HttpStatus.OK);
   }
 
+  @PatchMapping("/{id}/member/{idGroupMember}/changeAccessRole/{newAccessRole}")
+  @PreAuthorize("hasAnyRole('"+ AccessRole.ROLE_ADMIN +"')")
+  public ResponseEntity<?> changeAccessRoleToGroup(@PathVariable("id") int id,
+      @PathVariable("idGroupMember") int idGroupMember,
+      @PathVariable("newAccessRole") String newAccessRole) {
+
+    Group group = groupService.getGroupById(id);
+    GroupMember groupMember = groupMemberService.getGroupMemberById(idGroupMember);
+
+    ErrorCode errorCode = new ErrorCode();
+    if(!groupMemberValidator.validateChangeAccessRoleToGroup(group, groupMember, newAccessRole, errorCode)){
+      return ErrorMessage.send(Language.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
+    }
+
+    if(!groupMemberService.changeAccessRoleToGroup(groupMember, newAccessRole)){
+      return ErrorMessage
+          .send(Language.getMessage("error.group.changeAccessRole.internalError"), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    return new ResponseEntity<>(null, HttpStatus.OK);
+  }
 
 }

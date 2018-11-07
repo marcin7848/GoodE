@@ -10,4 +10,5 @@ public interface GroupMemberRepository extends CrudRepository<GroupMember, Long>
 
   GroupMember findGroupMemberByGroupAndAccount(Group group, Account account);
   List<GroupMember> findGroupMembersByAccount(Account account);
+  GroupMember findGroupMemberById(int id);
 }

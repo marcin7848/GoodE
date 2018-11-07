@@ -51,8 +51,4 @@ public class GroupValidator extends BaseValidator {
     return true;
   }
 
-  public boolean validateAddNew(Group group, ErrorCode errorCode){
-    return false;
-  }
-
 }

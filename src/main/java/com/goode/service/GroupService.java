@@ -180,6 +180,7 @@ public class GroupService implements GroupServiceI, StandardizeService<Group> {
     return true;
   }
 
+  @Override
   public boolean joinToGroup(Group group) {
     if(!group.isPossibleToJoin()){
       return false;
@@ -202,6 +203,5 @@ public class GroupService implements GroupServiceI, StandardizeService<Group> {
 
     return true;
   }
-
 
 }
