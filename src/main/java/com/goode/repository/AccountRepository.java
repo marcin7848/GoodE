@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 public interface AccountRepository extends CrudRepository<Account, Long> {
 
   Account findAccountById(int id);
-  List<Account> findByUsernameOrEmail(String username, String email);
+  List<Account> findAccountByUsernameOrEmail(String username, String email);
   Account findAccountByEmail(String email);
   Account findAccountByUsername(String username);
 

@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,6 +33,11 @@ public class AccountService implements AccountServiceI, StandardizeService<Accou
   private ActivationCodeService activationCodeService;
 
   @Override
+  public Account getLoggedAccount() {
+    return this.getAccountByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+  }
+
+  @Override
   public Account getAccountByPrincipal(Principal principal) {
     if(principal != null)
       return accountRepository.findAccountByUsername(principal.getName());
@@ -45,7 +49,8 @@ public class AccountService implements AccountServiceI, StandardizeService<Accou
     return accountRepository.findAccountById(id_account);
   }
 
-  public List<AccessRole> getAllAccessRole(){
+  @Override
+  public Iterable<AccessRole> getAllAccessRole(){
     return accessRoleRepository.findAll();
   }
 
@@ -54,18 +59,23 @@ public class AccountService implements AccountServiceI, StandardizeService<Accou
     return accountRepository.findAccountByUsername(username);
   }
 
+  @Override
+  public List<Account> getAccountByUsernameOrEmail(String username, String email) {
+    return accountRepository.findAccountByUsernameOrEmail(username, email);
+  }
+
+  @Override
+  public Account getAccountByEmail(String email) {
+    return accountRepository.findAccountByEmail(email);
+  }
+
+  @Override
   public Iterable<Account> getAllAccounts(){
     return accountRepository.findAll();
   }
 
   @Override
   public Account addNew(Account account) {
-
-    if (!accountRepository.findByUsernameOrEmail(account.getUsername(), account.getEmail())
-        .isEmpty()) {
-      return null;
-    }
-
     account.setEnabled(false);
     account.setAccessRole(accessRoleRepository.getAccessRoleById(3));
     account.setCreationTime(new Timestamp(new Date().getTime()));
@@ -88,6 +98,20 @@ public class AccountService implements AccountServiceI, StandardizeService<Accou
     newAccount.setActivationCodes(listActivationCodes);
 
     return newAccount;
+  }
+
+  @Override
+  public Account edit(Account account) {
+    account.setPassword(this.hashPassword(account.getPassword()));
+    Account editedAccount = accountRepository.save(account);
+    if (editedAccount == null) {
+      return null;
+    }
+    return editedAccount;
+  }
+
+  @Override
+  public void delete(Account account){
   }
 
   private String hashPassword(String password) {
