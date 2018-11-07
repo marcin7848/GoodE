@@ -9,4 +9,5 @@ public interface GroupMemberServiceI {
 
   GroupMember getGroupMemberByGroupAndAccount(Group group, Account account);
   List<GroupMember> getGroupMembersByAccount(Account account);
+  boolean acceptNewMember(Group group, Account account);
 }

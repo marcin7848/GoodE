@@ -52,7 +52,7 @@ public class GroupController extends BaseController<Group, GroupService> {
   GroupMemberValidator groupMemberValidator;
 
   @PostMapping("/addNew")
-  @PreAuthorize("hasAnyRole('"+ AccessRole.ROLE_ADMIN +"', '"+ AccessRole.ROLE_TEACHER +"')")
+  @PreAuthorize("hasAnyRole('"+ AccessRole.ROLE_ADMIN +"')")
   public ResponseEntity<?> addNew(@Validated(AddNewValidation.class) @RequestBody Group group,
       BindingResult result){
     super.initializeService(groupService);
@@ -85,7 +85,7 @@ public class GroupController extends BaseController<Group, GroupService> {
 
 
   @PatchMapping("/{id}/edit")
-  @PreAuthorize("hasAnyRole('"+ AccessRole.ROLE_ADMIN +"', '"+ AccessRole.ROLE_TEACHER +"')")
+  @PreAuthorize("hasAnyRole('"+ AccessRole.ROLE_ADMIN +"')")
   public ResponseEntity<?> edit(@PathVariable("id") int id,
       @Validated(AddNewValidation.class) @RequestBody Group group,
       BindingResult result) {
@@ -112,7 +112,7 @@ public class GroupController extends BaseController<Group, GroupService> {
     }
 
     ErrorCode errorCode = new ErrorCode();
-    if (!groupMemberValidator.validatePermissionToGroup(group, false, errorCode)) {
+    if (!groupMemberValidator.validatePermissionToGroup(group, true, errorCode)) {
       return ErrorMessage.send(Language.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
     }
 
@@ -143,7 +143,7 @@ public class GroupController extends BaseController<Group, GroupService> {
   }
 
   @PatchMapping("/{id}/changePosition/{newPosition}")
-  @PreAuthorize("hasAnyRole('"+ AccessRole.ROLE_ADMIN +"', '"+ AccessRole.ROLE_TEACHER +"')")
+  @PreAuthorize("hasAnyRole('"+ AccessRole.ROLE_ADMIN +"')")
   public ResponseEntity<?> changePosition(@PathVariable("id") int id,
       @PathVariable("newPosition") int newPosition,
       @RequestBody Map<String, Object> newIdGroupParentObj) {
@@ -163,7 +163,7 @@ public class GroupController extends BaseController<Group, GroupService> {
     }
 
     ErrorCode errorCode = new ErrorCode();
-    if (!groupMemberValidator.validatePermissionToGroup(group, false, errorCode)) {
+    if (!groupMemberValidator.validatePermissionToGroup(group, true, errorCode)) {
       return ErrorMessage.send(Language.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
     }
 
@@ -177,7 +177,7 @@ public class GroupController extends BaseController<Group, GroupService> {
   }
 
   @DeleteMapping("/{id}/delete")
-  @PreAuthorize("hasAnyRole('"+ AccessRole.ROLE_ADMIN +"', '"+ AccessRole.ROLE_TEACHER +"')")
+  @PreAuthorize("hasAnyRole('"+ AccessRole.ROLE_ADMIN +"')")
   public ResponseEntity<?> delete(@PathVariable("id") int id) {
 
     Group group = groupService.getGroupById(id);
@@ -224,6 +224,35 @@ public class GroupController extends BaseController<Group, GroupService> {
     return new ResponseEntity<>(null, HttpStatus.OK);
   }
 
+  @PatchMapping("/{id}/acceptMember/{idAccount}")
+  @PreAuthorize("hasAnyRole('"+ AccessRole.ROLE_ADMIN +"', '"+ AccessRole.ROLE_TEACHER +"')")
+  public ResponseEntity<?> acceptNewMember(@PathVariable("id") int id,
+      @PathVariable("idAccount") int idAccount) {
+
+    Group group = groupService.getGroupById(id);
+    if(group == null){
+      return ErrorMessage
+          .send(Language.getMessage("error.group.badId"), HttpStatus.BAD_REQUEST);
+    }
+
+    Account account = accountService.getAccountById(idAccount);
+    if(account == null){
+      return ErrorMessage
+          .send(Language.getMessage("error.account.badId"), HttpStatus.BAD_REQUEST);
+    }
+
+    ErrorCode errorCode = new ErrorCode();
+    if (!groupMemberValidator.validatePermissionToGroup(group, false, errorCode)) {
+      return ErrorMessage.send(Language.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
+    }
+
+    if(!groupMemberService.acceptNewMember(group, account)){
+      return ErrorMessage
+          .send(Language.getMessage("error.group.accept.internalError"), HttpStatus.BAD_REQUEST);
+    }
+
+    return new ResponseEntity<>(null, HttpStatus.OK);
+  }
 
 
 }

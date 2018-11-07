@@ -24,4 +24,21 @@ public class GroupMemberService implements GroupMemberServiceI {
     return groupMemberRepository.findGroupMembersByAccount(account);
   }
 
+  @Override
+  public boolean acceptNewMember(Group group, Account account){
+    GroupMember groupMember = groupMemberRepository.findGroupMemberByGroupAndAccount(group, account);
+    if(groupMember == null){
+      return false;
+    }
+
+    groupMember.setAccepted(true);
+
+    groupMember = groupMemberRepository.save(groupMember);
+    if(groupMember == null){
+      return false;
+    }
+
+    return true;
+  }
+
 }
