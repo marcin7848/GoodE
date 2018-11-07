@@ -14,5 +14,5 @@ public interface GroupMemberServiceI {
   boolean acceptNewMember(GroupMember groupMember);
   boolean changeAccessRoleToGroup(GroupMember groupMember, String newAccessRole);
   void removeAccountTeacherIfNotTeacherForAnyGroup(Account account);
-  boolean leaveGroup(GroupMember groupMember);
+  boolean removeGroupMember(GroupMember groupMember);
 }

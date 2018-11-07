@@ -4,20 +4,16 @@ import com.goode.ErrorCode;
 import com.goode.ErrorMessage;
 import com.goode.Language;
 import com.goode.business.AccessRole;
-import com.goode.business.Account;
 import com.goode.business.Group;
 import com.goode.business.Group.AddNewValidation;
 import com.goode.business.GroupMember;
 import com.goode.repository.AccessRoleRepository;
-import com.goode.repository.GroupMemberRepository;
 import com.goode.service.AccountService;
 import com.goode.service.GroupMemberService;
 import com.goode.service.GroupService;
 import com.goode.validator.GroupMemberValidator;
 import com.goode.validator.GroupValidator;
-import java.security.Principal;
 import java.util.Map;
-import javax.persistence.criteria.CriteriaBuilder.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +21,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -293,9 +288,30 @@ public class GroupController extends BaseController<Group, GroupService> {
 
     GroupMember groupMember = groupMemberService.getGroupMemberByGroupAndAccount(group, accountService.getLoggedAccount());
 
-    if(!groupMemberService.leaveGroup(groupMember)){
+    if(!groupMemberService.removeGroupMember(groupMember)){
       return ErrorMessage
           .send(Language.getMessage("error.groupMember.leave.internalError"), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    return new ResponseEntity<>(null, HttpStatus.OK);
+  }
+
+  @DeleteMapping("/{id}/deleteGroupMember/{idGroupMember}")
+  @PreAuthorize("hasAnyRole('"+ AccessRole.ROLE_ADMIN +"', '"+ AccessRole.ROLE_TEACHER +"')")
+  public ResponseEntity<?> deleteGroupMember(@PathVariable("id") int id,
+      @PathVariable("idGroupMember") int idGroupMember) {
+
+    Group group = groupService.getGroupById(id);
+    GroupMember groupMember = groupMemberService.getGroupMemberById(idGroupMember);
+
+    ErrorCode errorCode = new ErrorCode();
+    if(!groupMemberValidator.validateDeleteGroupMember(group, groupMember, errorCode)){
+      return ErrorMessage.send(Language.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
+    }
+
+    if(!groupMemberService.removeGroupMember(groupMember)){
+      return ErrorMessage
+          .send(Language.getMessage("error.groupMember.deleteGroupMember.internalError"), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     return new ResponseEntity<>(null, HttpStatus.OK);

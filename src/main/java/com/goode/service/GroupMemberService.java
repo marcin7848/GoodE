@@ -85,7 +85,7 @@ public class GroupMemberService implements GroupMemberServiceI {
   }
 
   @Override
-  public boolean leaveGroup(GroupMember groupMember){
+  public boolean removeGroupMember(GroupMember groupMember){
     Account account = groupMember.getAccount();
     groupMemberRepository.delete(groupMember);
     this.removeAccountTeacherIfNotTeacherForAnyGroup(account);

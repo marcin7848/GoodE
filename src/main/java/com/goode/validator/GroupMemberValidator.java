@@ -4,6 +4,7 @@ import com.goode.ErrorCode;
 import com.goode.ErrorMessage;
 import com.goode.Language;
 import com.goode.business.AccessRole;
+import com.goode.business.Account;
 import com.goode.business.Group;
 import com.goode.business.GroupMember;
 import com.goode.service.AccountService;
@@ -88,6 +89,31 @@ public class GroupMemberValidator extends BaseValidator {
       errorCode.rejectValue("accessRole", "error.groupMember.leave.adminCannotLeave");
       return false;
     }
+
+    return true;
+  }
+
+  public boolean validateDeleteGroupMember(Group group, GroupMember groupMember, ErrorCode errorCode){
+    if(group == null) {
+      errorCode.rejectValue("group", "error.group.badId");
+      return false;
+    }
+
+    if(groupMember == null || group.getId() != groupMember.getGroup().getId()){
+      errorCode.rejectValue("groupMember", "error.groupMember.deleteMember.notBelong");
+      return false;
+    }
+
+    if(groupMember.getAccessRole().getRole().equals(AccessRole.ROLE_ADMIN)){
+      errorCode.rejectValue("accessRole", "error.groupMember.deleteMember.cannotDeleteAdmin");
+      return false;
+    }
+
+    if (!this.validatePermissionToGroup(group, false, errorCode)) {
+      errorCode.rejectValue("accessRole", errorCode.getCode());
+      return false;
+    }
+
 
     return true;
   }
