@@ -8,6 +8,7 @@ import {ResetPasswordRequestComponent} from "./component/account/reset-password-
 import {ResetPasswordComponent} from "./component/account/reset-password/reset-password.component";
 import {ChangeAccessRoleComponent} from "./component/account/change-access-role/change-access-role.component";
 import {EditAccountComponent} from "./component/account/edit-account/edit-account.component";
+import {GroupComponent} from "./component/group/group.component";
 
 const routes: Routes = [
   {path : '', component : HomeComponent},
@@ -21,6 +22,7 @@ const routes: Routes = [
   {path : 'account/resetPassword/:resetPasswordCode', component : ResetPasswordComponent},
   {path : 'account/changeAccessRole', component : ChangeAccessRoleComponent},
   {path : 'account/edit', component : EditAccountComponent},
+  {path : 'group', component : GroupComponent},
 ];
 
 export const routing = RouterModule.forRoot(routes);

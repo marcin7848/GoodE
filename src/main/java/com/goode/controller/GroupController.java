@@ -4,6 +4,7 @@ import com.goode.ErrorCode;
 import com.goode.ErrorMessage;
 import com.goode.Language;
 import com.goode.business.AccessRole;
+import com.goode.business.Account;
 import com.goode.business.Group;
 import com.goode.business.Group.AddNewValidation;
 import com.goode.business.GroupMember;
@@ -21,6 +22,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,6 +51,12 @@ public class GroupController extends BaseController<Group, GroupService> {
 
   @Autowired
   AccessRoleRepository accessRoleRepository;
+
+  @GetMapping("/getMyGroups")
+  @PreAuthorize("hasAnyRole('"+ AccessRole.ROLE_ADMIN +"', '"+ AccessRole.ROLE_TEACHER +"', '"+ AccessRole.ROLE_STUDENT +"')")
+  public ResponseEntity<?> getMyGroups(){
+    return new ResponseEntity<>(groupService.getMyGroups(), HttpStatus.OK);
+  }
 
   @PostMapping("/addNew")
   @PreAuthorize("hasAnyRole('"+ AccessRole.ROLE_ADMIN +"')")

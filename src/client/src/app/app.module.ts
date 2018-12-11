@@ -18,6 +18,9 @@ import { ResetPasswordRequestComponent } from './component/account/reset-passwor
 import { ResetPasswordComponent } from './component/account/reset-password/reset-password.component';
 import { ChangeAccessRoleComponent } from './component/account/change-access-role/change-access-role.component';
 import { EditAccountComponent } from './component/account/edit-account/edit-account.component';
+import {GroupService} from "./service/group/group.service";
+import { GroupComponent } from './component/group/group.component';
+import { AddNewGroupComponent } from './component/group/add-new-group/add-new-group.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +33,9 @@ import { EditAccountComponent } from './component/account/edit-account/edit-acco
     ResetPasswordRequestComponent,
     ResetPasswordComponent,
     ChangeAccessRoleComponent,
-    EditAccountComponent
+    EditAccountComponent,
+    GroupComponent,
+    AddNewGroupComponent
   ],
   imports: [
     routing,
@@ -47,6 +52,7 @@ import { EditAccountComponent } from './component/account/edit-account/edit-acco
   providers: [
     AccountService,
     CookieService,
+    GroupService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: Interceptor,

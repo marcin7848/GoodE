@@ -12,6 +12,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -40,6 +41,34 @@ public class GroupService implements GroupServiceI, StandardizeService<Group> {
   @Override
   public Group getGroupById(int id) {
     return groupRepository.findGroupById(id);
+  }
+
+  @Override
+  public List<Group> getMyGroups() {
+    Account loggedAccount = accountService.getLoggedAccount();
+    if(loggedAccount.getAccessRole().getRole().equals(AccessRole.ROLE_ADMIN)){
+      return groupRepository.getAllGroups();
+    }
+
+    List<Group> groupList = groupRepository.findAllByIdAccount(loggedAccount.getId());
+    List<Group> allGroups = new ArrayList<>(groupList);
+
+    for(Group group : groupList){
+      this.getOuterGroup(group, allGroups);
+    }
+
+    return new ArrayList<>(new LinkedHashSet<>(allGroups));
+  }
+
+  private void getOuterGroup(Group group, List<Group> resultListGroups){
+    if(group.getIdGroupParent() == null){
+      resultListGroups.add(group);
+    }
+    else{
+      Group outerGroup = groupRepository.findGroupById(group.getIdGroupParent());
+      resultListGroups.add(outerGroup);
+      this.getOuterGroup(outerGroup, resultListGroups);
+    }
   }
 
   @Override

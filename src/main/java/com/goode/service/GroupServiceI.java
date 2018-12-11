@@ -1,6 +1,7 @@
 package com.goode.service;
 
 import com.goode.business.Group;
+import java.util.List;
 
 public interface GroupServiceI {
 
@@ -9,4 +10,6 @@ public interface GroupServiceI {
   int changePositionWithChangeIdGroupParent(int id, Integer newIdGroupParent);
   boolean changePosition(int idGroup, int newPosition, Integer newIdGroupParent);
   boolean joinToGroup(Group group);
+  List<Group> getMyGroups();
+
 }
