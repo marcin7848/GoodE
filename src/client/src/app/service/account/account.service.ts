@@ -64,4 +64,9 @@ export class AccountService {
     return this.http.post<any>(this.baseUri + "/" + usernameV + "/changeAccessRole", body);
   }
 
+  public editAccount(emailV: string, passwordV: string, firstNameV: string, lastNameV: string, currentPasswordV: string){
+    const body = {email: emailV, password: passwordV, firstName: firstNameV, lastName: lastNameV, currentPassword: currentPasswordV};
+    return this.http.patch<any>(this.baseUri + "/edit", body);
+  }
+
 }

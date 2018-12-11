@@ -266,15 +266,19 @@ public class AccountController extends BaseController<Account, AccountService> {
     return new ResponseEntity<>(accountService.getAllAccessRole(), HttpStatus.OK);
   }
 
-  @PatchMapping("/{id}/edit")
+  @PatchMapping("/edit")
   @PreAuthorize("hasAnyRole('"+ AccessRole.ROLE_ADMIN +"', '"+ AccessRole.ROLE_TEACHER +"', '"+ AccessRole.ROLE_STUDENT +"')")
   public ResponseEntity<?> edit(HttpServletRequest request,
-      @PathVariable("id") int id,
       @RequestBody Map<String, Object> accountObj) {
     super.initializeService(accountService);
 
     String password = (String) accountObj.get("password");
     String currentPassword = (String) accountObj.get("currentPassword");
+
+    if(StringUtils.isEmpty(currentPassword)){
+      return ErrorMessage
+          .send(Language.getMessage("error.account.edit.currentPasswordEmpty"), HttpStatus.BAD_REQUEST);
+    }
 
     Account account = new Account();
     account.setEmail((String) accountObj.get("email"));
@@ -290,10 +294,6 @@ public class AccountController extends BaseController<Account, AccountService> {
     }
 
     Account loggedAccount = accountService.getLoggedAccount();
-    if(loggedAccount.getId() != id) {
-      return ErrorMessage
-          .send(Language.getMessage("error.account.edit.wrongIdAccount"), HttpStatus.BAD_REQUEST);
-    }
 
     if(!BCrypt.checkpw(currentPassword, loggedAccount.getPassword())) {
       return ErrorMessage
