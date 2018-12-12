@@ -47,7 +47,16 @@ public class GroupService implements GroupServiceI, StandardizeService<Group> {
   public List<Group> getMyGroups() {
     Account loggedAccount = accountService.getLoggedAccount();
     if(loggedAccount.getAccessRole().getRole().equals(AccessRole.ROLE_ADMIN)){
-      return groupRepository.getAllGroups();
+      List<Group> allGroupsAdmin = groupRepository.getAllGroups();
+
+      for(int i=0; i < allGroupsAdmin.size(); i++){
+        List<GroupMember> groupMember = new ArrayList<>();
+        groupMember.add(groupMemberRepository.findGroupMemberByGroupAndAccount(allGroupsAdmin.get(i), loggedAccount));
+        allGroupsAdmin.get(i).setGroupMembers(groupMember);
+        allGroupsAdmin.get(i).setPassword("");
+      }
+
+      return allGroupsAdmin;
     }
 
     List<Group> groupList = groupRepository.findAllByIdAccount(loggedAccount.getId());
@@ -57,7 +66,16 @@ public class GroupService implements GroupServiceI, StandardizeService<Group> {
       this.getOuterGroup(group, allGroups);
     }
 
-    return new ArrayList<>(new LinkedHashSet<>(allGroups));
+    allGroups = new ArrayList<>(new LinkedHashSet<>(allGroups));
+
+    for(int i=0; i < allGroups.size(); i++){
+      allGroups.get(i).setPassword("");
+      List<GroupMember> groupMember = new ArrayList<>();
+      groupMember.add(groupMemberRepository.findGroupMemberByGroupAndAccount(allGroups.get(i), loggedAccount));
+      allGroups.get(i).setGroupMembers(groupMember);
+    }
+
+    return allGroups;
   }
 
   private void getOuterGroup(Group group, List<Group> resultListGroups){

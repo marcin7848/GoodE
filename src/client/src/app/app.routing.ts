@@ -9,6 +9,7 @@ import {ResetPasswordComponent} from "./component/account/reset-password/reset-p
 import {ChangeAccessRoleComponent} from "./component/account/change-access-role/change-access-role.component";
 import {EditAccountComponent} from "./component/account/edit-account/edit-account.component";
 import {GroupComponent} from "./component/group/group.component";
+import {AddNewGroupComponent} from "./component/group/add-new-group/add-new-group.component";
 
 const routes: Routes = [
   {path : '', component : HomeComponent},
@@ -23,6 +24,7 @@ const routes: Routes = [
   {path : 'account/changeAccessRole', component : ChangeAccessRoleComponent},
   {path : 'account/edit', component : EditAccountComponent},
   {path : 'group', component : GroupComponent},
+  {path : 'group/addNew', component : AddNewGroupComponent},
 ];
 
 export const routing = RouterModule.forRoot(routes);

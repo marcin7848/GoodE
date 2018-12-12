@@ -1,3 +1,18 @@
 <p>
-  <a routerLink="/addNew">Add New Group</a>
+  <a routerLink="/group/addNew">Add New Group</a>
 </p>
+<br />
+<h2>Groups</h2>
+<form [formGroup]="groupsForm">
+  <ul>
+    <li>Punkt pierwszy</li>
+  </ul>
+  </table>
+    <option value="null">-</option>
+    <option *ngFor="let listGroups of listOfGroups" value="{{listGroups.id}}">{{listGroups.name}}</option>
+  </select><br/>-->
+
+  <button class="btn btn-primary">Edit</button>
+  <br/>
+  Errors: {{message}}
+</form>

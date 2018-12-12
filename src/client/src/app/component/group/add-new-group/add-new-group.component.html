@@ -6,10 +6,10 @@
   Possible To Join: <input type="checkbox" formControlName="possibleToJoin" class="form-control"/><br/>
   Acceptance: <input type="checkbox" formControlName="acceptance" class="form-control"/><br/>
   Hidden: <input type="checkbox" formControlName="hidden" class="form-control"/><br/>
-  Id group parent:
-  <select [(ngModel)]="idGroupParent">
-    <option [ngValue]="null">-</option>
-    <!--<option *ngFor="let c of countries" [ngValue]="c">{{c.name}}</option>-->
+  Parent group:
+  <select formControlName="idGroupParent">
+    <option value="null">-</option>
+    <option *ngFor="let listGroups of listOfGroups" value="{{listGroups.id}}">{{listGroups.name}}</option>
   </select><br/>
 
   <button class="btn btn-primary">Add new group</button>
