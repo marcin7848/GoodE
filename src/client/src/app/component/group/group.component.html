@@ -2,17 +2,16 @@
   <a routerLink="/group/addNew">Add New Group</a>
 </p>
 <br />
-<h2>Groups</h2>
+<h2>My groups</h2>
 <form [formGroup]="groupsForm">
   <ul>
-    <li>Punkt pierwszy</li>
+    <li *ngFor="let listMyGroups of listOfMyGroups"><a routerLink="/group/{{listMyGroups.id}}/view">{{listMyGroups.name}}</a></li>
   </ul>
-  </table>
-    <option value="null">-</option>
-    <option *ngFor="let listGroups of listOfGroups" value="{{listGroups.id}}">{{listGroups.name}}</option>
-  </select><br/>-->
 
-  <button class="btn btn-primary">Edit</button>
-  <br/>
+  <br />
+  <h2>All groups</h2>
+  <ul>
+    <li *ngFor="let listAllGroups of listOfAllGroups"><a routerLink="/group/{{listAllGroups.id}}/view">{{listAllGroups.name}}</a></li>
+  </ul>
   Errors: {{message}}
 </form>

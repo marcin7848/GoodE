@@ -50,9 +50,12 @@ public class GroupService implements GroupServiceI, StandardizeService<Group> {
       List<Group> allGroupsAdmin = groupRepository.getAllGroups();
 
       for(int i=0; i < allGroupsAdmin.size(); i++){
-        List<GroupMember> groupMember = new ArrayList<>();
-        groupMember.add(groupMemberRepository.findGroupMemberByGroupAndAccount(allGroupsAdmin.get(i), loggedAccount));
-        allGroupsAdmin.get(i).setGroupMembers(groupMember);
+        List<GroupMember> groupMembers = new ArrayList<>();
+        GroupMember groupMember = groupMemberRepository.findGroupMemberByGroupAndAccount(allGroupsAdmin.get(i), loggedAccount);
+        groupMember.setGroup(null);
+        groupMember.setAccount(null);
+        groupMembers.add(groupMember);
+        allGroupsAdmin.get(i).setGroupMembers(groupMembers);
         allGroupsAdmin.get(i).setPassword("");
       }
 
@@ -70,9 +73,40 @@ public class GroupService implements GroupServiceI, StandardizeService<Group> {
 
     for(int i=0; i < allGroups.size(); i++){
       allGroups.get(i).setPassword("");
-      List<GroupMember> groupMember = new ArrayList<>();
-      groupMember.add(groupMemberRepository.findGroupMemberByGroupAndAccount(allGroups.get(i), loggedAccount));
-      allGroups.get(i).setGroupMembers(groupMember);
+      List<GroupMember> groupMembers = new ArrayList<>();
+      GroupMember groupMember = groupMemberRepository.findGroupMemberByGroupAndAccount(allGroups.get(i), loggedAccount);
+      groupMember.setGroup(null);
+      groupMember.setAccount(null);
+      groupMembers.add(groupMember);
+      groupMembers.add(groupMember);
+      allGroups.get(i).setGroupMembers(groupMembers);
+    }
+
+    return allGroups;
+  }
+
+  @Override
+  public List<Group> getAllGroupsNotHidden() {
+    Account loggedAccount = accountService.getLoggedAccount();
+
+    if(loggedAccount.getAccessRole().getRole().equals(AccessRole.ROLE_ADMIN)){
+      List<Group> allGroupsAdmin = groupRepository.getAllGroups();
+
+      for(int i=0; i < allGroupsAdmin.size(); i++){
+        allGroupsAdmin.get(i).setGroupMembers(null);
+        allGroupsAdmin.get(i).setPassword("");
+      }
+
+      return allGroupsAdmin;
+    }
+
+
+    List<Group> groupList = groupRepository.getAllGroupsNotHidden();
+    List<Group> allGroups = new ArrayList<>(groupList);
+
+    for(int i=0; i < allGroups.size(); i++){
+      allGroups.get(i).setPassword("");
+      allGroups.get(i).setGroupMembers(null);
     }
 
     return allGroups;

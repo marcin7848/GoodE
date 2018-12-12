@@ -14,7 +14,10 @@ import com.goode.service.GroupMemberService;
 import com.goode.service.GroupService;
 import com.goode.validator.GroupMemberValidator;
 import com.goode.validator.GroupValidator;
+import com.google.gson.Gson;
+import java.util.List;
 import java.util.Map;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -56,6 +59,12 @@ public class GroupController extends BaseController<Group, GroupService> {
   @PreAuthorize("hasAnyRole('"+ AccessRole.ROLE_ADMIN +"', '"+ AccessRole.ROLE_TEACHER +"', '"+ AccessRole.ROLE_STUDENT +"')")
   public ResponseEntity<?> getMyGroups(){
     return new ResponseEntity<>(groupService.getMyGroups(), HttpStatus.OK);
+  }
+
+  @GetMapping("/getAllGroups")
+  @PreAuthorize("hasAnyRole('"+ AccessRole.ROLE_ADMIN +"', '"+ AccessRole.ROLE_TEACHER +"', '"+ AccessRole.ROLE_STUDENT +"')")
+  public ResponseEntity<?> getAllGroups(){
+    return new ResponseEntity<>(groupService.getAllGroupsNotHidden(), HttpStatus.OK);
   }
 
   @PostMapping("/addNew")

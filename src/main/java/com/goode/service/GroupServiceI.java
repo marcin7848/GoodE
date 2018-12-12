@@ -11,5 +11,6 @@ public interface GroupServiceI {
   boolean changePosition(int idGroup, int newPosition, Integer newIdGroupParent);
   boolean joinToGroup(Group group);
   List<Group> getMyGroups();
+  List<Group> getAllGroupsNotHidden();
 
 }

@@ -23,4 +23,8 @@ export class GroupService {
   public getMyGroups(){
     return this.http.get<any>(this.baseUri + "/getMyGroups");
   }
+
+  public getAllGroups(){
+    return this.http.get<any>(this.baseUri + "/getAllGroups");
+  }
 }

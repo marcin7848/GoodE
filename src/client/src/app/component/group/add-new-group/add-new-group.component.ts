@@ -15,7 +15,6 @@ export class AddNewGroupComponent implements OnInit {
 
   addNewGroupForm: FormGroup;
   message = "";
-  listOfGroups: Group[];
 
   constructor(private formBuilder: FormBuilder,
               private groupService: GroupService) { }
@@ -28,17 +27,8 @@ export class AddNewGroupComponent implements OnInit {
       password: [''],
       possibleToJoin: ['', Validators.required],
       acceptance: ['', Validators.required],
-      hidden: ['', Validators.required],
-      idGroupParent: ['']
+      hidden: ['', Validators.required]
     });
-
-    this.groupService.getMyGroups().
-    subscribe(data => {
-        this.listOfGroups = data;
-      },
-      error => {
-        console.log("Nie mozna pobrac!");
-      });
   }
 
   get f() { return this.addNewGroupForm.controls; }
@@ -46,7 +36,7 @@ export class AddNewGroupComponent implements OnInit {
   onSubmit(){
     this.groupService.addNewGroup(this.f.name.value, this.f.description.value,
       this.f.password.value, this.f.possibleToJoin.value, this.f.acceptance.value,
-      this.f.hidden.value, this.f.idGroupParent.value)
+      this.f.hidden.value, null)
     .pipe(first())
     .subscribe(
       data => {
