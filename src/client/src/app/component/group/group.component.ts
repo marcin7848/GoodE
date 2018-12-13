@@ -16,6 +16,7 @@ export class GroupComponent implements OnInit {
   listOfMyGroups: Group[];
   listOfAllGroups: Group[];
 
+
   constructor(private formBuilder: FormBuilder,
               private router: Router,
               private groupService: GroupService) { }

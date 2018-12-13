@@ -11,6 +11,7 @@ public interface GroupMemberServiceI {
   GroupMember getGroupMemberByGroupAndAccount(Group group, Account account);
   List<GroupMember> getGroupMembersByAccount(Account account);
   GroupMember getGroupMemberById(int idGroupMember);
+  List<GroupMember> getGroupMembersByGroup(Group group);
   boolean acceptNewMember(GroupMember groupMember);
   boolean changeAccessRoleToGroup(GroupMember groupMember, String newAccessRole);
   void removeAccountTeacherIfNotTeacherForAnyGroup(Account account);

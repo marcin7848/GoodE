@@ -21,6 +21,7 @@ import { EditAccountComponent } from './component/account/edit-account/edit-acco
 import {GroupService} from "./service/group/group.service";
 import { GroupComponent } from './component/group/group.component';
 import { AddNewGroupComponent } from './component/group/add-new-group/add-new-group.component';
+import { GroupViewComponent } from './component/group/group-view/group-view.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { AddNewGroupComponent } from './component/group/add-new-group/add-new-gr
     ChangeAccessRoleComponent,
     EditAccountComponent,
     GroupComponent,
-    AddNewGroupComponent
+    AddNewGroupComponent,
+    GroupViewComponent
   ],
   imports: [
     routing,

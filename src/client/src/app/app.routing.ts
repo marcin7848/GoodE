@@ -10,6 +10,7 @@ import {ChangeAccessRoleComponent} from "./component/account/change-access-role/
 import {EditAccountComponent} from "./component/account/edit-account/edit-account.component";
 import {GroupComponent} from "./component/group/group.component";
 import {AddNewGroupComponent} from "./component/group/add-new-group/add-new-group.component";
+import {GroupViewComponent} from "./component/group/group-view/group-view.component";
 
 const routes: Routes = [
   {path : '', component : HomeComponent},
@@ -25,6 +26,7 @@ const routes: Routes = [
   {path : 'account/edit', component : EditAccountComponent},
   {path : 'group', component : GroupComponent},
   {path : 'group/addNew', component : AddNewGroupComponent},
+  {path : 'group/:id/view', component : GroupViewComponent},
 ];
 
 export const routing = RouterModule.forRoot(routes);

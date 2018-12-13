@@ -15,6 +15,7 @@ import com.goode.service.GroupService;
 import com.goode.validator.GroupMemberValidator;
 import com.goode.validator.GroupValidator;
 import com.google.gson.Gson;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.json.JSONObject;
@@ -65,6 +66,66 @@ public class GroupController extends BaseController<Group, GroupService> {
   @PreAuthorize("hasAnyRole('"+ AccessRole.ROLE_ADMIN +"', '"+ AccessRole.ROLE_TEACHER +"', '"+ AccessRole.ROLE_STUDENT +"')")
   public ResponseEntity<?> getAllGroups(){
     return new ResponseEntity<>(groupService.getAllGroupsNotHidden(), HttpStatus.OK);
+  }
+
+  @GetMapping("/{id}/view")
+  @PreAuthorize("hasAnyRole('"+ AccessRole.ROLE_ADMIN +"', '"+ AccessRole.ROLE_TEACHER +"', '"+ AccessRole.ROLE_STUDENT +"')")
+  public ResponseEntity<?> viewGroup(@PathVariable("id") int id){
+    Group currentGroup = groupService.getGroupById(id);
+    if(currentGroup == null){
+      return ErrorMessage
+          .send(Language.getMessage("error.group.badId"), HttpStatus.BAD_REQUEST);
+    }
+
+    currentGroup.setPassword("");
+
+    Account loggedAccount = accountService.getLoggedAccount();
+    GroupMember groupMember = groupMemberService.getGroupMemberByGroupAndAccount(currentGroup, loggedAccount);
+
+    if(loggedAccount.getAccessRole().getRole().equals(AccessRole.ROLE_ADMIN)) {
+      groupMember = new GroupMember();
+      AccessRole accessRole = accessRoleRepository.getAccessRoleByRole(AccessRole.ROLE_ADMIN);
+      groupMember.setAccessRole(accessRole);
+    }
+
+    if(groupMember != null){
+      groupMember.setGroup(null);
+    }
+
+    List<GroupMember> groupMembers = new ArrayList<>();
+    groupMembers.add(groupMember);
+    currentGroup.setGroupMembers(groupMembers);
+
+    return new ResponseEntity<>(currentGroup, HttpStatus.OK);
+  }
+
+  @GetMapping("/{id}/getGroupMembers")
+  @PreAuthorize("hasAnyRole('"+ AccessRole.ROLE_ADMIN +"', '"+ AccessRole.ROLE_TEACHER +"', '"+ AccessRole.ROLE_STUDENT +"')")
+  public ResponseEntity<?> getGroupMembers(@PathVariable("id") int id){
+    Group currentGroup = groupService.getGroupById(id);
+    if(currentGroup == null){
+      return ErrorMessage
+          .send(Language.getMessage("error.group.badId"), HttpStatus.BAD_REQUEST);
+    }
+
+    Account loggedAccount = accountService.getLoggedAccount();
+
+    List<GroupMember> groupMembers = groupMemberService.getGroupMembersByGroup(currentGroup);
+    for(int i=0; i<groupMembers.size(); i++){
+      groupMembers.get(i).setGroup(null);
+      groupMembers.get(i).getAccount().setPassword("");
+      groupMembers.get(i).getAccount().setActivationCodes(null);
+      if(loggedAccount.getAccessRole().getRole().equals(AccessRole.ROLE_STUDENT)){
+        groupMembers.get(i).getAccount().setEmail("");
+        groupMembers.get(i).getAccount().setId(0);
+        if(groupMembers.get(i).getAccessRole().getRole().equals(AccessRole.ROLE_STUDENT)) {
+          groupMembers.get(i).getAccount().setFirstName("");
+          groupMembers.get(i).getAccount().setLastName("");
+        }
+      }
+    }
+
+    return new ResponseEntity<>(groupMembers, HttpStatus.OK);
   }
 
   @PostMapping("/addNew")

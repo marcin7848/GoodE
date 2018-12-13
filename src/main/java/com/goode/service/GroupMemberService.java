@@ -42,6 +42,11 @@ public class GroupMemberService implements GroupMemberServiceI {
   }
 
   @Override
+  public List<GroupMember> getGroupMembersByGroup(Group group){
+    return groupMemberRepository.findGroupMembersByGroup(group);
+  }
+
+  @Override
   public boolean acceptNewMember(GroupMember groupMember){
     groupMember.setAccepted(true);
 

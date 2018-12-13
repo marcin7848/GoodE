@@ -27,4 +27,17 @@ export class GroupService {
   public getAllGroups(){
     return this.http.get<any>(this.baseUri + "/getAllGroups");
   }
+
+  public getGroup(id: number){
+    return this.http.get<any>(this.baseUri + "/"+id+"/view");
+  }
+
+  public getGroupMembers(id: number){
+    return this.http.get<any>(this.baseUri + "/"+id+"/getGroupMembers");
+  }
+
+  public joinToTheGroup(id: number){
+    const body = {};
+    return this.http.post<any>(this.baseUri + "/"+id+"/join", body);
+  }
 }
