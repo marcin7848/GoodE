@@ -1,0 +1,17 @@
+<p>
+  <a routerLink="/group/addNew">Add New Group</a>
+</p>
+<br />
+<h2>My groups</h2>
+<form [formGroup]="groupsForm">
+  <ul>
+    <li *ngFor="let listMyGroups of listOfMyGroups"><a routerLink="/group/{{listMyGroups.id}}/view">{{listMyGroups.name}}</a></li>
+  </ul>
+
+  <br />
+  <h2>All groups</h2>
+  <ul>
+    <li *ngFor="let listAllGroups of listOfAllGroups"><a routerLink="/group/{{listAllGroups.id}}/view">{{listAllGroups.name}}</a></li>
+  </ul>
+  Errors: {{message}}
+</form>

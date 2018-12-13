@@ -72,7 +72,5 @@ public class Group {
   private Timestamp creationTime;
 
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "group")
-  @ToString.Exclude
-  @JsonIgnore
-  private List<GroupMember> groupMembers;
+  private List<GroupMember> groupMembers = null;
 }

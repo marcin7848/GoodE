@@ -7,6 +7,11 @@ import {ActivateAccountComponent} from "./component/account/activate-account/act
 import {ResetPasswordRequestComponent} from "./component/account/reset-password-request/reset-password-request.component";
 import {ResetPasswordComponent} from "./component/account/reset-password/reset-password.component";
 import {ChangeAccessRoleComponent} from "./component/account/change-access-role/change-access-role.component";
+import {EditAccountComponent} from "./component/account/edit-account/edit-account.component";
+import {GroupComponent} from "./component/group/group.component";
+import {AddNewGroupComponent} from "./component/group/add-new-group/add-new-group.component";
+import {GroupViewComponent} from "./component/group/group-view/group-view.component";
+import {GroupEditComponent} from "./component/group/group-edit/group-edit.component";
 
 const routes: Routes = [
   {path : '', component : HomeComponent},
@@ -19,6 +24,11 @@ const routes: Routes = [
   {path : 'account/sendResetPasswordRequest', component : ResetPasswordRequestComponent},
   {path : 'account/resetPassword/:resetPasswordCode', component : ResetPasswordComponent},
   {path : 'account/changeAccessRole', component : ChangeAccessRoleComponent},
+  {path : 'account/edit', component : EditAccountComponent},
+  {path : 'group', component : GroupComponent},
+  {path : 'group/addNew', component : AddNewGroupComponent},
+  {path : 'group/:id/view', component : GroupViewComponent},
+  {path : 'group/:id/edit', component : GroupEditComponent},
 ];
 
 export const routing = RouterModule.forRoot(routes);

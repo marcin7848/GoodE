@@ -61,6 +61,7 @@ export class LoginComponent implements OnInit {
     .subscribe(
       data => {
         this.cookieService.set("Authorization", data['access_token']);
+        this.router.navigate(['/']);
       },
       error => {
         console.log(error);

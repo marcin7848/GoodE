@@ -12,6 +12,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -40,6 +41,86 @@ public class GroupService implements GroupServiceI, StandardizeService<Group> {
   @Override
   public Group getGroupById(int id) {
     return groupRepository.findGroupById(id);
+  }
+
+  @Override
+  public List<Group> getMyGroups() {
+    Account loggedAccount = accountService.getLoggedAccount();
+    if(loggedAccount.getAccessRole().getRole().equals(AccessRole.ROLE_ADMIN)){
+      List<Group> allGroupsAdmin = groupRepository.getAllGroups();
+
+      for(int i=0; i < allGroupsAdmin.size(); i++){
+        List<GroupMember> groupMembers = new ArrayList<>();
+        GroupMember groupMember = groupMemberRepository.findGroupMemberByGroupAndAccount(allGroupsAdmin.get(i), loggedAccount);
+        groupMember.setGroup(null);
+        groupMember.setAccount(null);
+        groupMembers.add(groupMember);
+        allGroupsAdmin.get(i).setGroupMembers(groupMembers);
+        allGroupsAdmin.get(i).setPassword("");
+      }
+
+      return allGroupsAdmin;
+    }
+
+    List<Group> groupList = groupRepository.findAllByIdAccount(loggedAccount.getId());
+    List<Group> allGroups = new ArrayList<>(groupList);
+
+    for(Group group : groupList){
+      this.getOuterGroup(group, allGroups);
+    }
+
+    allGroups = new ArrayList<>(new LinkedHashSet<>(allGroups));
+
+    for(int i=0; i < allGroups.size(); i++){
+      allGroups.get(i).setPassword("");
+      List<GroupMember> groupMembers = new ArrayList<>();
+      GroupMember groupMember = groupMemberRepository.findGroupMemberByGroupAndAccount(allGroups.get(i), loggedAccount);
+      groupMember.setGroup(null);
+      groupMember.setAccount(null);
+      groupMembers.add(groupMember);
+      groupMembers.add(groupMember);
+      allGroups.get(i).setGroupMembers(groupMembers);
+    }
+
+    return allGroups;
+  }
+
+  @Override
+  public List<Group> getAllGroupsNotHidden() {
+    Account loggedAccount = accountService.getLoggedAccount();
+
+    if(loggedAccount.getAccessRole().getRole().equals(AccessRole.ROLE_ADMIN)){
+      List<Group> allGroupsAdmin = groupRepository.getAllGroups();
+
+      for(int i=0; i < allGroupsAdmin.size(); i++){
+        allGroupsAdmin.get(i).setGroupMembers(null);
+        allGroupsAdmin.get(i).setPassword("");
+      }
+
+      return allGroupsAdmin;
+    }
+
+
+    List<Group> groupList = groupRepository.getAllGroupsNotHidden();
+    List<Group> allGroups = new ArrayList<>(groupList);
+
+    for(int i=0; i < allGroups.size(); i++){
+      allGroups.get(i).setPassword("");
+      allGroups.get(i).setGroupMembers(null);
+    }
+
+    return allGroups;
+  }
+
+  private void getOuterGroup(Group group, List<Group> resultListGroups){
+    if(group.getIdGroupParent() == null){
+      resultListGroups.add(group);
+    }
+    else{
+      Group outerGroup = groupRepository.findGroupById(group.getIdGroupParent());
+      resultListGroups.add(outerGroup);
+      this.getOuterGroup(outerGroup, resultListGroups);
+    }
   }
 
   @Override

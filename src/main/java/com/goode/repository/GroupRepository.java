@@ -24,4 +24,13 @@ public interface GroupRepository extends CrudRepository<Group, Long> {
   @Query(value = "select * from groups g, group_members gm where gm.id_account=:id_account and g.id_group = gm.id_group and g.id_group_parent is NULL", nativeQuery = true)
   List<Group> findAllByIdAccountAndIdGroupParentNull(@Param("id_account") int id_account);
 
- }
+  @Query(value = "select * from groups g, group_members gm where gm.id_account=:id_account and g.id_group = gm.id_group order by position ASC", nativeQuery = true)
+  List<Group> findAllByIdAccount(@Param("id_account") int id_account);
+
+  @Query(value = "select * from groups g order by position ASC", nativeQuery = true)
+  List<Group> getAllGroups();
+
+  @Query(value = "select * from groups g where hidden is false order by position ASC", nativeQuery = true)
+  List<Group> getAllGroupsNotHidden();
+
+}

@@ -1,0 +1,144 @@
+<h2>Group Info</h2>
+Id: {{group?.id}}
+<br />
+Name: {{group?.name}}
+<br />
+Description: {{group?.description}}
+<br />
+
+<div *ngIf="group?.groupMembers[0] != null && group?.groupMembers[0].accessRole.role=='ROLE_ADMIN'">
+  <a routerLink="/group/{{group?.id}}/edit">Edit group</a>
+</div>
+
+<br />
+
+<div *ngIf="group?.groupMembers[0] != null && group?.groupMembers[0].accessRole.role=='ROLE_ADMIN'">
+  <button (click)="deleteGroup(group.id)" class="btn btn-primary">Delete group</button><br />
+</div>
+
+<br />
+<br />
+
+<div *ngIf="group?.groupMembers[0] == null && group?.possibleToJoin">
+  <button (click)="joinToGroup(group.id)" class="btn btn-primary">Join to the group!</button><br />
+</div>
+
+<div *ngIf="group?.groupMembers[0] != null && group?.groupMembers[0].accessRole.role!='ROLE_ADMIN'">
+  <button (click)="leaveGroup(group.id)" class="btn btn-primary">Leave group</button><br />
+</div>
+{{actionMessage}}
+
+<h2>Group members</h2>
+<table border="1">
+<div *ngIf="group?.groupMembers[0] != null && (group?.groupMembers[0].accessRole.role=='ROLE_ADMIN' || group?.groupMembers[0].accessRole.role=='ROLE_TEACHER')">
+  <tr><td colspan="4">Admins</td></tr>
+  <tr>
+    <td>Username</td>
+    <td>First name</td>
+    <td>Last name</td>
+    <td>Actions</td>
+  </tr>
+  <tr *ngFor="let member of groupMembers">
+  <ng-container *ngIf="(member.accessRole.role=='ROLE_ADMIN' || member.accessRole.role=='ROLE_TEACHER') && member.accepted">
+    <td>{{member.account.username}}</td>
+    <td>{{member.account.firstName}}</td>
+    <td>{{member.account.lastName}}</td>
+    <ng-container *ngIf="group?.groupMembers[0].accessRole.role=='ROLE_ADMIN'">
+      <ng-container *ngIf="member.accessRole.role!='ROLE_ADMIN'">
+        <td><button (click)="reduceToStudent(group.id, member.id)" class="btn btn-primary">Reduce to Student</button></td>
+      </ng-container>
+      <ng-container *ngIf="member.accessRole.role=='ROLE_ADMIN'">
+        <td></td>
+      </ng-container>
+    </ng-container>
+    <ng-container *ngIf="group?.groupMembers[0].accessRole.role!='ROLE_ADMIN'">
+      <td></td>
+    </ng-container>
+  </ng-container>
+  </tr>
+
+  <tr><td colspan="5">Students</td></tr>
+  <tr>
+    <td>Username</td>
+    <td>First name</td>
+    <td>Last name</td>
+    <td>Register number</td>
+    <td>Actions</td>
+  </tr>
+  <tr *ngFor="let member of groupMembers">
+    <ng-container *ngIf="member.accessRole.role=='ROLE_STUDENT' && member.accepted">
+      <td>{{member.account.username}}</td>
+      <td>{{member.account.firstName}}</td>
+      <td>{{member.account.lastName}}</td>
+      <td>{{member.account.register_no}}</td>
+      <ng-container *ngIf="group?.groupMembers[0].accessRole.role=='ROLE_ADMIN'">
+        <td><button (click)="deleteGroupMember(group.id, member.id)" class="btn btn-primary">Delete member</button> | <button (click)="promoteToTeacher(group.id, member.id)" class="btn btn-primary">Promote to a Teacher</button></td>
+      </ng-container>
+      <ng-container *ngIf="group?.groupMembers[0].accessRole.role=='ROLE_TEACHER'">
+        <td><button (click)="deleteGroupMember(group.id, member.id)" class="btn btn-primary">Delete member</button></td>
+      </ng-container>
+    </ng-container>
+  </tr>
+
+  <tr><td colspan="5">Waiting</td></tr>
+  <tr>
+    <td>Username</td>
+    <td>First name</td>
+    <td>Last name</td>
+    <td>Register number</td>
+    <td>Actions</td>
+  </tr>
+  <tr *ngFor="let member of groupMembers">
+    <ng-container *ngIf="member.accessRole.role=='ROLE_STUDENT'  && !member.accepted">
+      <td>{{member.account.username}}</td>
+      <td>{{member.account.firstName}}</td>
+      <td>{{member.account.lastName}}</td>
+      <td>{{member.account.register_no}}</td>
+      <td><button (click)="acceptNewMember(group.id, member.id)" class="btn btn-primary">Accept member</button></td>
+    </ng-container>
+  </tr>
+</div>
+
+<div *ngIf="group?.groupMembers[0] == null || (group?.groupMembers != null && group?.groupMembers[0].accessRole.role=='ROLE_STUDENT')">
+  <tr><td colspan="3">Admins</td></tr>
+  <tr>
+    <td>Username</td>
+    <td>First name</td>
+    <td>Last name</td>
+  </tr>
+  <tr *ngFor="let member of groupMembers">
+    <ng-container *ngIf="(member.accessRole.role=='ROLE_ADMIN' || member.accessRole.role=='ROLE_TEACHER') && member.accepted">
+      <td>{{member.account.username}}</td>
+      <td>{{member.account.firstName}}</td>
+      <td>{{member.account.lastName}}</td>
+    </ng-container>
+  </tr>
+
+  <tr><td colspan="2">Students</td></tr>
+  <tr>
+    <td>Username</td>
+    <td>Register number</td>
+  </tr>
+  <tr *ngFor="let member of groupMembers">
+    <ng-container *ngIf="member.accessRole.role=='ROLE_STUDENT'  && member.accepted">
+      <td>{{member.account.username}}</td>
+      <td>{{member.account.register_no}}</td>
+    </ng-container>
+  </tr>
+</div>
+</table>
+
+<!--
+<form [formGroup]="addNewGroupForm" (ngSubmit)="onSubmit()">
+  Name: <input type="text" formControlName="name" class="form-control"/><br/>
+  Description: <input type="text" formControlName="description" class="form-control"/><br/>
+  Password: <input type="password" formControlName="password" class="form-control"/><br/>
+  Possible To Join: <input type="checkbox" formControlName="possibleToJoin" class="form-control"/><br/>
+  Acceptance: <input type="checkbox" formControlName="acceptance" class="form-control"/><br/>
+  Hidden: <input type="checkbox" formControlName="hidden" class="form-control"/><br/>
+
+  <button class="btn btn-primary">Add new group</button>
+  <br/>
+  Errors: {{message}}
+</form>
+-->

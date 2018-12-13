@@ -1,0 +1,10 @@
+<h2>Edit Account</h2>
+<form [formGroup]="editAccountForm" (ngSubmit)="onSubmit()">
+  Email: <input type="text" formControlName="email" class="form-control" /><br />
+  New Password: <input type="password" formControlName="password" class="form-control" /><br />
+  FirstName: <input type="text" formControlName="firstName" class="form-control" /><br />
+  LastName: <input type="text" formControlName="lastName" class="form-control" /><br /><br />
+  Current Password: <input type="password" formControlName="currentPassword" class="form-control" /><br />
+  <button class="btn btn-primary">Edit</button><br />
+  Errors: {{message}}
+</form>
