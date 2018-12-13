@@ -11,6 +11,7 @@ import {EditAccountComponent} from "./component/account/edit-account/edit-accoun
 import {GroupComponent} from "./component/group/group.component";
 import {AddNewGroupComponent} from "./component/group/add-new-group/add-new-group.component";
 import {GroupViewComponent} from "./component/group/group-view/group-view.component";
+import {GroupEditComponent} from "./component/group/group-edit/group-edit.component";
 
 const routes: Routes = [
   {path : '', component : HomeComponent},
@@ -27,6 +28,7 @@ const routes: Routes = [
   {path : 'group', component : GroupComponent},
   {path : 'group/addNew', component : AddNewGroupComponent},
   {path : 'group/:id/view', component : GroupViewComponent},
+  {path : 'group/:id/edit', component : GroupEditComponent},
 ];
 
 export const routing = RouterModule.forRoot(routes);

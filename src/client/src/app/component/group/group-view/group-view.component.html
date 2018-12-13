@@ -5,7 +5,10 @@ Name: {{group?.name}}
 <br />
 Description: {{group?.description}}
 <br />
-<a routerLink="/group/{{group.id}}/edit">Edit group</a>
+
+<div *ngIf="group?.groupMembers[0] != null && group?.groupMembers[0].accessRole.role=='ROLE_ADMIN'">
+  <a routerLink="/group/{{group?.id}}/edit">Edit group</a>
+</div>
 
 <br />
 

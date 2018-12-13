@@ -70,4 +70,11 @@ export class GroupService {
     const body = {};
     return this.http.delete<any>(this.baseUri + "/"+idGroup+"/delete", body);
   }
+
+  public editGroup(idGroup: number, nameV: string, descriptionV: string, passwordV: string, possibleToJoinV: boolean, acceptanceV: boolean, hiddenV: boolean,
+                     idGroupParentV: number){
+    const body = {name: nameV, description: descriptionV, password: passwordV, possibleToJoin: possibleToJoinV, acceptance: acceptanceV, hidden: hiddenV,
+      idGroupParent: idGroupParentV};
+    return this.http.patch<any>(this.baseUri + "/"+idGroup+"/edit", body);
+  }
 }

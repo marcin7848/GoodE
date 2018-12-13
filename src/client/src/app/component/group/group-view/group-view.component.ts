@@ -5,7 +5,6 @@ import {GroupService} from "../../../service/group/group.service";
 import {first} from "rxjs/operators";
 import {Group} from "../../../model/Group";
 import {GroupMember} from "../../../model/GroupMember";
-import {Account} from "../../../model/Account";
 import {AccountService} from "../../../service/account/account.service";
 
 @Component({
@@ -36,7 +35,6 @@ export class GroupViewComponent implements OnInit {
       .subscribe(
         data => {
           this.group = data;
-          console.log(this.group);
         },
         error => {
           console.log("Nie mozna pobrac!");

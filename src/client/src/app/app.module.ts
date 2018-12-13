@@ -22,6 +22,7 @@ import {GroupService} from "./service/group/group.service";
 import { GroupComponent } from './component/group/group.component';
 import { AddNewGroupComponent } from './component/group/add-new-group/add-new-group.component';
 import { GroupViewComponent } from './component/group/group-view/group-view.component';
+import { GroupEditComponent } from './component/group/group-edit/group-edit.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { GroupViewComponent } from './component/group/group-view/group-view.comp
     EditAccountComponent,
     GroupComponent,
     AddNewGroupComponent,
-    GroupViewComponent
+    GroupViewComponent,
+    GroupEditComponent
   ],
   imports: [
     routing,
