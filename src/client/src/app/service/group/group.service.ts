@@ -45,4 +45,29 @@ export class GroupService {
     const body = {};
     return this.http.patch<any>(this.baseUri + "/"+idGroup+"/member/"+idGroupMember+"/accept", body);
   }
+
+  public leaveGroup(idGroup: number){
+    const body = {};
+    return this.http.delete<any>(this.baseUri + "/"+idGroup+"/leave", body);
+  }
+
+  public deleteGroupMember(idGroup: number, idGroupMember: number){
+    const body = {};
+    return this.http.delete<any>(this.baseUri + "/"+idGroup+"/deleteGroupMember/"+idGroupMember, body);
+  }
+
+  public promoteToTeacher(idGroup: number, idGroupMember: number){
+    const body = {};
+    return this.http.patch<any>(this.baseUri + "/"+idGroup+"/member/"+idGroupMember+"/changeAccessRole/ROLE_TEACHER", body);
+  }
+
+  public reduceToStudent(idGroup: number, idGroupMember: number){
+    const body = {};
+    return this.http.patch<any>(this.baseUri + "/"+idGroup+"/member/"+idGroupMember+"/changeAccessRole/ROLE_STUDENT", body);
+  }
+
+  public deleteGroup(idGroup: number){
+    const body = {};
+    return this.http.delete<any>(this.baseUri + "/"+idGroup+"/delete", body);
+  }
 }

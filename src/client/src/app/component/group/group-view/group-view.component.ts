@@ -18,8 +18,7 @@ export class GroupViewComponent implements OnInit {
   id: number;
   group: Group;
   groupMembers: GroupMember[];
-  loggedAccount: Account;
-  joinedToGroupMessage = "";
+  actionMessage = "";
 
   constructor(private formBuilder: FormBuilder,
               private router: Router,
@@ -61,10 +60,10 @@ export class GroupViewComponent implements OnInit {
   joinToGroup(idGroup: number){
     this.groupService.joinToTheGroup(idGroup).
     subscribe(data => {
-        this.joinedToGroupMessage = "Dolaczyles do grupy!";
+        this.actionMessage = "Dolaczyles do grupy!";
       },
       error => {
-        this.joinedToGroupMessage = error["error"]["error"];
+        this.actionMessage = error["error"]["error"];
         console.log("Nie mozna pobrac!");
       })
   }
@@ -76,6 +75,56 @@ export class GroupViewComponent implements OnInit {
       },
       error => {
         console.log("Nie mozna pobrac!");
+      })
+  }
+
+  leaveGroup(idGroup: number){
+    this.groupService.leaveGroup(idGroup).
+    subscribe(data => {
+        console.log("Opusciles grupe!");
+      },
+      error => {
+        console.log("Nie mozna pobrac!");
+      })
+  }
+
+  deleteGroupMember(idGroup: number, idGroupMember: number){
+    this.groupService.deleteGroupMember(idGroup, idGroupMember).
+    subscribe(data => {
+        console.log("Usunieto czlonka grupy!");
+      },
+      error => {
+        console.log("Nie mozna wykonac!");
+      })
+  }
+
+  promoteToTeacher(idGroup: number, idGroupMember: number){
+    this.groupService.promoteToTeacher(idGroup, idGroupMember).
+    subscribe(data => {
+        console.log("Pomyslnie nadano range nauczyciela!");
+      },
+      error => {
+        console.log("Nie mozna wykonac!");
+      })
+  }
+
+  reduceToStudent(idGroup: number, idGroupMember: number){
+    this.groupService.reduceToStudent(idGroup, idGroupMember).
+    subscribe(data => {
+        console.log("Pomyslnie zmieniono range na Student!");
+      },
+      error => {
+        console.log("Nie mozna wykonac!");
+      })
+  }
+
+  deleteGroup(idGroup: number){
+    this.groupService.deleteGroup(idGroup).
+    subscribe(data => {
+        console.log("Pomyslnie usunieto grupe!");
+      },
+      error => {
+        console.log("Nie mozna wykonac!");
       })
   }
 

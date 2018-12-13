@@ -5,16 +5,25 @@ Name: {{group?.name}}
 <br />
 Description: {{group?.description}}
 <br />
+<a routerLink="/group/{{group.id}}/edit">Edit group</a>
+
+<br />
+
+<div *ngIf="group?.groupMembers[0] != null && group?.groupMembers[0].accessRole.role=='ROLE_ADMIN'">
+  <button (click)="deleteGroup(group.id)" class="btn btn-primary">Delete group</button><br />
+</div>
+
+<br />
+<br />
 
 <div *ngIf="group?.groupMembers[0] == null && group?.possibleToJoin">
   <button (click)="joinToGroup(group.id)" class="btn btn-primary">Join to the group!</button><br />
-  {{joinedToGroupMessage}}
 </div>
 
 <div *ngIf="group?.groupMembers[0] != null && group?.groupMembers[0].accessRole.role!='ROLE_ADMIN'">
-  <button (click)="joinToGroup(group.id)" class="btn btn-primary">Join to the group!</button><br />
-  {{joinedToGroupMessage}}
+  <button (click)="leaveGroup(group.id)" class="btn btn-primary">Leave group</button><br />
 </div>
+{{actionMessage}}
 
 <h2>Group members</h2>
 <table border="1">
@@ -32,7 +41,12 @@ Description: {{group?.description}}
     <td>{{member.account.firstName}}</td>
     <td>{{member.account.lastName}}</td>
     <ng-container *ngIf="group?.groupMembers[0].accessRole.role=='ROLE_ADMIN'">
-      <td>Reduce to Student</td>
+      <ng-container *ngIf="member.accessRole.role!='ROLE_ADMIN'">
+        <td><button (click)="reduceToStudent(group.id, member.id)" class="btn btn-primary">Reduce to Student</button></td>
+      </ng-container>
+      <ng-container *ngIf="member.accessRole.role=='ROLE_ADMIN'">
+        <td></td>
+      </ng-container>
     </ng-container>
     <ng-container *ngIf="group?.groupMembers[0].accessRole.role!='ROLE_ADMIN'">
       <td></td>
@@ -55,10 +69,10 @@ Description: {{group?.description}}
       <td>{{member.account.lastName}}</td>
       <td>{{member.account.register_no}}</td>
       <ng-container *ngIf="group?.groupMembers[0].accessRole.role=='ROLE_ADMIN'">
-        <td>Delete | Promote to teacher</td>
+        <td><button (click)="deleteGroupMember(group.id, member.id)" class="btn btn-primary">Delete member</button> | <button (click)="promoteToTeacher(group.id, member.id)" class="btn btn-primary">Promote to a Teacher</button></td>
       </ng-container>
       <ng-container *ngIf="group?.groupMembers[0].accessRole.role=='ROLE_TEACHER'">
-        <td>Delete</td>
+        <td><button (click)="deleteGroupMember(group.id, member.id)" class="btn btn-primary">Delete member</button></td>
       </ng-container>
     </ng-container>
   </tr>
