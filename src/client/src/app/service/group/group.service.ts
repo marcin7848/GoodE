@@ -36,8 +36,13 @@ export class GroupService {
     return this.http.get<any>(this.baseUri + "/"+id+"/getGroupMembers");
   }
 
-  public joinToTheGroup(id: number){
+  public joinToTheGroup(idGroup: number){
     const body = {};
-    return this.http.post<any>(this.baseUri + "/"+id+"/join", body);
+    return this.http.post<any>(this.baseUri + "/"+idGroup+"/join", body);
+  }
+
+  public acceptMember(idGroup: number, idGroupMember: number){
+    const body = {};
+    return this.http.patch<any>(this.baseUri + "/"+idGroup+"/member/"+idGroupMember+"/accept", body);
   }
 }

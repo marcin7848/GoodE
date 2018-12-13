@@ -59,19 +59,20 @@ export class GroupViewComponent implements OnInit {
   }
 
   joinToGroup(idGroup: number){
-    this.accountService.getLoggedAccount().
+    this.groupService.joinToTheGroup(idGroup).
     subscribe(data => {
-        this.loggedAccount = data;
+        this.joinedToGroupMessage = "Dolaczyles do grupy!";
+      },
+      error => {
+        this.joinedToGroupMessage = error["error"]["error"];
+        console.log("Nie mozna pobrac!");
+      })
+  }
 
-        this.groupService.joinToTheGroup(idGroup).
-        subscribe(data2 => {
-            this.joinedToGroupMessage = "Dolaczyles do grupy!";
-          },
-          error2 => {
-            this.joinedToGroupMessage = error2["error"]["error"];
-            console.log("Nie mozna pobrac!");
-          })
-
+  acceptNewMember(idGroup: number, idGroupMember: number){
+    this.groupService.acceptMember(idGroup, idGroupMember).
+    subscribe(data => {
+        console.log("Zaakceptowano!");
       },
       error => {
         console.log("Nie mozna pobrac!");
