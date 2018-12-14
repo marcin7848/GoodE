@@ -51,10 +51,12 @@ public class QuestionController {
   @PostMapping("/addNew")
   @PreAuthorize("hasAnyRole('"+ AccessRole.ROLE_ADMIN +"', '"+ AccessRole.ROLE_TEACHER +"')")
   public ResponseEntity<?> addNew(@Validated(QuestionValidation.class) @RequestBody Question question,
-      @PathVariable("idGroup") int idGroup,
-      BindingResult result){
+      BindingResult result,
+      @PathVariable("idGroup") int idGroup){
 
     if (result.hasErrors()) {
+      System.out.println(result.getFieldError().getCode());
+      System.out.println(result.getFieldError().getDefaultMessage());
       return ErrorMessage.send(Language
           .translateError(result.getFieldError().getField(), result.getFieldError().getCode(),
               result.getFieldError().getDefaultMessage(),
@@ -84,9 +86,9 @@ public class QuestionController {
   @PatchMapping("/{id}/edit")
   @PreAuthorize("hasAnyRole('"+ AccessRole.ROLE_ADMIN +"', '"+ AccessRole.ROLE_TEACHER +"')")
   public ResponseEntity<?> edit(@Validated(QuestionValidation.class) @RequestBody Question question,
+      BindingResult result,
       @PathVariable("id") int id,
-      @PathVariable("idGroup") int idGroup,
-      BindingResult result){
+      @PathVariable("idGroup") int idGroup){
 
     if (result.hasErrors()) {
       return ErrorMessage.send(Language
@@ -153,9 +155,9 @@ public class QuestionController {
   @PostMapping("/{idQuestion}/closedAnswer/addNew")
   @PreAuthorize("hasAnyRole('"+ AccessRole.ROLE_ADMIN +"', '"+ AccessRole.ROLE_TEACHER +"')")
   public ResponseEntity<?> addNewClosedAnswer(@Validated(ClosedAnswerValidation.class) @RequestBody ClosedAnswer closedAnswer,
+      BindingResult result,
       @PathVariable("idQuestion") int idQuestion,
-      @PathVariable("idGroup") int idGroup,
-      BindingResult result){
+      @PathVariable("idGroup") int idGroup){
 
     if (result.hasErrors()) {
       return ErrorMessage.send(Language
@@ -193,6 +195,101 @@ public class QuestionController {
       return ErrorMessage
           .send(Language.getMessage("error.closedAnswer.notCreated"), HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    return new ResponseEntity<>(null, HttpStatus.OK);
+  }
+
+  @PatchMapping("/{idQuestion}/closedAnswer/{id}/edit")
+  @PreAuthorize("hasAnyRole('"+ AccessRole.ROLE_ADMIN +"', '"+ AccessRole.ROLE_TEACHER +"')")
+  public ResponseEntity<?> addNewClosedAnswer(@Validated(ClosedAnswerValidation.class) @RequestBody ClosedAnswer closedAnswer,
+      BindingResult result,
+      @PathVariable("id") int id,
+      @PathVariable("idQuestion") int idQuestion,
+      @PathVariable("idGroup") int idGroup){
+
+    if (result.hasErrors()) {
+      return ErrorMessage.send(Language
+          .translateError(result.getFieldError().getField(), result.getFieldError().getCode(),
+              result.getFieldError().getDefaultMessage(),
+              Language.getMessage(result.getFieldError().getField())), HttpStatus.BAD_REQUEST);
+    }
+
+    ClosedAnswer oldClosedAnswer = questionService.getClosedAnswerById(id);
+    if(oldClosedAnswer == null){
+      return ErrorMessage
+          .send(Language.getMessage("error.closedAnswer.badId"), HttpStatus.BAD_REQUEST);
+    }
+
+    Question question = questionService.getQuestionById(idQuestion);
+    if(question == null){
+      return ErrorMessage
+          .send(Language.getMessage("error.question.badId"), HttpStatus.BAD_REQUEST);
+    }
+
+    Group group = groupService.getGroupById(idGroup);
+    if(group == null){
+      return ErrorMessage
+          .send(Language.getMessage("error.group.badId"), HttpStatus.BAD_REQUEST);
+    }
+
+    ErrorCode errorCode = new ErrorCode();
+    if (!groupMemberValidator.validatePermissionToGroup(group, true, errorCode)) {
+      return ErrorMessage.send(Language.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
+    }
+
+    QuestionGroup questionGroup = questionService.getQuestionGroupByQuestionAndGroup(question, group);
+    if(questionGroup == null){
+      return ErrorMessage
+          .send(Language.getMessage("error.questionGroup.notExisted"), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    closedAnswer.setId(oldClosedAnswer.getId());
+    closedAnswer.setQuestion(question);
+    closedAnswer = questionService.editClosedAnswer(closedAnswer);
+    if(closedAnswer == null){
+      return ErrorMessage
+          .send(Language.getMessage("error.closedAnswer.notEdited"), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    return new ResponseEntity<>(null, HttpStatus.OK);
+  }
+
+  @DeleteMapping("/{idQuestion}/closedAnswer/{id}/delete")
+  @PreAuthorize("hasAnyRole('"+ AccessRole.ROLE_ADMIN +"', '"+ AccessRole.ROLE_TEACHER +"')")
+  public ResponseEntity<?> deleteClosedAnswer(@PathVariable("id") int id,
+      @PathVariable("idQuestion") int idQuestion,
+      @PathVariable("idGroup") int idGroup){
+
+    ClosedAnswer closedAnswer = questionService.getClosedAnswerById(id);
+    if(closedAnswer == null){
+      return ErrorMessage
+          .send(Language.getMessage("error.closedAnswer.badId"), HttpStatus.BAD_REQUEST);
+    }
+
+    Question question = questionService.getQuestionById(idQuestion);
+    if(question == null){
+      return ErrorMessage
+          .send(Language.getMessage("error.question.badId"), HttpStatus.BAD_REQUEST);
+    }
+
+    Group group = groupService.getGroupById(idGroup);
+    if(group == null){
+      return ErrorMessage
+          .send(Language.getMessage("error.group.badId"), HttpStatus.BAD_REQUEST);
+    }
+
+    ErrorCode errorCode = new ErrorCode();
+    if (!groupMemberValidator.validatePermissionToGroup(group, true, errorCode)) {
+      return ErrorMessage.send(Language.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
+    }
+
+    QuestionGroup questionGroup = questionService.getQuestionGroupByQuestionAndGroup(question, group);
+    if(questionGroup == null){
+      return ErrorMessage
+          .send(Language.getMessage("error.questionGroup.notExisted"), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    questionService.deleteClosedAnswer(closedAnswer);
 
     return new ResponseEntity<>(null, HttpStatus.OK);
   }

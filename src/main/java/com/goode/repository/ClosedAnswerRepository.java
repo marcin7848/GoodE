@@ -5,4 +5,5 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface ClosedAnswerRepository extends CrudRepository<ClosedAnswer, Long> {
 
+  ClosedAnswer findClosedAnswerById(int id);
 }

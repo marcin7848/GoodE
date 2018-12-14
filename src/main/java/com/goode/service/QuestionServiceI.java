@@ -12,7 +12,10 @@ public interface QuestionServiceI {
   Question edit(Question question, Group group);
   void delete(Question question, Group group);
 
-  ClosedAnswer addNewClosedAnswer(ClosedAnswer closedAnswer);
+  ClosedAnswer getClosedAnswerById(int id);
   QuestionGroup getQuestionGroupByQuestionAndGroup(Question question, Group group);
+  ClosedAnswer addNewClosedAnswer(ClosedAnswer closedAnswer);
+  ClosedAnswer editClosedAnswer(ClosedAnswer closedAnswer);
+  void deleteClosedAnswer(ClosedAnswer closedAnswer);
 
 }

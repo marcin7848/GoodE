@@ -23,10 +23,14 @@ public class QuestionService implements QuestionServiceI {
   ClosedAnswerRepository closedAnswerRepository;
 
   @Override
+  public ClosedAnswer getClosedAnswerById(int id) {
+    return closedAnswerRepository.findClosedAnswerById(id);
+  }
+
+  @Override
   public Question getQuestionById(int id) {
     return questionRepository.findQuestionById(id);
   }
-
 
   @Override
   public QuestionGroup getQuestionGroupByQuestionAndGroup(Question question, Group group) {
@@ -94,4 +98,14 @@ public class QuestionService implements QuestionServiceI {
     return closedAnswer;
   }
 
+  @Override
+  public ClosedAnswer editClosedAnswer(ClosedAnswer closedAnswer) {
+    closedAnswer = closedAnswerRepository.save(closedAnswer);
+    return closedAnswer;
+  }
+
+  @Override
+  public void deleteClosedAnswer(ClosedAnswer closedAnswer) {
+    closedAnswerRepository.delete(closedAnswer);
+  }
 }

@@ -35,7 +35,7 @@ public class ClosedAnswer {
   @ManyToOne(fetch = FetchType.EAGER, optional = false)
   @JoinColumn(name = "id_question")
   @OnDelete(action = OnDeleteAction.CASCADE)
-  @NotNull(groups = {ClosedAnswerValidation.class})
+  @NotNull
   private Question question;
 
   @Column(name = "closed_answer")
