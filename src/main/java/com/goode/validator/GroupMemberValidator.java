@@ -23,8 +23,13 @@ public class GroupMemberValidator extends BaseValidator {
   AccountService accountService;
 
   public boolean validatePermissionToGroup(Group group, boolean admin, ErrorCode errorCode) {
+    Account loggedAccount = accountService.getLoggedAccount();
+    if(loggedAccount.getAccessRole().getRole().equals(AccessRole.ROLE_ADMIN)){
+      return true;
+    }
+
     GroupMember groupMember = groupMemberService
-        .getGroupMemberByGroupAndAccount(group, accountService.getLoggedAccount());
+        .getGroupMemberByGroupAndAccount(group, loggedAccount);
     if (groupMember == null || (!groupMember.getAccessRole().getRole().equals(AccessRole.ROLE_ADMIN)
         && (!groupMember.getAccessRole().getRole().equals(AccessRole.ROLE_TEACHER) || !admin))) {
       errorCode.rejectValue("accessRole", "error.group.noPermissions");

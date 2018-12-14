@@ -1,24 +1,79 @@
 package com.goode.service;
 
+import com.goode.business.Group;
 import com.goode.business.Question;
+import com.goode.business.QuestionGroup;
+import com.goode.repository.QuestionGroupRepository;
+import com.goode.repository.QuestionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class QuestionService implements QuestionServiceI, StandardizeService<Question> {
+public class QuestionService implements QuestionServiceI {
+
+  @Autowired
+  QuestionRepository questionRepository;
+
+  @Autowired
+  QuestionGroupRepository questionGroupRepository;
 
   @Override
-  public Question addNew(Question question) {
-    return new Question();
+  public Question getQuestionById(int id) {
+    return questionRepository.findQuestionById(id);
   }
 
   @Override
-  public Question edit(Question question) {
-    return new Question();
-  }
+  public Question addNew(Question question, Group group) {
 
+    question = questionRepository.save(question);
+
+    if(question == null){
+      return null;
+    }
+
+    QuestionGroup questionGroup = new QuestionGroup();
+    questionGroup.setQuestion(question);
+    questionGroup.setGroup(group);
+    questionGroup = questionGroupRepository.save(questionGroup);
+
+    if(questionGroup == null){
+      return null;
+    }
+    return question;
+  }
 
   @Override
-  public void delete(Question question) {
+  public Question edit(Question question, Group group) {
 
+    QuestionGroup questionGroup = questionGroupRepository.findQuestionGroupByQuestionAndGroup(question, group);
+    questionGroupRepository.delete(questionGroup);
+
+    question = questionRepository.save(question);
+
+    if(question == null){
+      return null;
+    }
+
+    questionGroup = new QuestionGroup();
+    questionGroup.setQuestion(question);
+    questionGroup.setGroup(group);
+    questionGroup = questionGroupRepository.save(questionGroup);
+
+    if(questionGroup == null){
+      return null;
+    }
+    return question;
   }
+
+  @Override
+  public void delete(Question question, Group group) {
+
+    QuestionGroup questionGroup = questionGroupRepository.findQuestionGroupByQuestionAndGroup(question, group);
+    if(questionGroup == null){
+      return;
+    }
+
+    questionRepository.delete(question);
+  }
+
 }
