@@ -17,5 +17,6 @@ public interface QuestionServiceI {
   ClosedAnswer addNewClosedAnswer(ClosedAnswer closedAnswer);
   ClosedAnswer editClosedAnswer(ClosedAnswer closedAnswer);
   void deleteClosedAnswer(ClosedAnswer closedAnswer);
+  void changeCorrectClosedAnswer(ClosedAnswer closedAnswer);
 
 }

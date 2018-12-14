@@ -108,4 +108,10 @@ public class QuestionService implements QuestionServiceI {
   public void deleteClosedAnswer(ClosedAnswer closedAnswer) {
     closedAnswerRepository.delete(closedAnswer);
   }
+
+  @Override
+  public void changeCorrectClosedAnswer(ClosedAnswer closedAnswer) {
+    closedAnswer.setCorrect(!closedAnswer.isCorrect());
+    closedAnswerRepository.save(closedAnswer);
+  }
 }

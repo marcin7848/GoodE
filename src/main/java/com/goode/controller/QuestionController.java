@@ -294,4 +294,45 @@ public class QuestionController {
     return new ResponseEntity<>(null, HttpStatus.OK);
   }
 
+  @PatchMapping("/{idQuestion}/closedAnswer/{id}/changeCorrect")
+  @PreAuthorize("hasAnyRole('"+ AccessRole.ROLE_ADMIN +"', '"+ AccessRole.ROLE_TEACHER +"')")
+  public ResponseEntity<?> changeCorrectClosedAnswer(@PathVariable("id") int id,
+      @PathVariable("idQuestion") int idQuestion,
+      @PathVariable("idGroup") int idGroup){
+
+    ClosedAnswer closedAnswer = questionService.getClosedAnswerById(id);
+    if(closedAnswer == null){
+      return ErrorMessage
+          .send(Language.getMessage("error.closedAnswer.badId"), HttpStatus.BAD_REQUEST);
+    }
+
+    Question question = questionService.getQuestionById(idQuestion);
+    if(question == null){
+      return ErrorMessage
+          .send(Language.getMessage("error.question.badId"), HttpStatus.BAD_REQUEST);
+    }
+
+    Group group = groupService.getGroupById(idGroup);
+    if(group == null){
+      return ErrorMessage
+          .send(Language.getMessage("error.group.badId"), HttpStatus.BAD_REQUEST);
+    }
+
+    ErrorCode errorCode = new ErrorCode();
+    if (!groupMemberValidator.validatePermissionToGroup(group, true, errorCode)) {
+      return ErrorMessage.send(Language.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
+    }
+
+    QuestionGroup questionGroup = questionService.getQuestionGroupByQuestionAndGroup(question, group);
+    if(questionGroup == null){
+      return ErrorMessage
+          .send(Language.getMessage("error.questionGroup.notExisted"), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    questionService.changeCorrectClosedAnswer(closedAnswer);
+
+    return new ResponseEntity<>(null, HttpStatus.OK);
+  }
+
+
 }
