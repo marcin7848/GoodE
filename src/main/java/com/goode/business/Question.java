@@ -1,7 +1,5 @@
 package com.goode.business;
 
-import com.goode.business.Account.FullValidation;
-import com.goode.business.Account.RegisterValidation;
 import java.sql.Timestamp;
 import java.util.List;
 import javax.persistence.Column;
@@ -14,11 +12,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.Length;
 
 @Entity
 @Table(name = "questions")
@@ -36,7 +32,7 @@ public class Question {
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "question")
   private List<QuestionGroup> questionGroups = null;
 
-  @Column(name = "username")
+  @Column(name = "question")
   @NotBlank
   private String question;
 
@@ -52,5 +48,5 @@ public class Question {
   private int points;
 
   @OneToMany(fetch = FetchType.EAGER, mappedBy = "question")
-  private List<ClosedAnswers> closedAnswers = null;
+  private List<ClosedAnswer> closedAnswers = null;
 }

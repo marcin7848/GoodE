@@ -17,7 +17,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
-@Table(name = "questions")
+@Table(name = "question_groups")
 @NoArgsConstructor
 @Data
 @AllArgsConstructor

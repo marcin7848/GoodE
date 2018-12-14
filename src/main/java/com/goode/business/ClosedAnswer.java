@@ -24,10 +24,10 @@ import org.hibernate.annotations.OnDeleteAction;
 @NoArgsConstructor
 @Data
 @AllArgsConstructor
-public class ClosedAnswers {
+public class ClosedAnswer {
 
   @Id
-  @Column(name = "id_question_group")
+  @Column(name = "id_closed_answer")
   @GeneratedValue(strategy = GenerationType.AUTO)
   @NotNull
   private int id;
