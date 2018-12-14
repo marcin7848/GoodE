@@ -25,37 +25,37 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Question {
 
-  public interface FullValidation {}
+  public interface QuestionValidation {}
 
   @Id
   @Column(name = "id_question")
   @GeneratedValue(strategy = GenerationType.AUTO)
-  @NotNull(groups = {FullValidation.class})
+  @NotNull(groups = {QuestionValidation.class})
   private int id;
 
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "question")
   private List<QuestionGroup> questionGroups = null;
 
   @Column(name = "question")
-  @NotBlank(groups = {FullValidation.class})
+  @NotBlank(groups = {QuestionValidation.class})
   private String question;
 
   @Column(name = "type")
-  @NotNull(groups = {FullValidation.class})
-  @Min(value = 1, groups = {FullValidation.class})
-  @Max(value = 2, groups = {FullValidation.class})
+  @NotNull(groups = {QuestionValidation.class})
+  @Min(value = 1, groups = {QuestionValidation.class})
+  @Max(value = 2, groups = {QuestionValidation.class})
   private int type;
 
   @Column(name = "difficulty")
-  @NotNull(groups = {FullValidation.class})
-  @Min(value = 1, groups = {FullValidation.class})
-  @Max(value = 10, groups = {FullValidation.class})
+  @NotNull(groups = {QuestionValidation.class})
+  @Min(value = 1, groups = {QuestionValidation.class})
+  @Max(value = 10, groups = {QuestionValidation.class})
   private int difficulty;
 
   @Column(name = "points")
-  @NotNull(groups = {FullValidation.class})
-  @Min(value = 1, groups = {FullValidation.class})
-  @Max(value = 1000, groups = {FullValidation.class})
+  @NotNull(groups = {QuestionValidation.class})
+  @Min(value = 1, groups = {QuestionValidation.class})
+  @Max(value = 1000, groups = {QuestionValidation.class})
   private int points;
 
   @Column(name = "answer_time")

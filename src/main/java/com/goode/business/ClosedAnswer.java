@@ -1,7 +1,5 @@
 package com.goode.business;
 
-import com.goode.business.Group.AddNewValidation;
-import com.goode.business.Group.FullValidation;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -26,24 +24,26 @@ import org.hibernate.annotations.OnDeleteAction;
 @AllArgsConstructor
 public class ClosedAnswer {
 
+  public interface ClosedAnswerValidation {}
+
   @Id
   @Column(name = "id_closed_answer")
   @GeneratedValue(strategy = GenerationType.AUTO)
-  @NotNull
+  @NotNull(groups = {ClosedAnswerValidation.class})
   private int id;
 
   @ManyToOne(fetch = FetchType.EAGER, optional = false)
   @JoinColumn(name = "id_question")
   @OnDelete(action = OnDeleteAction.CASCADE)
-  @NotNull
+  @NotNull(groups = {ClosedAnswerValidation.class})
   private Question question;
 
   @Column(name = "closed_answer")
-  @NotBlank
+  @NotBlank(groups = {ClosedAnswerValidation.class})
   private String closedAnswer;
 
   @Column(name = "correct")
-  @NotNull
+  @NotNull(groups = {ClosedAnswerValidation.class})
   private boolean correct;
 
 }

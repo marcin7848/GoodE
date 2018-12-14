@@ -1,8 +1,10 @@
 package com.goode.service;
 
+import com.goode.business.ClosedAnswer;
 import com.goode.business.Group;
 import com.goode.business.Question;
 import com.goode.business.QuestionGroup;
+import com.goode.repository.ClosedAnswerRepository;
 import com.goode.repository.QuestionGroupRepository;
 import com.goode.repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +19,18 @@ public class QuestionService implements QuestionServiceI {
   @Autowired
   QuestionGroupRepository questionGroupRepository;
 
+  @Autowired
+  ClosedAnswerRepository closedAnswerRepository;
+
   @Override
   public Question getQuestionById(int id) {
     return questionRepository.findQuestionById(id);
+  }
+
+
+  @Override
+  public QuestionGroup getQuestionGroupByQuestionAndGroup(Question question, Group group) {
+    return questionGroupRepository.findQuestionGroupByQuestionAndGroup(question, group);
   }
 
   @Override
@@ -74,6 +85,13 @@ public class QuestionService implements QuestionServiceI {
     }
 
     questionRepository.delete(question);
+  }
+
+
+  @Override
+  public ClosedAnswer addNewClosedAnswer(ClosedAnswer closedAnswer) {
+    closedAnswer = closedAnswerRepository.save(closedAnswer);
+    return closedAnswer;
   }
 
 }
