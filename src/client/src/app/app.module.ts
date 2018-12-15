@@ -23,6 +23,8 @@ import { GroupComponent } from './component/group/group.component';
 import { AddNewGroupComponent } from './component/group/add-new-group/add-new-group.component';
 import { GroupViewComponent } from './component/group/group-view/group-view.component';
 import { GroupEditComponent } from './component/group/group-edit/group-edit.component';
+import {QuestionService} from "./service/question/question.service";
+import { QuestionComponent } from './component/question/question.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +41,8 @@ import { GroupEditComponent } from './component/group/group-edit/group-edit.comp
     GroupComponent,
     AddNewGroupComponent,
     GroupViewComponent,
-    GroupEditComponent
+    GroupEditComponent,
+    QuestionComponent
   ],
   imports: [
     routing,
@@ -57,6 +60,7 @@ import { GroupEditComponent } from './component/group/group-edit/group-edit.comp
     AccountService,
     CookieService,
     GroupService,
+    QuestionService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: Interceptor,

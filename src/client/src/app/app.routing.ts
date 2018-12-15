@@ -12,6 +12,7 @@ import {GroupComponent} from "./component/group/group.component";
 import {AddNewGroupComponent} from "./component/group/add-new-group/add-new-group.component";
 import {GroupViewComponent} from "./component/group/group-view/group-view.component";
 import {GroupEditComponent} from "./component/group/group-edit/group-edit.component";
+import {QuestionComponent} from "./component/question/question.component";
 
 const routes: Routes = [
   {path : '', component : HomeComponent},
@@ -29,6 +30,7 @@ const routes: Routes = [
   {path : 'group/addNew', component : AddNewGroupComponent},
   {path : 'group/:id/view', component : GroupViewComponent},
   {path : 'group/:id/edit', component : GroupEditComponent},
+  {path : 'group/:id/question', component : QuestionComponent},
 ];
 
 export const routing = RouterModule.forRoot(routes);

@@ -32,7 +32,7 @@ public class ClosedAnswer {
   @NotNull(groups = {ClosedAnswerValidation.class})
   private int id;
 
-  @ManyToOne(fetch = FetchType.EAGER, optional = false)
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "id_question")
   @OnDelete(action = OnDeleteAction.CASCADE)
   @NotNull

@@ -7,6 +7,7 @@ import com.goode.business.QuestionGroup;
 import com.goode.repository.ClosedAnswerRepository;
 import com.goode.repository.QuestionGroupRepository;
 import com.goode.repository.QuestionRepository;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +36,20 @@ public class QuestionService implements QuestionServiceI {
   @Override
   public QuestionGroup getQuestionGroupByQuestionAndGroup(Question question, Group group) {
     return questionGroupRepository.findQuestionGroupByQuestionAndGroup(question, group);
+  }
+
+  @Override
+  public List<Question> getQuestionsByIdGroup(int id_group) {
+    List<Question> questions = questionRepository.findQuestionsByIdGroup(id_group);
+    for(int i=0; i<questions.size(); i++){
+      questions.get(i).setQuestionGroups(null);
+      List<ClosedAnswer> closedAnswers = questions.get(i).getClosedAnswers();
+      for(int j=0; j<closedAnswers.size(); j++){
+        closedAnswers.get(j).setQuestion(null);
+      }
+    }
+
+    return questions;
   }
 
   @Override
