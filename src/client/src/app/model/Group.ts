@@ -1,4 +1,5 @@
 import {GroupMember} from "./GroupMember";
+import {QuestionGroup} from "./QuestionGroup";
 
 export class Group{
   id: number;

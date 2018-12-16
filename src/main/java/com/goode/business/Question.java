@@ -33,9 +33,6 @@ public class Question {
   @NotNull(groups = {QuestionValidation.class})
   private int id;
 
-  @OneToMany(fetch = FetchType.LAZY, mappedBy = "question")
-  private List<QuestionGroup> questionGroups = null;
-
   @Column(name = "question")
   @NotBlank(groups = {QuestionValidation.class})
   private String question;
@@ -60,6 +57,9 @@ public class Question {
 
   @Column(name = "answer_time")
   private int answerTime;
+
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "question")
+  private List<QuestionGroup> questionGroups = null;
 
   @OneToMany(fetch = FetchType.EAGER, mappedBy = "question")
   private List<ClosedAnswer> closedAnswers = null;

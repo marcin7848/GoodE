@@ -15,6 +15,11 @@ Description: {{group?.description}}
 <div *ngIf="group?.groupMembers[0] != null && group?.groupMembers[0].accessRole.role=='ROLE_ADMIN'">
   <button (click)="deleteGroup(group.id)" class="btn btn-primary">Delete group</button><br />
 </div>
+<br />
+
+<div *ngIf="group?.groupMembers[0] != null && (group?.groupMembers[0].accessRole.role=='ROLE_ADMIN' || group?.groupMembers[0].accessRole.role=='ROLE_TEACHER')">
+  <a routerLink="/group/{{group?.id}}/question">Questions</a>
+</div>
 
 <br />
 <br />
