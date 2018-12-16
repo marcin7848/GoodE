@@ -74,4 +74,7 @@ public class Group {
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "group")
   private List<GroupMember> groupMembers = null;
 
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "group")
+  private List<Exam> exams = null;
+
 }
