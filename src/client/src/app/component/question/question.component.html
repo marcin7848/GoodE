@@ -1,3 +1,96 @@
-<p>
-  question works!
-</p>
+<h2>Questions for group: {{group?.name}}</h2>
+
+<div id="formQuestion" style="position: absolute; right: 0; height: 500px; width: 800px; visibility: hidden;">
+  <ng-container *ngIf="editMode == 1">
+  <h2>Add new question</h2>
+  </ng-container>
+  <ng-container *ngIf="editMode == 2">
+    <h2>Edit question</h2>
+  </ng-container>
+
+  <form [formGroup]="addNewQuestionForm">
+    <textarea formControlName="addQuestion" rows="10" cols="80"
+              class="form-control"></textarea><br/>
+    Type:
+    <select formControlName="addType">
+      <option [value]="1">Zamknięte jednokrotnego wyboru</option>
+      <option [value]="2">Zamknięte wielokrotnego wyboru</option>
+    </select><br/>
+    Difficulty: <input type="text" formControlName="addDifficulty" class="form-control"/><br/>
+    Points: <input type="text" formControlName="addPoints" class="form-control"/><br/>
+    Answer Time: <input type="text" formControlName="addAnswerTime" class="form-control"/><br/>
+
+    <ng-container *ngIf="editMode == 1">
+      <button (click)="addNewQuestion()" class="btn btn-primary">Add new question</button>
+    </ng-container>
+    <ng-container *ngIf="editMode == 2">
+      <button (click)="editQuestion(currentQuestion)" class="btn btn-primary">Edit question</button>
+    </ng-container>
+    <br/>
+    Errors: {{message}}
+  </form>
+</div>
+
+<div id="formAnswer" style="position: absolute; right: 0; height: 500px; width: 800px; visibility: hidden;">
+  <ng-container *ngIf="editMode == 1">
+    <h2>Add new answer</h2>
+  </ng-container>
+  <ng-container *ngIf="editMode == 2">
+    <h2>Edit answer</h2>
+  </ng-container>
+
+  <form [formGroup]="answerForm">
+    <textarea formControlName="closedAnswer" rows="10" cols="80"
+              class="form-control"></textarea><br/>
+    Correct: <input type="checkbox" formControlName="correct" class="form-control" [checked]="currentClosedAnswer.correct"/><br/>
+
+    <ng-container *ngIf="editMode == 1">
+      <button (click)="addNewAnswer(currentQuestion)" class="btn btn-primary">Add new answer</button>
+    </ng-container>
+    <ng-container *ngIf="editMode == 2">
+      <button (click)="editAnswer(currentQuestion, currentClosedAnswer)" class="btn btn-primary">Edit answer</button>
+    </ng-container>
+    <br/>
+    Errors: {{message}}
+  </form>
+</div>
+
+<button (click)="showAddQuestion()" class="btn btn-primary">Add new question</button><br/>
+
+<ng-container *ngFor="let question of questions">
+  <table border="1" style="margin-top: 10px;">
+    <tr>
+      <td colspan="5"><b>Question</b></td>
+    </tr>
+    <tr>
+      <td colspan="4" style="white-space: pre-wrap; width: 600px;" [innerHTML]="question.question"></td>
+      <td rowspan="2">
+        <button (click)="showEditQuestion(question)" class="btn btn-primary">Edit question</button>
+        <button (click)="deleteQuestion(question)" class="btn btn-primary">Delete question</button></td>
+    </tr>
+    <tr>
+      <td>Typ:
+        <ng-container *ngIf="question.type == 1">Jednokrotnego wyboru</ng-container>
+        <ng-container *ngIf="question.type == 2">Wielokrotnego wyboru</ng-container>
+      </td>
+      <td>Trudność: {{question.difficulty}}</td>
+      <td>Punkty: {{question.points}}</td>
+      <td>Czas odpowiedzi [s]: {{question.answerTime}}</td>
+    </tr>
+    <tr>
+      <td colspan="3"><b>Closed answers</b></td>
+      <td colspan="1">Is correct?</td>
+      <td colspan="1"><button (click)="showAddAnswer(question)" class="btn btn-primary">Add new answer</button></td>
+    </tr>
+    <ng-container *ngFor="let answer of question.closedAnswers">
+      <tr>
+        <td colspan="3" style="white-space: pre-wrap; width: 400px;" [innerHTML]="answer.closedAnswer"></td>
+        <td colspan="1"><input type="checkbox" (click)="changeCorrectAnswer(question, answer)" [checked]="answer.correct" /></td>
+        <td colspan="1">
+          <button (click)="showEditAnswer(question, answer)" class="btn btn-primary">Edit answer</button>
+          <button (click)="deleteAnswer(question, answer)" class="btn btn-primary">Delete answer</button>
+        </td>
+      </tr>
+    </ng-container>
+  </table>
+</ng-container>

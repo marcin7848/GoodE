@@ -30,7 +30,7 @@ const routes: Routes = [
   {path : 'group/addNew', component : AddNewGroupComponent},
   {path : 'group/:id/view', component : GroupViewComponent},
   {path : 'group/:id/edit', component : GroupEditComponent},
-  {path : 'group/:id/question', component : QuestionComponent},
+  {path : 'group/:idGroup/question', component : QuestionComponent},
 ];
 
 export const routing = RouterModule.forRoot(routes);
