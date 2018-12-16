@@ -42,7 +42,7 @@ public class Exam {
   private String title;
 
   @Column(name = "password")
-  @Length(max = 15, groups = {ExamValidationFull.class})
+  @Length(max = 50, groups = {ExamValidationFull.class})
   private String password;
 
   @Column(name = "color")
@@ -102,16 +102,14 @@ public class Exam {
   @Column(name = "rated")
   private boolean rated;
 
-  @Column(name = "start_time", updatable = false)
-  @NotNull(groups = {ExamValidationFull.class})
+  @Column(name = "start_time")
   private Timestamp startTime;
 
-  @Column(name = "finish_time", updatable = false)
-  @NotNull(groups = {ExamValidationFull.class})
+  @Column(name = "finish_time")
   private Timestamp finishTime;
 
   @Column(name = "creation_time", updatable = false)
-  @NotNull(groups = {ExamValidationFull.class})
+  @NotNull
   private Timestamp creationTime;
 
   @Column(name = "percent_to_pass")
@@ -124,5 +122,5 @@ public class Exam {
   @NotNull
   private Group group;
 
-  
+
 }
