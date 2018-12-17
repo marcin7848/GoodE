@@ -28,6 +28,8 @@ import org.hibernate.validator.constraints.Length;
 public class Exam {
 
   public interface ExamValidationFull{}
+  public interface StartExamValidationFull{}
+
 
   @Id
   @Column(name = "id_exam")
@@ -46,9 +48,9 @@ public class Exam {
   private String password;
 
   @Column(name = "color")
-  @NotBlank(groups = {ExamValidationFull.class})
-  @Length(min = 7, max = 7, groups = {ExamValidationFull.class})
-  @Pattern(regexp = "^[\\p{L}0-9#]+$", groups = {ExamValidationFull.class})
+  @NotBlank(groups = {StartExamValidationFull.class})
+  @Length(min = 7, max = 7, groups = {StartExamValidationFull.class})
+  @Pattern(regexp = "^[\\p{L}0-9#]+$", groups = {StartExamValidationFull.class})
   private String color;
 
   @Column(name = "type")

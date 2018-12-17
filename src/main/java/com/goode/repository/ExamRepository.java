@@ -5,4 +5,6 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface ExamRepository extends CrudRepository<Exam, Long> {
 
+  Exam findExamById(int id);
+
 }
