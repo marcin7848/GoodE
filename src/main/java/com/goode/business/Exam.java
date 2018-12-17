@@ -1,6 +1,7 @@
 package com.goode.business;
 
 import java.sql.Timestamp;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -9,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -44,7 +46,7 @@ public class Exam {
   private String title;
 
   @Column(name = "password")
-  @Length(max = 50, groups = {ExamValidationFull.class})
+  @Length(max = 50, groups = {StartExamValidationFull.class})
   private String password;
 
   @Column(name = "color")
@@ -124,5 +126,7 @@ public class Exam {
   @NotNull
   private Group group;
 
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "examQuestion")
+  private List<ExamQuestion> examQuestions = null;
 
 }

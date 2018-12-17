@@ -46,6 +46,7 @@ public class ExamService implements ExamServiceI {
     exam.setStarted(oldExam.isStarted());
     exam.setFinished(oldExam.isFinished());
     exam.setRated(oldExam.isRated());
+    exam.setPassword(oldExam.getPassword());
 
     exam = examRepository.save(exam);
 

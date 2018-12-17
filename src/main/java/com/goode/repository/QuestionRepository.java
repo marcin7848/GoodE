@@ -12,4 +12,9 @@ public interface QuestionRepository extends CrudRepository<Question, Long> {
 
   @Query(value = "select * from questions q, question_groups qg where q.id_question=qg.id_question and qg.id_group = :id_group order by q.id_question ASC", nativeQuery = true)
   List<Question> findQuestionsByIdGroup(@Param("id_group") int id_group);
+
+  @Query(value = "select COUNT(*) from questions q, question_groups qg where q.id_question=qg.id_question and qg.id_group = :id_group", nativeQuery = true)
+  int getNumberOfQuestions(@Param("id_group") int id_group);
+
+
 }
