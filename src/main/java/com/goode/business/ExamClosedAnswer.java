@@ -35,7 +35,7 @@ public class ExamClosedAnswer {
   private int id;
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "id_exam_")
+  @JoinColumn(name = "id_exam_question")
   @OnDelete(action = OnDeleteAction.CASCADE)
   @NotNull
   private ExamQuestion examQuestion;
@@ -49,5 +49,5 @@ public class ExamClosedAnswer {
   private boolean correct;
 
   @OneToMany(fetch = FetchType.EAGER, mappedBy = "examClosedAnswer")
-  private List<Answer> answers = null;
+  private List<ExamAnswer> examAnswers = null;
 }

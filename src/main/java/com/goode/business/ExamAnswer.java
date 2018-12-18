@@ -17,14 +17,14 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
-@Table(name = "answers")
+@Table(name = "exam_answers")
 @NoArgsConstructor
 @Data
 @AllArgsConstructor
-public class Answer {
+public class ExamAnswer {
 
   @Id
-  @Column(name = "id_answer")
+  @Column(name = "id_exam_answer")
   @GeneratedValue(strategy = GenerationType.AUTO)
   @NotNull
   private int id;

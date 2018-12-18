@@ -62,6 +62,10 @@ public class ExamQuestion {
   @Column(name = "answer_time")
   private int answerTime;
 
+  @Column(name = "position")
+  @NotNull
+  private int position;
+
   @ManyToOne(fetch = FetchType.EAGER, optional = false)
   @JoinColumn(name = "id_exam")
   @OnDelete(action = OnDeleteAction.CASCADE)

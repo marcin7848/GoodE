@@ -10,7 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -47,10 +46,10 @@ public class ExamMemberQuestion {
   private ExamQuestion examQuestion;
 
   @Column(name = "position")
-  private boolean position;
+  private int position;
 
-  @OneToMany(fetch = FetchType.EAGER, mappedBy = "examMemberQuestion")
-  private List<Answer> answers = null;
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "examMemberQuestion")
+  private List<ExamAnswer> examAnswers = null;
 
 
 }

@@ -32,7 +32,6 @@ public class Exam {
   public interface ExamValidationFull{}
   public interface StartExamValidationFull{}
 
-
   @Id
   @Column(name = "id_exam")
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -85,9 +84,6 @@ public class Exam {
   @Column(name = "mix_questions")
   private boolean mixQuestions;
 
-  @Column(name = "time_for_exam")
-  private boolean timeForExam;
-
   @Column(name = "max_time")
   private int maxTime;
 
@@ -96,6 +92,9 @@ public class Exam {
 
   @Column(name = "number_of_questions")
   private int numberOfQuestions;
+
+  @Column(name = "joining")
+  private boolean joining;
 
   @Column(name = "started")
   private boolean started;
@@ -126,7 +125,11 @@ public class Exam {
   @NotNull
   private Group group;
 
-  @OneToMany(fetch = FetchType.LAZY, mappedBy = "examQuestion")
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "exam")
   private List<ExamQuestion> examQuestions = null;
+
+
+
+
 
 }

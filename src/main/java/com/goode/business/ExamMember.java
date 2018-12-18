@@ -2,6 +2,7 @@ package com.goode.business;
 
 import java.sql.Timestamp;
 import java.util.List;
+import javax.persistence.Access;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -40,9 +41,6 @@ public class ExamMember {
   @NotNull
   private Exam exam;
 
-  @OneToMany(fetch = FetchType.LAZY, mappedBy = "examMember")
-  private List<Account> accounts = null;
-
   @Column(name = "blocked")
   private boolean blocked;
 
@@ -52,9 +50,14 @@ public class ExamMember {
   @Column(name = "position")
   private int position;
 
-  @Column(name = "creation_time", updatable = false)
+  @Column(name = "start_exam_time")
+  private Timestamp startExamTime;
+
+  @ManyToOne(fetch = FetchType.EAGER, optional = false)
+  @JoinColumn(name = "id_account")
+  @OnDelete(action = OnDeleteAction.CASCADE)
   @NotNull
-  private Timestamp creationTime;
+  private Account account;
 
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "examMember")
   private List<ExamMemberQuestion> examMemberQuestions = null;
