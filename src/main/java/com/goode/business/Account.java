@@ -103,4 +103,9 @@ public class Account {
   @JsonIgnore
   private List<GroupMember> groupMembers;
 
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "account")
+  @ToString.Exclude
+  @JsonIgnore
+  private List<ExamMember> examMembers;
+
 }
