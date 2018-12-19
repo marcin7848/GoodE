@@ -6,6 +6,8 @@ import {Group} from "../../model/Group";
 import {first} from "rxjs/operators";
 import {AccountService} from "../../service/account/account.service";
 import {Account} from "../../model/Account";
+import {Exam} from "../../model/Exam";
+import {ExamService} from "../../service/exam/exam.service";
 
 @Component({
   selector: 'app-group',
@@ -66,6 +68,7 @@ export class GroupComponent implements OnInit {
         console.log("Nie mozna pobrac!");
         this.message = error["error"]["error"];
       });
+
 
   }
 

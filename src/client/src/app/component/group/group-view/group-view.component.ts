@@ -1,11 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import {FormBuilder} from "@angular/forms";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {GroupService} from "../../../service/group/group.service";
 import {first} from "rxjs/operators";
 import {Group} from "../../../model/Group";
 import {GroupMember} from "../../../model/GroupMember";
 import {AccountService} from "../../../service/account/account.service";
+import {ExamService} from "../../../service/exam/exam.service";
+import {Exam} from "../../../model/Exam";
+
+declare var jquery:any;
+declare var $ :any;
 
 @Component({
   selector: 'app-group-view',
@@ -18,14 +23,34 @@ export class GroupViewComponent implements OnInit {
   group: Group;
   groupMembers: GroupMember[];
   actionMessage = "";
+  exams: Exam[];
+
+  editMode = 0;
+  examForm: FormGroup;
+  currentExam: Exam;
 
   constructor(private formBuilder: FormBuilder,
               private router: Router,
               private route: ActivatedRoute,
               private groupService: GroupService,
-              private accountService: AccountService) { }
+              private accountService: AccountService,
+              private examService: ExamService) { }
 
   ngOnInit() {
+    this.examForm = this.formBuilder.group({
+      title: ['', Validators.required],
+      type: ['', Validators.required],
+      difficulty: ['', Validators.required],
+      showAllQuestions: ['', Validators.required],
+      returnToQuestions: [''],
+      sendResultsInstantly: [''],
+      showFullResults: [''],
+      mixQuestions: [''],
+      percentToPass: ['', Validators.required],
+      numberOfQuestions: [''],
+      maxTime: [''],
+    });
+
 
     this.route.params.subscribe(params => {
       this.id = params['id'];
@@ -48,11 +73,49 @@ export class GroupViewComponent implements OnInit {
           this.groupMembers = data;
         },
         error => {
+          //nie poberać może też, bo użytkownik nie jest członkiem ani adminem
           console.log(error);
           console.log("Nie mozna pobrac!");
           this.message = error["error"]["error"];
         });
+
+      this.examService.getAllExamsByIdGroup(this.id)
+      .pipe(first())
+      .subscribe(
+        data => {
+          this.exams = data;
+        },
+        error => {
+          console.log(error);
+          console.log("Nie mozna pobrac!");
+          this.message = error["error"]["error"];
+        });
+
     });
+  }
+
+  get f() { return this.examForm.controls; }
+
+  showAddExam(){
+    this.editMode = 1;
+    $("#formExam").css("visibility", "visible");
+  }
+
+  showEditExam(exam: Exam){
+    this.editMode = 2;
+    this.currentExam = exam;
+    this.f.title.setValue(exam.title);
+    this.f.type.setValue(exam.type);
+    this.f.difficulty.setValue(exam.difficulty);
+    this.f.showAllQuestions.setValue(exam.showAllQuestions);
+    this.f.returnToQuestions.setValue(exam.returnToQuestions);
+    this.f.sendResultsInstantly.setValue(exam.sendResultsInstantly);
+    this.f.showFullResults.setValue(exam.showFullResults);
+    this.f.mixQuestions.setValue(exam.mixQuestions);
+    this.f.percentToPass.setValue(exam.percentToPass);
+    this.f.numberOfQuestions.setValue(exam.numberOfQuestions);
+    this.f.maxTime.setValue(exam.maxTime);
+    $("#formExam").css("visibility", "visible");
   }
 
   joinToGroup(idGroup: number){
@@ -124,6 +187,37 @@ export class GroupViewComponent implements OnInit {
       error => {
         console.log("Nie mozna wykonac!");
       })
+  }
+
+
+  addNewExam(){
+    this.examService.addNewExam(this.id, this.f.title.value, this.f.type.value, this.f.difficulty.value,
+      this.f.showAllQuestions.value, this.f.returnToQuestions.value, this.f.sendResultsInstantly.value, this.f.showFullResults.value,
+      this.f.mixQuestions.value, this.f.percentToPass.value, this.f.numberOfQuestions.value, this.f.maxTime.value)
+    .pipe(first())
+    .subscribe(
+      data => {
+        location.reload();
+      },
+      error => {
+        console.log("Nie mozna pobrac!");
+        this.message = error["error"]["error"];
+      });
+  }
+
+  editExam(exam: Exam){
+    this.examService.edtiExam(exam.id, this.f.title.value, this.f.type.value, this.f.difficulty.value,
+      this.f.showAllQuestions.value, this.f.returnToQuestions.value, this.f.sendResultsInstantly.value, this.f.showFullResults.value,
+      this.f.mixQuestions.value, this.f.percentToPass.value, this.f.numberOfQuestions.value, this.f.maxTime.value)
+    .pipe(first())
+    .subscribe(
+      data => {
+        location.reload();
+      },
+      error => {
+        console.log("Nie mozna pobrac!");
+        this.message = error["error"]["error"];
+      });
   }
 
 }

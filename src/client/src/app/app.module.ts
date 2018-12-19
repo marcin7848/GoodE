@@ -25,6 +25,7 @@ import { GroupViewComponent } from './component/group/group-view/group-view.comp
 import { GroupEditComponent } from './component/group/group-edit/group-edit.component';
 import {QuestionService} from "./service/question/question.service";
 import { QuestionComponent } from './component/question/question.component';
+import {ExamService} from "./service/exam/exam.service";
 
 @NgModule({
   declarations: [
@@ -61,6 +62,7 @@ import { QuestionComponent } from './component/question/question.component';
     CookieService,
     GroupService,
     QuestionService,
+    ExamService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: Interceptor,

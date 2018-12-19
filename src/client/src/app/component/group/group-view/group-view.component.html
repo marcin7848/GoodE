@@ -1,149 +1,239 @@
 <h2>Group Info</h2>
 Id: {{group?.id}}
-<br />
+<br/>
 Name: {{group?.name}}
-<br />
+<br/>
 Description: {{group?.description}}
-<br />
+<br/>
+
+<div id="formExam" style="position: absolute; right: 0; height: 500px; width: 800px; visibility: hidden;">
+  <ng-container *ngIf="editMode == 1">
+    <h2>Add new exam</h2>
+  </ng-container>
+  <ng-container *ngIf="editMode == 2">
+    <h2>Edit exam</h2>
+  </ng-container>
+
+  <form [formGroup]="examForm">
+    Title: <input type="text" formControlName="title" class="form-control" /><br />
+    Type: <select formControlName="type">
+      <option [value]="1" >Brak czasu, wszystkie pytania</option>
+      <option [value]="2">Brak czasu, określona ilość wylosowanych pytań</option>
+      <option [value]="3">Z czasem, wszystkie pytania</option>
+      <option [value]="4">Z czasem, ilość pytań nie przekraczająca określonego czasu</option>
+    </select><br />
+    Difficulty: <input type="text" formControlName="difficulty" class="form-control" size="3" /><br />
+    Show all questions: <input type="checkbox" formControlName="showAllQuestions" /><br />
+    Return to questions: <input type="checkbox" formControlName="returnToQuestions" /><br />
+    Send results instantly: <input type="checkbox" formControlName="sendResultsInstantly" /><br />
+    Show full results: <input type="checkbox" formControlName="showFullResults" /><br />
+    Mix questions: <input type="checkbox" formControlName="mixQuestions" /><br />
+    Percent to pass [0 - 100%]: <input type="text" formControlName="percentToPass" class="form-control" size="3" /><br />
+    Number of questions: <input type="text" formControlName="numberOfQuestions" class="form-control" size="3" /><br />
+    Max time: <input type="text" formControlName="maxTime" class="form-control" size="5" /><br />
+    <ng-container *ngIf="editMode == 1">
+      <button (click)="addNewExam()" class="btn btn-primary">Add new exam</button>
+    </ng-container>
+    <ng-container *ngIf="editMode == 2">
+      <button (click)="editExam(currentExam)" class="btn btn-primary">Edit exam</button>
+    </ng-container>
+    <br/>
+    Errors: {{message}}
+  </form>
+</div>
 
 <div *ngIf="group?.groupMembers[0] != null && group?.groupMembers[0].accessRole.role=='ROLE_ADMIN'">
   <a routerLink="/group/{{group?.id}}/edit">Edit group</a>
 </div>
 
-<br />
+<br/>
 
 <div *ngIf="group?.groupMembers[0] != null && group?.groupMembers[0].accessRole.role=='ROLE_ADMIN'">
-  <button (click)="deleteGroup(group.id)" class="btn btn-primary">Delete group</button><br />
+  <button (click)="deleteGroup(group.id)" class="btn btn-primary">Delete group</button>
+  <br/>
 </div>
-<br />
+<br/>
 
-<div *ngIf="group?.groupMembers[0] != null && (group?.groupMembers[0].accessRole.role=='ROLE_ADMIN' || group?.groupMembers[0].accessRole.role=='ROLE_TEACHER')">
+<div
+  *ngIf="group?.groupMembers[0] != null && (group?.groupMembers[0].accessRole.role=='ROLE_ADMIN' || group?.groupMembers[0].accessRole.role=='ROLE_TEACHER')">
   <a routerLink="/group/{{group?.id}}/question">Questions</a>
 </div>
 
-<br />
-<br />
+<br/>
+<br/>
 
 <div *ngIf="group?.groupMembers[0] == null && group?.possibleToJoin">
-  <button (click)="joinToGroup(group.id)" class="btn btn-primary">Join to the group!</button><br />
+  <button (click)="joinToGroup(group.id)" class="btn btn-primary">Join to the group!</button>
+  <br/>
 </div>
 
 <div *ngIf="group?.groupMembers[0] != null && group?.groupMembers[0].accessRole.role!='ROLE_ADMIN'">
-  <button (click)="leaveGroup(group.id)" class="btn btn-primary">Leave group</button><br />
+  <button (click)="leaveGroup(group.id)" class="btn btn-primary">Leave group</button>
+  <br/>
 </div>
 {{actionMessage}}
 
 <h2>Group members</h2>
 <table border="1">
-<div *ngIf="group?.groupMembers[0] != null && (group?.groupMembers[0].accessRole.role=='ROLE_ADMIN' || group?.groupMembers[0].accessRole.role=='ROLE_TEACHER')">
-  <tr><td colspan="4">Admins</td></tr>
-  <tr>
-    <td>Username</td>
-    <td>First name</td>
-    <td>Last name</td>
-    <td>Actions</td>
-  </tr>
-  <tr *ngFor="let member of groupMembers">
-  <ng-container *ngIf="(member.accessRole.role=='ROLE_ADMIN' || member.accessRole.role=='ROLE_TEACHER') && member.accepted">
-    <td>{{member.account.username}}</td>
-    <td>{{member.account.firstName}}</td>
-    <td>{{member.account.lastName}}</td>
-    <ng-container *ngIf="group?.groupMembers[0].accessRole.role=='ROLE_ADMIN'">
-      <ng-container *ngIf="member.accessRole.role!='ROLE_ADMIN'">
-        <td><button (click)="reduceToStudent(group.id, member.id)" class="btn btn-primary">Reduce to Student</button></td>
+  <div
+    *ngIf="group?.groupMembers[0] != null && (group?.groupMembers[0].accessRole.role=='ROLE_ADMIN' || group?.groupMembers[0].accessRole.role=='ROLE_TEACHER')">
+    <tr>
+      <td colspan="4">Admins</td>
+    </tr>
+    <tr>
+      <td>Username</td>
+      <td>First name</td>
+      <td>Last name</td>
+      <td>Actions</td>
+    </tr>
+    <tr *ngFor="let member of groupMembers">
+      <ng-container
+        *ngIf="(member.accessRole.role=='ROLE_ADMIN' || member.accessRole.role=='ROLE_TEACHER') && member.accepted">
+        <td>{{member.account.username}}</td>
+        <td>{{member.account.firstName}}</td>
+        <td>{{member.account.lastName}}</td>
+        <ng-container *ngIf="group?.groupMembers[0].accessRole.role=='ROLE_ADMIN'">
+          <ng-container *ngIf="member.accessRole.role!='ROLE_ADMIN'">
+            <td>
+              <button (click)="reduceToStudent(group.id, member.id)" class="btn btn-primary">Reduce
+                to Student
+              </button>
+            </td>
+          </ng-container>
+          <ng-container *ngIf="member.accessRole.role=='ROLE_ADMIN'">
+            <td></td>
+          </ng-container>
+        </ng-container>
+        <ng-container *ngIf="group?.groupMembers[0].accessRole.role!='ROLE_ADMIN'">
+          <td></td>
+        </ng-container>
       </ng-container>
-      <ng-container *ngIf="member.accessRole.role=='ROLE_ADMIN'">
-        <td></td>
+    </tr>
+
+    <tr>
+      <td colspan="5">Students</td>
+    </tr>
+    <tr>
+      <td>Username</td>
+      <td>First name</td>
+      <td>Last name</td>
+      <td>Register number</td>
+      <td>Actions</td>
+    </tr>
+    <tr *ngFor="let member of groupMembers">
+      <ng-container *ngIf="member.accessRole.role=='ROLE_STUDENT' && member.accepted">
+        <td>{{member.account.username}}</td>
+        <td>{{member.account.firstName}}</td>
+        <td>{{member.account.lastName}}</td>
+        <td>{{member.account.register_no}}</td>
+        <ng-container *ngIf="group?.groupMembers[0].accessRole.role=='ROLE_ADMIN'">
+          <td>
+            <button (click)="deleteGroupMember(group.id, member.id)" class="btn btn-primary">Delete
+              member
+            </button>
+            |
+            <button (click)="promoteToTeacher(group.id, member.id)" class="btn btn-primary">Promote
+              to a Teacher
+            </button>
+          </td>
+        </ng-container>
+        <ng-container *ngIf="group?.groupMembers[0].accessRole.role=='ROLE_TEACHER'">
+          <td>
+            <button (click)="deleteGroupMember(group.id, member.id)" class="btn btn-primary">Delete
+              member
+            </button>
+          </td>
+        </ng-container>
       </ng-container>
-    </ng-container>
-    <ng-container *ngIf="group?.groupMembers[0].accessRole.role!='ROLE_ADMIN'">
-      <td></td>
-    </ng-container>
-  </ng-container>
-  </tr>
+    </tr>
 
-  <tr><td colspan="5">Students</td></tr>
-  <tr>
-    <td>Username</td>
-    <td>First name</td>
-    <td>Last name</td>
-    <td>Register number</td>
-    <td>Actions</td>
-  </tr>
-  <tr *ngFor="let member of groupMembers">
-    <ng-container *ngIf="member.accessRole.role=='ROLE_STUDENT' && member.accepted">
-      <td>{{member.account.username}}</td>
-      <td>{{member.account.firstName}}</td>
-      <td>{{member.account.lastName}}</td>
-      <td>{{member.account.register_no}}</td>
-      <ng-container *ngIf="group?.groupMembers[0].accessRole.role=='ROLE_ADMIN'">
-        <td><button (click)="deleteGroupMember(group.id, member.id)" class="btn btn-primary">Delete member</button> | <button (click)="promoteToTeacher(group.id, member.id)" class="btn btn-primary">Promote to a Teacher</button></td>
+    <tr>
+      <td colspan="5">Waiting</td>
+    </tr>
+    <tr>
+      <td>Username</td>
+      <td>First name</td>
+      <td>Last name</td>
+      <td>Register number</td>
+      <td>Actions</td>
+    </tr>
+    <tr *ngFor="let member of groupMembers">
+      <ng-container *ngIf="member.accessRole.role=='ROLE_STUDENT'  && !member.accepted">
+        <td>{{member.account.username}}</td>
+        <td>{{member.account.firstName}}</td>
+        <td>{{member.account.lastName}}</td>
+        <td>{{member.account.register_no}}</td>
+        <td>
+          <button (click)="acceptNewMember(group.id, member.id)" class="btn btn-primary">Accept
+            member
+          </button>
+        </td>
       </ng-container>
-      <ng-container *ngIf="group?.groupMembers[0].accessRole.role=='ROLE_TEACHER'">
-        <td><button (click)="deleteGroupMember(group.id, member.id)" class="btn btn-primary">Delete member</button></td>
+    </tr>
+  </div>
+
+  <div
+    *ngIf="group?.groupMembers[0] == null || (group?.groupMembers != null && group?.groupMembers[0].accessRole.role=='ROLE_STUDENT')">
+    <tr>
+      <td colspan="3">Admins</td>
+    </tr>
+    <tr>
+      <td>Username</td>
+      <td>First name</td>
+      <td>Last name</td>
+    </tr>
+    <tr *ngFor="let member of groupMembers">
+      <ng-container
+        *ngIf="(member.accessRole.role=='ROLE_ADMIN' || member.accessRole.role=='ROLE_TEACHER') && member.accepted">
+        <td>{{member.account.username}}</td>
+        <td>{{member.account.firstName}}</td>
+        <td>{{member.account.lastName}}</td>
       </ng-container>
-    </ng-container>
-  </tr>
+    </tr>
 
-  <tr><td colspan="5">Waiting</td></tr>
-  <tr>
-    <td>Username</td>
-    <td>First name</td>
-    <td>Last name</td>
-    <td>Register number</td>
-    <td>Actions</td>
-  </tr>
-  <tr *ngFor="let member of groupMembers">
-    <ng-container *ngIf="member.accessRole.role=='ROLE_STUDENT'  && !member.accepted">
-      <td>{{member.account.username}}</td>
-      <td>{{member.account.firstName}}</td>
-      <td>{{member.account.lastName}}</td>
-      <td>{{member.account.register_no}}</td>
-      <td><button (click)="acceptNewMember(group.id, member.id)" class="btn btn-primary">Accept member</button></td>
-    </ng-container>
-  </tr>
-</div>
-
-<div *ngIf="group?.groupMembers[0] == null || (group?.groupMembers != null && group?.groupMembers[0].accessRole.role=='ROLE_STUDENT')">
-  <tr><td colspan="3">Admins</td></tr>
-  <tr>
-    <td>Username</td>
-    <td>First name</td>
-    <td>Last name</td>
-  </tr>
-  <tr *ngFor="let member of groupMembers">
-    <ng-container *ngIf="(member.accessRole.role=='ROLE_ADMIN' || member.accessRole.role=='ROLE_TEACHER') && member.accepted">
-      <td>{{member.account.username}}</td>
-      <td>{{member.account.firstName}}</td>
-      <td>{{member.account.lastName}}</td>
-    </ng-container>
-  </tr>
-
-  <tr><td colspan="2">Students</td></tr>
-  <tr>
-    <td>Username</td>
-    <td>Register number</td>
-  </tr>
-  <tr *ngFor="let member of groupMembers">
-    <ng-container *ngIf="member.accessRole.role=='ROLE_STUDENT'  && member.accepted">
-      <td>{{member.account.username}}</td>
-      <td>{{member.account.register_no}}</td>
-    </ng-container>
-  </tr>
-</div>
+    <tr>
+      <td colspan="2">Students</td>
+    </tr>
+    <tr>
+      <td>Username</td>
+      <td>Register number</td>
+    </tr>
+    <tr *ngFor="let member of groupMembers">
+      <ng-container *ngIf="member.accessRole.role=='ROLE_STUDENT'  && member.accepted">
+        <td>{{member.account.username}}</td>
+        <td>{{member.account.register_no}}</td>
+      </ng-container>
+    </tr>
+  </div>
 </table>
 
-<!--
-<form [formGroup]="addNewGroupForm" (ngSubmit)="onSubmit()">
-  Name: <input type="text" formControlName="name" class="form-control"/><br/>
-  Description: <input type="text" formControlName="description" class="form-control"/><br/>
-  Password: <input type="password" formControlName="password" class="form-control"/><br/>
-  Possible To Join: <input type="checkbox" formControlName="possibleToJoin" class="form-control"/><br/>
-  Acceptance: <input type="checkbox" formControlName="acceptance" class="form-control"/><br/>
-  Hidden: <input type="checkbox" formControlName="hidden" class="form-control"/><br/>
 
-  <button class="btn btn-primary">Add new group</button>
-  <br/>
-  Errors: {{message}}
-</form>
--->
+<br/>
+<br/>
+<ng-container *ngIf="group?.groupMembers[0].accessRole.role=='ROLE_ADMIN' || group?.groupMembers[0].accessRole.role=='ROLE_TEACHER'">
+  <button (click)="showAddExam()" class="btn btn-primary">Add new exam</button>
+</ng-container>
+<h2>Exams</h2>
+<table border="1">
+  <tr>
+    <td colspan="2">Egzaminy</td>
+  </tr>
+  <tr>
+    <td>Nazwa</td>
+    <td>Akcje</td>
+  </tr>
+  <tr *ngFor="let exam of exams">
+    <ng-container *ngIf="!exam.finished">
+      <td>{{exam.title}}</td>
+      <td>
+        <ng-container *ngIf="exam.joining">
+          <button (click)="console.log('a')" class="btn btn-primary">Join to exam</button>
+        </ng-container>
+        <ng-container *ngIf="group?.groupMembers[0].accessRole.role=='ROLE_ADMIN' || group?.groupMembers[0].accessRole.role=='ROLE_TEACHER'">
+          <button (click)="showEditExam(exam)" class="btn btn-primary">Edit exam</button>
+          <button (click)="console.log('a')" class="btn btn-primary">Manage exam</button>
+        </ng-container>
+      </td>
+    </ng-container>
+  </tr>
+</table>
