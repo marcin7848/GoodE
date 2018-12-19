@@ -22,6 +22,8 @@ public interface ExamServiceI {
   ExamClosedAnswer getExamClosedAnswerById(int id);
   ExamAnswer getExamAnswerByIdExamMemberQuestionAnIdExamClosedAnswer(int id_exam_member_question, int id_exam_closed_answer);
   Exam finishExam(Exam exam);
+  List<Exam> getAllExamByIdGroup(Group group);
+
 
   Exam addNew(Exam question);
   Exam edit(Exam exam);

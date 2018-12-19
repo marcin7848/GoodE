@@ -60,6 +60,19 @@ public class ExamService implements ExamServiceI {
   }
 
   @Override
+  public List<Exam> getAllExamByIdGroup(Group group) {
+    List<Exam> exams = examRepository.findAllExamsByGroup(group);
+    for(int i=0; i<exams.size(); i++){
+      exams.get(i).setExamQuestions(null);
+      exams.get(i).setGroup(null);
+      exams.get(i).setPassword(null);
+      exams.get(i).setColor(null);
+    }
+    return exams;
+  }
+
+
+  @Override
   public ExamQuestion getExamQuestionById(int id) {
     return examQuestionRepository.findExamQuestionById(id);
   }
