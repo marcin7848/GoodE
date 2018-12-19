@@ -16,6 +16,7 @@ public interface ExamServiceI {
 
   ExamQuestion getExamQuestionById(int id);
   Exam getExamById(int id);
+  Exam getExamFullById(int id);
   ExamMember getExamMemberByIdAccountAndIdExam(int id_account, int id_exam);
   ExamMember getExamMemberById(int id);
   ExamMemberQuestion getExamMemberQuestionById(int id);

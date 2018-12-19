@@ -1,5 +1,6 @@
 import {Group} from "./Group";
 import {Exam} from "./Exam";
+import {ExamClosedAnswer} from "./ExamClosedAnswer";
 
 export class ExamQuestion {
   id: number;
@@ -10,4 +11,5 @@ export class ExamQuestion {
   answerTimer: number;
   position: number;
   exam: Exam;
+  examClosedAnswers: ExamClosedAnswer[];
 }

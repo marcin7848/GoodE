@@ -71,6 +71,21 @@ public class ExamService implements ExamServiceI {
     return exams;
   }
 
+  @Override
+  public Exam getExamFullById(int id) {
+    Exam exam = this.getExamById(id);
+    exam.setGroup(null);
+    for(int i=0; i<exam.getExamQuestions().size(); i++){
+      exam.getExamQuestions().get(i).setExam(null);
+      exam.getExamQuestions().get(i).setExamMemberQuestions(null);
+      for(int j=0; j<exam.getExamQuestions().get(i).getExamClosedAnswers().size(); j++){
+        exam.getExamQuestions().get(i).getExamClosedAnswers().get(j).setExamQuestion(null);
+        exam.getExamQuestions().get(i).getExamClosedAnswers().get(j).setExamAnswers(null);
+      }
+    }
+
+    return exam;
+  }
 
   @Override
   public ExamQuestion getExamQuestionById(int id) {

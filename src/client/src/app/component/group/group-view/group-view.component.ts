@@ -220,4 +220,8 @@ export class GroupViewComponent implements OnInit {
       });
   }
 
+  goToManageExam(exam){
+    this.router.navigate(['/exam/'+exam.id+'/management']);
+  }
+
 }

@@ -26,6 +26,7 @@ import { GroupEditComponent } from './component/group/group-edit/group-edit.comp
 import {QuestionService} from "./service/question/question.service";
 import { QuestionComponent } from './component/question/question.component';
 import {ExamService} from "./service/exam/exam.service";
+import { ExamManagementComponent } from './component/exam/exam-management/exam-management.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import {ExamService} from "./service/exam/exam.service";
     AddNewGroupComponent,
     GroupViewComponent,
     GroupEditComponent,
-    QuestionComponent
+    QuestionComponent,
+    ExamManagementComponent
   ],
   imports: [
     routing,

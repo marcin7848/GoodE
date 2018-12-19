@@ -231,7 +231,7 @@ Description: {{group?.description}}
         </ng-container>
         <ng-container *ngIf="group?.groupMembers[0].accessRole.role=='ROLE_ADMIN' || group?.groupMembers[0].accessRole.role=='ROLE_TEACHER'">
           <button (click)="showEditExam(exam)" class="btn btn-primary">Edit exam</button>
-          <button (click)="console.log('a')" class="btn btn-primary">Manage exam</button>
+          <button (click)="goToManageExam(exam)" class="btn btn-primary">Manage exam</button>
         </ng-container>
       </td>
     </ng-container>
