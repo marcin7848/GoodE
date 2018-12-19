@@ -1,6 +1,7 @@
-<p>
+<div *ngIf="loggedAccount?.accessRole.role=='ROLE_ADMIN'">
   <a routerLink="/group/addNew">Add New Group</a>
-</p>
+</div>
+
 <br />
 <h2>My groups</h2>
 <form [formGroup]="groupsForm">
