@@ -74,7 +74,13 @@ public class ExamService implements ExamServiceI {
   @Override
   public Exam getExamFullById(int id) {
     Exam exam = this.getExamById(id);
+    int idGroup = exam.getGroup().getId();
     exam.setGroup(null);
+    Group group1 = new Group();
+    group1.setId(idGroup);
+    exam.setGroup(group1);
+    exam.getExamQuestions().sort(Comparator.comparing(ExamQuestion::getPosition));
+
     for(int i=0; i<exam.getExamQuestions().size(); i++){
       exam.getExamQuestions().get(i).setExam(null);
       exam.getExamQuestions().get(i).setExamMemberQuestions(null);

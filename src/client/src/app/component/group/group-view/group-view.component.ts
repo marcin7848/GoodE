@@ -206,7 +206,7 @@ export class GroupViewComponent implements OnInit {
   }
 
   editExam(exam: Exam){
-    this.examService.edtiExam(exam.id, this.f.title.value, this.f.type.value, this.f.difficulty.value,
+    this.examService.editExam(exam.id, this.f.title.value, this.f.type.value, this.f.difficulty.value,
       this.f.showAllQuestions.value, this.f.returnToQuestions.value, this.f.sendResultsInstantly.value, this.f.showFullResults.value,
       this.f.mixQuestions.value, this.f.percentToPass.value, this.f.numberOfQuestions.value, this.f.maxTime.value)
     .pipe(first())
