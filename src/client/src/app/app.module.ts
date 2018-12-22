@@ -27,6 +27,7 @@ import {QuestionService} from "./service/question/question.service";
 import { QuestionComponent } from './component/question/question.component';
 import {ExamService} from "./service/exam/exam.service";
 import { ExamManagementComponent } from './component/exam/exam-management/exam-management.component';
+import { RunningExamManagementComponent } from './component/exam/running-exam-management/running-exam-management.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { ExamManagementComponent } from './component/exam/exam-management/exam-m
     GroupViewComponent,
     GroupEditComponent,
     QuestionComponent,
-    ExamManagementComponent
+    ExamManagementComponent,
+    RunningExamManagementComponent
   ],
   imports: [
     routing,

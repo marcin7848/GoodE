@@ -125,4 +125,8 @@ export class ExamManagementComponent implements OnInit {
       })
   }
 
+  startExam(){
+    this.router.navigate(['/exam/'+this.exam.id+'/running/management']);
+  }
+
 }

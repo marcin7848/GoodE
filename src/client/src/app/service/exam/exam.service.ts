@@ -21,6 +21,10 @@ export class ExamService {
     return this.http.get<any>(this.baseUri + "/"+idExam+"/get");
   }
 
+  public getRunningExamManagement(idExam: number){
+    return this.http.get<any>(this.baseUri + "/"+idExam+"/get/runningManagement");
+  }
+
   public addNewExam(idGroupV: number, titleV: string, typeV: number, difficultyV: number, showAllQuestionsV: boolean, returnToQuestionsV: boolean, sendResultsInstantlyV: boolean,
                     showFullResultsV: boolean, mixQuestionsV: boolean, percentToPassV: number, numberOfQuestionsV: number, maxTimeV: number){
     const body = {title: titleV, type: typeV, difficulty: difficultyV, showAllQuestions: showAllQuestionsV, returnToQuestions: returnToQuestionsV,

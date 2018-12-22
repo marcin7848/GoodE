@@ -67,6 +67,7 @@ public class ExamService implements ExamServiceI {
       exams.get(i).setGroup(null);
       exams.get(i).setPassword(null);
       exams.get(i).setColor(null);
+      exams.get(i).setExamMembers(null);
     }
     return exams;
   }
@@ -75,6 +76,7 @@ public class ExamService implements ExamServiceI {
   public Exam getExamFullById(int id) {
     Exam exam = this.getExamById(id);
     int idGroup = exam.getGroup().getId();
+    exam.setExamMembers(null);
     exam.setGroup(null);
     Group group1 = new Group();
     group1.setId(idGroup);
@@ -89,6 +91,32 @@ public class ExamService implements ExamServiceI {
         exam.getExamQuestions().get(i).getExamClosedAnswers().get(j).setExamAnswers(null);
       }
     }
+    return exam;
+  }
+
+  @Override
+  public Exam getRunningExamManagement(int id) {
+    Exam exam = this.getExamById(id);
+    exam.setGroup(null);
+    exam.setExamQuestions(null);
+
+    for(int i=0; i<exam.getExamMembers().size(); i++){
+      exam.getExamMembers().get(i).setExam(null);
+      exam.getExamMembers().get(i).getAccount().setAccessRole(null);
+      exam.getExamMembers().get(i).getAccount().setActivationCodes(null);
+      exam.getExamMembers().get(i).getAccount().setGroupMembers(null);
+      exam.getExamMembers().get(i).getAccount().setExamMembers(null);
+      exam.getExamMembers().get(i).getAccount().setPassword("");
+
+      for(int j=0; j<exam.getExamMembers().get(i).getExamMemberQuestions().size(); j++){
+        exam.getExamMembers().get(i).getExamMemberQuestions().get(j).setExamMember(null);
+        exam.getExamMembers().get(i).getExamMemberQuestions().get(j).setExamAnswers(null);
+        exam.getExamMembers().get(i).getExamMemberQuestions().get(j).getExamQuestion().setExam(null);
+        exam.getExamMembers().get(i).getExamMemberQuestions().get(j).getExamQuestion().setExamMemberQuestions(null);
+        exam.getExamMembers().get(i).getExamMemberQuestions().get(j).getExamQuestion().setExamClosedAnswers(null);
+      }
+    }
+
 
     return exam;
   }

@@ -1,5 +1,6 @@
 import {Group} from "./Group";
 import {ExamQuestion} from "./ExamQuestion";
+import {ExamMember} from "./ExamMember";
 
 export class Exam {
   id: number;
@@ -26,5 +27,5 @@ export class Exam {
   percentToPass: number;
   group: Group;
   examQuestions: ExamQuestion[];
-
+  examMembers: ExamMember[];
 }

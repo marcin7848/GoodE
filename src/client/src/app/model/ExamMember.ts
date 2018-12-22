@@ -1,4 +1,5 @@
 import {Exam} from "./Exam";
+import {ExamMemberQuestion} from "./ExamMemberQuestion";
 
 export class ExamMember {
   id: number;
@@ -6,4 +7,6 @@ export class ExamMember {
   causeOfBlockade: string;
   position: number;
   exam: Exam;
+  account: Account;
+  examMemberQuestions: ExamMemberQuestion[];
 }
