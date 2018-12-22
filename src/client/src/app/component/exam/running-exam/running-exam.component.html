@@ -1,3 +1,7 @@
+<ng-container *ngIf="blockade == 1">
+  <h2>Zostałeś zablokowany na egzaminie!</h2>
+    Powód: {{causeOfBlockade}}
+</ng-container>
 <ng-container *ngIf="runningProcess == 0">
   <h2>Join to exam!</h2>
   <form [formGroup]="joinToExamForm" (ngSubmit)="joinToExam()">
@@ -7,4 +11,8 @@
     <br/>
     Errors: {{message}}
   </form>
+</ng-container>
+
+<ng-container *ngIf="runningProcess == 1 && exam?.started == false">
+  <h2>Czekaj aż egzamin się rozpocznie!</h2>
 </ng-container>

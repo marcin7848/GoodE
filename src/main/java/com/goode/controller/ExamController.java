@@ -564,10 +564,13 @@ public class ExamController {
       @RequestBody Map<String, Object> finishTimeObj) throws ParseException {
 
     String timestampString = (String) finishTimeObj.get("finishTime");
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
-    Date parsedDate = dateFormat.parse(timestampString);
-    Timestamp timestamp = new java.sql.Timestamp(parsedDate.getTime());
+    Timestamp timestamp = new Timestamp(new Date().getTime());
 
+    if(!timestampString.equals("")){
+      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+      Date parsedDate = dateFormat.parse(timestampString);
+      timestamp = new java.sql.Timestamp(parsedDate.getTime());
+    }
 
     Exam examById = examService.getExamById(idExam);
     if(examById == null){

@@ -23,7 +23,7 @@ export class RunningExamManagementComponent implements OnInit {
   loggedAccount: Account;
   exam: Exam;
   message = "";
-  runningProcess = 0;
+  runningProcess = -1;
   initiateJoiningForm: FormGroup;
 
   constructor(private formBuilder: FormBuilder,
@@ -104,16 +104,17 @@ export class RunningExamManagementComponent implements OnInit {
   }
 
   startExam(){
-    let finishedTime = $("#finishedTimeAtStarting").val();
-    if(finishedTime == undefined || finishedTime == null){
-      finishedTime = "";
+    let finishTime = $("#finishTimeAtStarting").val();
+    if(finishTime == undefined || finishTime == null){
+      finishTime = "";
     }
 
-    this.examService.startExam(this.exam.id, finishedTime)
+    this.examService.startExam(this.exam.id, finishTime)
     .pipe(first())
     .subscribe(
       data => {
-        console.log("Zainicjowano egzamin");
+        console.log("Wystartowano egzamin");
+        location.reload();
       },
       error => {
         console.log(error);
@@ -122,4 +123,18 @@ export class RunningExamManagementComponent implements OnInit {
       });
   }
 
+  blockExamMember(examMember){
+    this.examService.blockExamMember(this.exam.id, examMember.id, $("#causeOfBlockadeExamMember").val())
+    .pipe(first())
+    .subscribe(
+      data => {
+        console.log("Zablokowano/odblokowano uzytkownika");
+        location.reload();
+      },
+      error => {
+        console.log(error);
+        console.log("Nie mozna wykonac!");
+        this.message = error["error"]["error"];
+      });
+  }
 }

@@ -70,14 +70,19 @@ export class ExamService {
     return this.http.post<any>(this.baseUri + "/"+idExam+"/initiateExam", body);
   }
 
-  public startExam(idExam: number, finishedTimeV: string){
-    const body = {finishedTime: finishedTimeV};
+  public startExam(idExam: number, finishTimeV: string){
+    const body = {finishTime: finishTimeV};
     return this.http.post<any>(this.baseUri + "/"+idExam+"/start", body);
   }
 
   public joinToRunningExam(idExam: number, passwordV: string){
     const body = {password: passwordV};
     return this.http.post<any>(this.baseUri + "/"+idExam+"/join", body);
+  }
+
+  public blockExamMember(idExam: number, idExamMember: number, causeOfBlockadeV: string){
+    const body = {causeOfBlockade: causeOfBlockadeV};
+    return this.http.post<any>(this.baseUri + "/"+idExam+"/examMember/"+idExamMember+"/block", body);
   }
 
 }

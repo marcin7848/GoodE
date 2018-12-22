@@ -415,7 +415,7 @@ public class ExamService implements ExamServiceI {
 
   @Override
   public void blockExamMember(ExamMember examMember, String causeOfBlockade) {
-    examMember.setBlocked(true);
+    examMember.setBlocked(!examMember.isBlocked());
     examMember.setCauseOfBlockade(causeOfBlockade);
     examMemberRepository.save(examMember);
   }

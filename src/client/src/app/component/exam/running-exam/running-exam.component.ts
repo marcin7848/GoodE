@@ -20,6 +20,8 @@ export class RunningExamComponent implements OnInit {
   message = "";
   runningProcess = -1;
   joinToExamForm: FormGroup;
+  blockade = 0;
+  causeOfBlockade = "";
 
   constructor(private formBuilder: FormBuilder,
               private router: Router,
@@ -51,7 +53,15 @@ export class RunningExamComponent implements OnInit {
               this.runningProcess = 0;
             }
             else{
-              this.runningProcess = 1;
+              if(this.exam.examMembers[0].blocked){
+                this.blockade = 1;
+                this.causeOfBlockade = this.exam.examMembers[0].causeOfBlockade;
+              }else{
+                this.runningProcess = 1;
+
+
+
+              }
             }
           }
         },
