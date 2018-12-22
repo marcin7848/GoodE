@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {FormBuilder} from "@angular/forms";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ExamService} from "../../../service/exam/exam.service";
 import {AccountService} from "../../../service/account/account.service";
@@ -8,6 +8,9 @@ import {Account} from "../../../model/Account";
 import {Exam} from "../../../model/Exam";
 import {Question} from "../../../model/Question";
 import {first} from "rxjs/operators";
+
+declare var jquery:any;
+declare var $ :any;
 
 @Component({
   selector: 'app-running-exam-management',
@@ -20,6 +23,8 @@ export class RunningExamManagementComponent implements OnInit {
   loggedAccount: Account;
   exam: Exam;
   message = "";
+  runningProcess = 0;
+  initiateJoiningForm: FormGroup;
 
   constructor(private formBuilder: FormBuilder,
               private router: Router,
@@ -29,6 +34,12 @@ export class RunningExamManagementComponent implements OnInit {
               private questionService: QuestionService) { }
 
   ngOnInit() {
+    this.initiateJoiningForm = this.formBuilder.group({
+      initiateJoiningPassword: ['', Validators.required],
+      initiateJoiningColor: ['', Validators.required]
+    });
+
+
     this.route.params.subscribe(params => {
       this.idExam = params['idExam'];
 
@@ -49,6 +60,23 @@ export class RunningExamManagementComponent implements OnInit {
         data => {
           this.exam = data;
           console.log(this.exam);
+
+          if(this.exam.joining == false){
+            this.runningProcess = 0;
+          }
+          else{
+            if(this.exam.started == false){
+              this.runningProcess = 1;
+            }
+            else{
+              if(this.exam.finished == false){
+                this.runningProcess = 2;
+              }
+              else{
+                this.runningProcess = 3;
+              }
+            }
+          }
         },
         error => {
           console.log("Nie mozna pobrac!");
@@ -57,8 +85,41 @@ export class RunningExamManagementComponent implements OnInit {
 
 
     });
+  }
 
+  get ij() { return this.initiateJoiningForm.controls; }
 
+  initiateJoining(){
+    this.examService.initiateJoingToExam(this.exam.id, this.ij.initiateJoiningPassword.value, this.ij.initiateJoiningColor.value)
+    .pipe(first())
+    .subscribe(
+      data => {
+        console.log("Zainicjowano egzamin");
+      },
+      error => {
+        console.log(error);
+        console.log("Nie mozna wykonac!");
+        this.message = error["error"]["error"];
+      });
+  }
+
+  startExam(){
+    let finishedTime = $("#finishedTimeAtStarting").val();
+    if(finishedTime == undefined || finishedTime == null){
+      finishedTime = "";
+    }
+
+    this.examService.startExam(this.exam.id, finishedTime)
+    .pipe(first())
+    .subscribe(
+      data => {
+        console.log("Zainicjowano egzamin");
+      },
+      error => {
+        console.log(error);
+        console.log("Nie mozna wykonac!");
+        this.message = error["error"]["error"];
+      });
   }
 
 }

@@ -122,6 +122,82 @@ public class ExamService implements ExamServiceI {
   }
 
   @Override
+  public Exam getRunningExam(int id) {
+    Account loggedAccount = accountService.getLoggedAccount();
+    Exam exam = this.getExamById(id);
+    exam.setGroup(null);
+    exam.setExamQuestions(null);
+    exam.setPassword("");
+
+    ExamMember examMember = new ExamMember();
+
+    for(int i=0; i<exam.getExamMembers().size(); i++){
+      if(exam.getExamMembers().get(i).getAccount().getId() == loggedAccount.getId()){
+        examMember = exam.getExamMembers().get(i);
+        examMember.setExam(null);
+        examMember.setExamMemberQuestions(null);
+        examMember.getAccount().setPassword("");
+        examMember.getAccount().setExamMembers(null);
+        examMember.getAccount().setGroupMembers(null);
+        examMember.getAccount().setActivationCodes(null);
+        examMember.getAccount().setAccessRole(null);
+
+        if(exam.isShowAllQuestions()){
+          List<ExamMemberQuestion> examMemberQuestions = examMemberQuestionRepository.findAllByIdExamMember(examMember.getId());
+          for(int j=0; j<examMemberQuestions.size(); j++){
+            examMemberQuestions.get(j).setExamMember(null);
+            examMemberQuestions.get(j).getExamQuestion().setExam(null);
+            examMemberQuestions.get(j).getExamQuestion().setExamMemberQuestions(null);
+            for(int k=0; k<examMemberQuestions.get(j).getExamQuestion().getExamClosedAnswers().size(); k++){
+              examMemberQuestions.get(j).getExamQuestion().getExamClosedAnswers().get(k).setExamAnswers(null);
+              examMemberQuestions.get(j).getExamQuestion().getExamClosedAnswers().get(k).setExamQuestion(null);
+              examMemberQuestions.get(j).getExamQuestion().getExamClosedAnswers().get(k).setCorrect(false);
+            }
+
+            for(int g=0; g<examMemberQuestions.get(j).getExamAnswers().size(); g++){
+              examMemberQuestions.get(j).getExamAnswers().get(g).setExamMemberQuestion(null);
+              examMemberQuestions.get(j).getExamAnswers().get(g).getExamClosedAnswer().setExamQuestion(null);
+              examMemberQuestions.get(j).getExamAnswers().get(g).getExamClosedAnswer().setExamAnswers(null);
+            }
+          }
+
+          examMember.setExamMemberQuestions(examMemberQuestions);
+
+        }
+        else{
+          ExamMemberQuestion examMemberQuestion = examMemberQuestionRepository.findExamMemberQuestionByIdExamMemberAndPosition(examMember.getId(), examMember.getPosition());
+          examMemberQuestion.setExamMember(null);
+          examMemberQuestion.getExamQuestion().setExam(null);
+          examMemberQuestion.getExamQuestion().setExamMemberQuestions(null);
+          for(int k=0; k<examMemberQuestion.getExamQuestion().getExamClosedAnswers().size(); k++){
+            examMemberQuestion.getExamQuestion().getExamClosedAnswers().get(k).setExamAnswers(null);
+            examMemberQuestion.getExamQuestion().getExamClosedAnswers().get(k).setExamQuestion(null);
+            examMemberQuestion.getExamQuestion().getExamClosedAnswers().get(k).setCorrect(false);
+          }
+
+          for(int g=0; g<examMemberQuestion.getExamAnswers().size(); g++){
+            examMemberQuestion.getExamAnswers().get(g).setExamMemberQuestion(null);
+            examMemberQuestion.getExamAnswers().get(g).getExamClosedAnswer().setExamQuestion(null);
+            examMemberQuestion.getExamAnswers().get(g).getExamClosedAnswer().setExamAnswers(null);
+          }
+
+          List<ExamMemberQuestion> examMemberQuestions = new ArrayList<>();
+          examMemberQuestions.add(examMemberQuestion);
+          examMember.setExamMemberQuestions(examMemberQuestions);
+
+        }
+        break;
+      }
+    }
+
+    List<ExamMember> examMembers = new ArrayList<>();
+    examMembers.add(examMember);
+    exam.setExamMembers(examMembers);
+
+    return exam;
+  }
+
+  @Override
   public ExamQuestion getExamQuestionById(int id) {
     return examQuestionRepository.findExamQuestionById(id);
   }

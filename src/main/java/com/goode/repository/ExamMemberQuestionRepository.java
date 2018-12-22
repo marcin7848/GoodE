@@ -12,4 +12,7 @@ public interface ExamMemberQuestionRepository extends CrudRepository<ExamMemberQ
 
   @Query(value = "select * from exam_member_questions where id_exam_member=:id_exam_member order by position ASC", nativeQuery = true)
   List<ExamMemberQuestion> findAllByIdExamMember(@Param("id_exam_member") int id_exam_member);
+
+  @Query(value = "select * from exam_member_questions where id_exam_member=:id_exam_member and position=:position", nativeQuery = true)
+  ExamMemberQuestion findExamMemberQuestionByIdExamMemberAndPosition(@Param("id_exam_member") int id_exam_member, @Param("position") int position);
 }

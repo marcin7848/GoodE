@@ -1,3 +1,35 @@
-<p>
-  running-exam-management works!
-</p>
+<ng-container *ngIf="runningProcess == 0">
+  <h2>Initiate joining to exam</h2>
+  <form [formGroup]="initiateJoiningForm" (ngSubmit)="initiateJoining()">
+    Password: <input type="text" formControlName="initiateJoiningPassword"
+                     class="form-control"/><br/>
+    Color: <input type="text" formControlName="initiateJoiningColor" class="form-control"/><br/>
+    <button class="btn btn-primary">Initiate joining</button>
+    <br/>
+    Errors: {{message}}
+  </form>
+</ng-container>
+<ng-container *ngIf="runningProcess == 1">
+  <h2>Start exam</h2>
+  <ng-container *ngIf="exam?.type == 1 || exam?.type == 2">
+    Finished time:<input type="text" id="finishedTimeAtStarting" class="form-control"/><br/>
+  </ng-container>
+  <button (click)="startExam()" class="btn btn-primary">Start exam</button>
+  <br/><br/>
+
+  <h2>Exam members</h2>
+  <table border="1">
+    <tr>
+      <td>Username</td>
+      <td>First name</td>
+      <td>Last name</td>
+      <td>Register number</td>
+    </tr>
+    <tr *ngFor="let examMember of exam?.examMembers">
+        <td>{{examMember.account.username}}</td>
+        <td>{{examMember.account.firstName}}</td>
+        <td>{{examMember.account.lastName}}</td>
+        <td>{{examMember.account.register_no}}</td>
+    </tr>
+  </table>
+</ng-container>

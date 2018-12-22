@@ -15,6 +15,7 @@ import {GroupEditComponent} from "./component/group/group-edit/group-edit.compon
 import {QuestionComponent} from "./component/question/question.component";
 import {ExamManagementComponent} from "./component/exam/exam-management/exam-management.component";
 import {RunningExamManagementComponent} from "./component/exam/running-exam-management/running-exam-management.component";
+import {RunningExamComponent} from "./component/exam/running-exam/running-exam.component";
 
 const routes: Routes = [
   {path : '', component : HomeComponent},
@@ -35,6 +36,7 @@ const routes: Routes = [
   {path : 'group/:idGroup/question', component : QuestionComponent},
   {path : 'exam/:idExam/management', component : ExamManagementComponent},
   {path : 'exam/:idExam/running/management', component : RunningExamManagementComponent},
+  {path : 'exam/:idExam/running', component : RunningExamComponent},
 ];
 
 export const routing = RouterModule.forRoot(routes);

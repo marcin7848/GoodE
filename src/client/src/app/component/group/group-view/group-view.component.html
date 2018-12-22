@@ -227,7 +227,7 @@ Description: {{group?.description}}
       <td>{{exam.title}}</td>
       <td>
         <ng-container *ngIf="exam.joining">
-          <button (click)="console.log('a')" class="btn btn-primary">Join to exam</button>
+          <button (click)="joinToExam(exam)" class="btn btn-primary">Join to exam</button>
         </ng-container>
         <ng-container *ngIf="group?.groupMembers[0].accessRole.role=='ROLE_ADMIN' || group?.groupMembers[0].accessRole.role=='ROLE_TEACHER'">
           <button (click)="showEditExam(exam)" class="btn btn-primary">Edit exam</button>

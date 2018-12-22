@@ -29,17 +29,6 @@ export class GroupComponent implements OnInit {
 
   ngOnInit() {
 
-    this.accountService.getLoggedAccount().
-    subscribe(data => {
-        this.loggedAccount = data;
-        if(this.loggedAccount.accessRole.role != "ROLE_ADMIN"){
-          this.router.navigate(['/']);
-        }
-      },
-      error => {
-        console.log("Nie mozna pobrac!");
-      });
-
     this.groupsForm = this.formBuilder.group({
       listOfMyGroups: [''],
       listOfAllGroups: ['']

@@ -135,6 +135,30 @@ public class ExamController {
     return new ResponseEntity<>(examService.getRunningExamManagement(id), HttpStatus.OK);
   }
 
+  @GetMapping("/{id}/get/running")
+  @PreAuthorize("hasAnyRole('"+ AccessRole.ROLE_ADMIN +"', '"+ AccessRole.ROLE_TEACHER +"', '"+ AccessRole.ROLE_STUDENT +"' )")
+  public ResponseEntity<?> getRunningExam(@PathVariable("id") int id){
+
+    Exam exam = examService.getExamById(id);
+    if(exam == null){
+      return ErrorMessage
+          .send(Language.getMessage("error.exam.badId"), HttpStatus.BAD_REQUEST);
+    }
+
+    Group group = groupService.getGroupById(exam.getGroup().getId());
+    if(group == null){
+      return ErrorMessage
+          .send(Language.getMessage("error.group.badId"), HttpStatus.BAD_REQUEST);
+    }
+
+    ErrorCode errorCode = new ErrorCode();
+    if (!groupMemberValidator.validateStudentInGroup(group, errorCode)) {
+      return ErrorMessage.send(Language.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
+    }
+
+    return new ResponseEntity<>(examService.getRunningExam(id), HttpStatus.OK);
+  }
+
   @PostMapping("/addNew/group/{idGroup}")
   @PreAuthorize("hasAnyRole('"+ AccessRole.ROLE_ADMIN +"', '"+ AccessRole.ROLE_TEACHER +"')")
   public ResponseEntity<?> addNew(@Validated(ExamValidationFull.class) @RequestBody Exam exam,

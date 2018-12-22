@@ -25,6 +25,10 @@ export class ExamService {
     return this.http.get<any>(this.baseUri + "/"+idExam+"/get/runningManagement");
   }
 
+  public getRunningExam(idExam: number){
+    return this.http.get<any>(this.baseUri + "/"+idExam+"/get/running");
+  }
+
   public addNewExam(idGroupV: number, titleV: string, typeV: number, difficultyV: number, showAllQuestionsV: boolean, returnToQuestionsV: boolean, sendResultsInstantlyV: boolean,
                     showFullResultsV: boolean, mixQuestionsV: boolean, percentToPassV: number, numberOfQuestionsV: number, maxTimeV: number){
     const body = {title: titleV, type: typeV, difficulty: difficultyV, showAllQuestions: showAllQuestionsV, returnToQuestions: returnToQuestionsV,
@@ -59,6 +63,21 @@ export class ExamService {
   public changeExamQuestionPosition(idExam: number, idExamQuestion: number, position: number){
     const body = {};
     return this.http.patch<any>(this.baseUri + "/"+idExam+"/examQuestion/"+idExamQuestion+"/changePosition/"+position, body);
+  }
+
+  public initiateJoingToExam(idExam: number, passwordV: string, colorV: string){
+    const body = {password: passwordV, color: colorV};
+    return this.http.post<any>(this.baseUri + "/"+idExam+"/initiateExam", body);
+  }
+
+  public startExam(idExam: number, finishedTimeV: string){
+    const body = {finishedTime: finishedTimeV};
+    return this.http.post<any>(this.baseUri + "/"+idExam+"/start", body);
+  }
+
+  public joinToRunningExam(idExam: number, passwordV: string){
+    const body = {password: passwordV};
+    return this.http.post<any>(this.baseUri + "/"+idExam+"/join", body);
   }
 
 }

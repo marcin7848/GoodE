@@ -1,0 +1,10 @@
+<ng-container *ngIf="runningProcess == 0">
+  <h2>Join to exam!</h2>
+  <form [formGroup]="joinToExamForm" (ngSubmit)="joinToExam()">
+    Password: <input type="text" formControlName="joinToExamPassword"
+                     class="form-control"/><br/>
+    <button class="btn btn-primary">Join to exam</button>
+    <br/>
+    Errors: {{message}}
+  </form>
+</ng-container>
