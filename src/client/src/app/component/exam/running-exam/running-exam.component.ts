@@ -6,6 +6,10 @@ import {AccountService} from "../../../service/account/account.service";
 import {Account} from "../../../model/Account";
 import {Exam} from "../../../model/Exam";
 import {first} from "rxjs/operators";
+import {ExamAnswerWrapper} from "../../../model/ExamAnswerWrapper";
+
+declare var jquery:any;
+declare var $ :any;
 
 @Component({
   selector: 'app-running-exam',
@@ -22,6 +26,7 @@ export class RunningExamComponent implements OnInit {
   joinToExamForm: FormGroup;
   blockade = 0;
   causeOfBlockade = "";
+  answerTemp = 0;
 
   constructor(private formBuilder: FormBuilder,
               private router: Router,
@@ -92,4 +97,76 @@ export class RunningExamComponent implements OnInit {
       });
   }
 
+
+  addAnswers(){
+    var lastIdExamMemberQuestion = 0;
+    var examAnswerWrapperList = [];
+    var i = 0;
+    var done = 0;
+
+    var length =  $(".answers").length;
+    $(".answers").each(function(index, answer){
+      if($(this).is(':checked')){
+        if(lastIdExamMemberQuestion != parseInt($(this).attr('name'))){
+          var examAnswerWrapper = new ExamAnswerWrapper();
+          examAnswerWrapper.id_exam_member_question = $(this).attr('name');
+          examAnswerWrapper.id_exam_closed_answers.push($(this).val());
+          examAnswerWrapperList.push(examAnswerWrapper);
+          lastIdExamMemberQuestion = parseInt($(this).attr('name'));
+          i++;
+        }else{
+          var examAnswerWrapper = new ExamAnswerWrapper();
+          examAnswerWrapper.id_exam_closed_answers = examAnswerWrapperList[i-1]["id_exam_closed_answers"];
+          examAnswerWrapper.id_exam_closed_answers.push($(this).val());
+          examAnswerWrapperList[i-1]["id_exam_closed_answers"] = examAnswerWrapper.id_exam_closed_answers;
+        }
+      }
+      else{
+        if(lastIdExamMemberQuestion != parseInt($(this).attr('name'))) {
+          var examAnswerWrapper = new ExamAnswerWrapper();
+          examAnswerWrapper.id_exam_member_question = $(this).attr('name');
+          examAnswerWrapper.id_exam_closed_answers = [];
+          examAnswerWrapperList.push(examAnswerWrapper);
+          lastIdExamMemberQuestion = parseInt($(this).attr('name'));
+          i++;
+        }
+      }
+
+      if(index === (length - 1)){
+        done = 1;
+      }
+
+    });
+
+    function waitForDone(examService: ExamService, exam: Exam, message: string){
+      if(done == 0){
+        setTimeout(waitForDone, 100);
+      }
+      else{
+        console.log(examAnswerWrapperList);
+        examService.addAnswers(exam.id, examAnswerWrapperList)
+        .pipe(first())
+        .subscribe(
+          data => {
+            console.log("Dodano odpowiedzi");
+            location.reload();
+          },
+          error => {
+            console.log(error);
+            console.log("Nie mozna wykonac!");
+            message = error["error"]["error"];
+          });
+      }
+    }
+
+    waitForDone(this.examService, this.exam, this.message);
+  }
+
+  checkBoxExamAnswer(name: number, value: number){
+    $("#"+name+"_"+value).prop('checked', true);
+  }
+
+  checkRadioExamAnswer(name: number, value: number){
+    $("#"+name+"__"+value).prop('checked', true);
+  }
 }

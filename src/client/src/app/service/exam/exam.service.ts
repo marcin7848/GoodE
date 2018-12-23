@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {CookieService} from "ngx-cookie-service";
+import {ExamAnswerWrapper} from "../../model/ExamAnswerWrapper";
 
 @Injectable({
   providedIn: 'root'
@@ -83,6 +84,10 @@ export class ExamService {
   public blockExamMember(idExam: number, idExamMember: number, causeOfBlockadeV: string){
     const body = {causeOfBlockade: causeOfBlockadeV};
     return this.http.post<any>(this.baseUri + "/"+idExam+"/examMember/"+idExamMember+"/block", body);
+  }
+
+  public addAnswers(idExam: number, examAnswerWrapper: ExamAnswerWrapper[]){
+    return this.http.post<any>(this.baseUri + "/"+idExam+"/addAnswer", examAnswerWrapper);
   }
 
 }

@@ -142,7 +142,8 @@ public class ExamService implements ExamServiceI {
         examMember.getAccount().setActivationCodes(null);
         examMember.getAccount().setAccessRole(null);
 
-        if(exam.isShowAllQuestions()){
+        //do usuniecia drugi warunek w ifie poniżej, jeśli ma niezwracać wszystkich pytań na raz
+        if(exam.isShowAllQuestions() || !exam.isShowAllQuestions()){
           List<ExamMemberQuestion> examMemberQuestions = examMemberQuestionRepository.findAllByIdExamMember(examMember.getId());
           for(int j=0; j<examMemberQuestions.size(); j++){
             examMemberQuestions.get(j).setExamMember(null);
@@ -453,9 +454,17 @@ public class ExamService implements ExamServiceI {
       ExamMemberQuestion examMemberQuestion = examMemberQuestionRepository
           .findExamMemberQuestionById(eaw.getId_exam_member_question());
 
+      if(examMemberQuestion == null) {
+        continue;
+      }
+
       if(loggedAccount.getId() != examMemberQuestion.getExamMember().getAccount().getId()){
         continue;
       }
+
+      int currentPosition = examMemberQuestion.getPosition();
+      examMemberQuestion.getExamMember().setPosition(currentPosition);
+      examMemberRepository.save(examMemberQuestion.getExamMember());
 
       List<ExamAnswer> examAnswers = examAnswerRepository
           .findExamAnswersByIdExamMemberQuestion(examMemberQuestion.getId());
@@ -476,6 +485,12 @@ public class ExamService implements ExamServiceI {
           examAnswer.setExamClosedAnswer(eca);
           examAnswerRepository.save(examAnswer);
         }
+      }
+      else{
+        ExamAnswer examAnswer = new ExamAnswer();
+        examAnswer.setExamMemberQuestion(examMemberQuestion);
+        examAnswer.setExamClosedAnswer(null);
+        examAnswerRepository.save(examAnswer);
       }
     }
   }

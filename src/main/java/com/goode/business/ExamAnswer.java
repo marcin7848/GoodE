@@ -38,7 +38,6 @@ public class ExamAnswer {
   @ManyToOne(fetch = FetchType.EAGER, optional = false)
   @JoinColumn(name = "id_exam_closed_answer")
   @OnDelete(action = OnDeleteAction.CASCADE)
-  @NotNull
   private ExamClosedAnswer examClosedAnswer;
 
 }

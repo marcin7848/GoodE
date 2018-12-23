@@ -1,6 +1,6 @@
 <ng-container *ngIf="blockade == 1">
   <h2>Zostałeś zablokowany na egzaminie!</h2>
-    Powód: {{causeOfBlockade}}
+  Powód: {{causeOfBlockade}}
 </ng-container>
 <ng-container *ngIf="runningProcess == 0">
   <h2>Join to exam!</h2>
@@ -15,4 +15,58 @@
 
 <ng-container *ngIf="runningProcess == 1 && exam?.started == false">
   <h2>Czekaj aż egzamin się rozpocznie!</h2>
+</ng-container>
+
+<ng-container *ngIf="runningProcess == 1 && exam?.started == true">
+
+  <ng-container *ngIf="exam?.showAllQuestions == true">
+    <ng-container *ngIf="exam?.examMembers[0].position+1 < exam?.examMembers[0].examMemberQuestions.length || exam?.returnToQuestions">
+      <ng-container *ngFor="let examMemberQuestion of exam?.examMembers[0].examMemberQuestions">
+        <table border="1" style="margin-top: 10px;">
+          <tr>
+            <td colspan="2"><b>Question</b></td>
+          </tr>
+          <tr>
+            <td colspan="2" style="white-space: pre-wrap; width: 600px;"
+                [innerHTML]="examMemberQuestion.examQuestion.question"></td>
+          </tr>
+          <ng-container *ngFor="let answer of examMemberQuestion.examQuestion.examClosedAnswers">
+            <tr>
+              <td colspan="1">
+                <ng-container *ngIf="examMemberQuestion.examQuestion.type == 1">
+                    <input class="answers" id="{{examMemberQuestion.id + '__' + answer.id}}" type="radio" name="{{examMemberQuestion.id}}" value="{{answer.id}}" />
+                  <ng-container *ngFor="let examAnswer of examMemberQuestion.examAnswers">
+                    <ng-container *ngIf="examAnswer.examClosedAnswer.id == answer.id">
+                      {{ checkRadioExamAnswer(examMemberQuestion.id, answer.id) }}
+                    </ng-container>
+                  </ng-container>
+                </ng-container>
+                <ng-container *ngIf="examMemberQuestion.examQuestion.type == 2">
+                    <input class="answers" id="{{examMemberQuestion.id + '_' + answer.id}}" type="checkbox" name="{{examMemberQuestion.id}}" value="{{answer.id}}" />
+                    <ng-container *ngFor="let examAnswer of examMemberQuestion.examAnswers">
+                      <ng-container *ngIf="examAnswer.examClosedAnswer.id == answer.id">
+                        {{ checkBoxExamAnswer(examMemberQuestion.id, answer.id) }}
+                      </ng-container>
+                    </ng-container>
+                </ng-container>
+              </td>
+              <td colspan="1" style="white-space: pre-wrap; width: 400px;"
+                  [innerHTML]="answer.closedAnswer"></td>
+            </tr>
+          </ng-container>
+        </table>
+      </ng-container>
+
+      <button (click)="addAnswers()" class="btn btn-primary">Add answers</button>
+    </ng-container>
+
+    <ng-container *ngIf="exam?.examMembers[0].position+1 >= exam?.examMembers[0].examMemberQuestions.length && !exam?.returnToQuestions">
+     <h2>Wypelniles egzamin. Czekaj az sie zakonczy dla wszystkich!</h2>
+    </ng-container>
+  </ng-container>
+
+  <ng-container *ngIf="exam?.showAllQuestions == false">
+    <h2>Czekaj aż egzamin się rozpocznie!</h2>
+  </ng-container>
+
 </ng-container>
