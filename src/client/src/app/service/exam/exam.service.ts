@@ -90,4 +90,19 @@ export class ExamService {
     return this.http.post<any>(this.baseUri + "/"+idExam+"/addAnswer", examAnswerWrapper);
   }
 
+  public changeExamMemberPosition(idExam: number, position: number){
+    const body = {};
+    return this.http.post<any>(this.baseUri + "/"+idExam+"/changeExamMemberPosition/"+position, body);
+  }
+
+  public finishExam(idExam: number){
+    const body = {};
+    return this.http.post<any>(this.baseUri + "/"+idExam+"/finish", body);
+  }
+
+  public changeCorrectExamClosedAnswer(idExam: number, idExamQuestion: number, idExamClosedAnswer: number){
+    const body = {};
+    return this.http.patch<any>(this.baseUri + "/"+idExam+"/examQuestion/"+idExamQuestion+"/examClosedAnswer/"+idExamClosedAnswer+"/changeCorrect", body);
+  }
+
 }

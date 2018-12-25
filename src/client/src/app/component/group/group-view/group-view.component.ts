@@ -227,4 +227,8 @@ export class GroupViewComponent implements OnInit {
   joinToExam(exam){
     this.router.navigate(['/exam/'+exam.id+'/running']);
   }
+
+  goToResults(exam){
+    this.router.navigate(['/exam/'+exam.id+'/results']);
+  }
 }

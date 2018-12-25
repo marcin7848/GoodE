@@ -224,6 +224,11 @@ public class ExamService implements ExamServiceI {
   }
 
   @Override
+  public ExamClosedAnswer getExamClosedAnswerByIdAndIdExamQuestion(int id, int idExamQuestion) {
+    return examClosedAnswerRepository.findExamClosedAnswerByIdAndIdExamQuestion(id, idExamQuestion);
+  }
+
+  @Override
   public ExamAnswer getExamAnswerByIdExamMemberQuestionAnIdExamClosedAnswer(int id_exam_member_question, int id_exam_closed_answer) {
     return examAnswerRepository.findExamAnswerByIdExamMemberQuestionAndIdExamClosedAnswer(id_exam_member_question, id_exam_closed_answer);
   }
@@ -463,7 +468,7 @@ public class ExamService implements ExamServiceI {
       }
 
       int currentPosition = examMemberQuestion.getPosition();
-      examMemberQuestion.getExamMember().setPosition(currentPosition);
+      examMemberQuestion.getExamMember().setPosition(currentPosition+1);
       examMemberRepository.save(examMemberQuestion.getExamMember());
 
       List<ExamAnswer> examAnswers = examAnswerRepository
@@ -510,6 +515,23 @@ public class ExamService implements ExamServiceI {
     return exam;
   }
 
+  @Override
+  public void changeExamMemberPosition(Exam exam, int position) {
+    Account loggedAccount = accountService.getLoggedAccount();
+    ExamMember examMember = examMemberRepository.findExamMemberByIdAccountAndIdExam(loggedAccount.getId(), exam.getId());
 
+    if(examMember == null) {
+      return;
+    }
+
+    examMember.setPosition(position);
+    examMemberRepository.save(examMember);
+  }
+
+  @Override
+  public void changeCorrectExamClosedAnswer(ExamClosedAnswer examClosedAnswer) {
+    examClosedAnswer.setCorrect(!examClosedAnswer.isCorrect());
+    examClosedAnswerRepository.save(examClosedAnswer);
+  }
 
 }

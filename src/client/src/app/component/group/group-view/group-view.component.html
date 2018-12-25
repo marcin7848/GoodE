@@ -237,3 +237,26 @@ Description: {{group?.description}}
     </ng-container>
   </tr>
 </table>
+
+<h2>Finished Exams</h2>
+<table border="1">
+  <tr>
+    <td colspan="2">Egzaminy zakończone</td>
+  </tr>
+  <tr>
+    <td>Nazwa</td>
+    <td>Akcje</td>
+  </tr>
+  <tr *ngFor="let exam of exams">
+    <ng-container *ngIf="exam.finished">
+      <td>{{exam.title}}</td>
+      <td>
+        <button (click)="goToResults(exam)" class="btn btn-primary">See results</button>
+        <ng-container *ngIf="group?.groupMembers[0].accessRole.role=='ROLE_ADMIN' || group?.groupMembers[0].accessRole.role=='ROLE_TEACHER'">
+          <button (click)="showEditExam(exam)" class="btn btn-primary">Edit exam</button>
+          <button (click)="goToManageExam(exam)" class="btn btn-primary">Manage exam</button>
+        </ng-container>
+      </td>
+    </ng-container>
+  </tr>
+</table>

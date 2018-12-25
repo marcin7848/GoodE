@@ -16,6 +16,7 @@ import {QuestionComponent} from "./component/question/question.component";
 import {ExamManagementComponent} from "./component/exam/exam-management/exam-management.component";
 import {RunningExamManagementComponent} from "./component/exam/running-exam-management/running-exam-management.component";
 import {RunningExamComponent} from "./component/exam/running-exam/running-exam.component";
+import {ExamResultsComponent} from "./component/exam/exam-results/exam-results.component";
 
 const routes: Routes = [
   {path : '', component : HomeComponent},
@@ -37,6 +38,7 @@ const routes: Routes = [
   {path : 'exam/:idExam/management', component : ExamManagementComponent},
   {path : 'exam/:idExam/running/management', component : RunningExamManagementComponent},
   {path : 'exam/:idExam/running', component : RunningExamComponent},
+  {path : 'exam/:idExam/results', component : ExamResultsComponent},
 ];
 
 export const routing = RouterModule.forRoot(routes);

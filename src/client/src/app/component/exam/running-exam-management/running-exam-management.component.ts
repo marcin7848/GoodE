@@ -73,7 +73,7 @@ export class RunningExamManagementComponent implements OnInit {
                 this.runningProcess = 2;
               }
               else{
-                this.runningProcess = 3;
+                this.router.navigate(['/exam/'+this.exam.id+'/results']);
               }
             }
           }
@@ -133,6 +133,18 @@ export class RunningExamManagementComponent implements OnInit {
       },
       error => {
         console.log(error);
+        console.log("Nie mozna wykonac!");
+        this.message = error["error"]["error"];
+      });
+  }
+
+  finishExam(){
+    this.examService.finishExam(this.exam.id).
+    subscribe(data => {
+        console.log("Zakonczono egzamin!");
+        this.router.navigate(['/exam/'+this.exam.id+'/results']);
+      },
+      error => {
         console.log("Nie mozna wykonac!");
         this.message = error["error"]["error"];
       });

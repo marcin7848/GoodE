@@ -62,10 +62,11 @@ export class RunningExamComponent implements OnInit {
                 this.blockade = 1;
                 this.causeOfBlockade = this.exam.examMembers[0].causeOfBlockade;
               }else{
-                this.runningProcess = 1;
-
-
-
+                if(!this.exam.finished){
+                  this.runningProcess = 1;
+                }else{
+                  this.router.navigate(['/exam/'+this.exam.id+'/results']);
+                }
               }
             }
           }
@@ -167,6 +168,29 @@ export class RunningExamComponent implements OnInit {
   }
 
   checkRadioExamAnswer(name: number, value: number){
-    $("#"+name+"__"+value).prop('checked', true);
+    $("#"+name+"_"+value).prop('checked', true);
+  }
+
+  checkBoxExamAnswer2(name: number, value: number){
+    $("#"+name+"____"+value).prop('checked', true);
+  }
+
+  checkRadioExamAnswer2(name: number, value: number){
+    $("#"+name+"___"+value).prop('checked', true);
+  }
+
+  changeExamMemberPositionManually(position: number){
+    this.examService.changeExamMemberPosition(this.exam.id, position)
+    .pipe(first())
+    .subscribe(
+      data => {
+        console.log("Zmienono pozycje!");
+        location.reload();
+      },
+      error => {
+        console.log(error);
+        console.log("Nie mozna wykonac!");
+        this.message = error["error"]["error"];
+      });
   }
 }

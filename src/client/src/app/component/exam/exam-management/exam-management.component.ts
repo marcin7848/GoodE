@@ -9,6 +9,8 @@ import {Exam} from "../../../model/Exam";
 import {QuestionService} from "../../../service/question/question.service";
 import {Question} from "../../../model/Question";
 import {ExamQuestion} from "../../../model/ExamQuestion";
+import {ClosedAnswer} from "../../../model/ClosedAnswer";
+import {ExamClosedAnswer} from "../../../model/ExamClosedAnswer";
 
 @Component({
   selector: 'app-exam-management',
@@ -129,4 +131,17 @@ export class ExamManagementComponent implements OnInit {
     this.router.navigate(['/exam/'+this.exam.id+'/running/management']);
   }
 
+  changeCorrectExamClosedAnswer(examQuestion: ExamQuestion, examClosedAnswer: ExamClosedAnswer){
+    this.examService.changeCorrectExamClosedAnswer(this.exam.id, examQuestion.id, examClosedAnswer.id)
+    .pipe(first())
+    .subscribe(
+      data => {
+        console.log("Zmieniono correct!");
+        location.reload();
+      },
+      error => {
+        console.log("Nie mozna pobrac!");
+        this.message = error["error"]["error"];
+      });
+  }
 }

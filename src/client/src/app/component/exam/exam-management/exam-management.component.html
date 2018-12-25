@@ -29,11 +29,15 @@ Started: {{exam?.started}}
 <br/>
 Finished: {{exam?.finished}}
 <br/>
-<button (click)="startExam()" class="btn btn-primary">Start exam</button>
-<br/>
-<br/>
-<button (click)="addAllExamQuestions()" class="btn btn-primary">Add all questions</button>
-<br/>
+<ng-container *ngIf="!exam?.finished">
+  <button (click)="startExam()" class="btn btn-primary">Start exam</button>
+  <br/>
+  <br/>
+  <ng-container *ngIf="!exam?.joining">
+    <button (click)="addAllExamQuestions()" class="btn btn-primary">Add all questions</button>
+    <br/>
+  </ng-container>
+</ng-container>
 
 {{message}}
 
@@ -44,14 +48,27 @@ Finished: {{exam?.finished}}
       <td colspan="5"><b>Question</b></td>
     </tr>
     <tr>
-      <td colspan="4" style="white-space: pre-wrap; width: 600px;" [innerHTML]="question.question"></td>
-      <td rowspan="50"><button (click)="deleteExamQuestion(question)" class="btn btn-primary">Delete question from exam</button>
-        <br />
-        <ng-container *ngIf="question.position != 0">
-          <button (click)="changeExamQuestionPosition(question, question.position-1)" class="btn btn-primary">Move up</button>
+      <td colspan="4" style="white-space: pre-wrap; width: 600px;"
+          [innerHTML]="question.question"></td>
+      <td rowspan="50">
+        <ng-container *ngIf="!exam?.joining">
+          <button (click)="deleteExamQuestion(question)" class="btn btn-primary">Delete question
+            from
+            exam
+          </button>
         </ng-container>
-        <ng-container *ngIf="question.position+1 != exam.examQuestions.length">
-          <button (click)="changeExamQuestionPosition(question, question.position+1)" class="btn btn-primary">Move down</button>
+        <br/>
+        <ng-container *ngIf="!exam?.joining">
+          <ng-container *ngIf="question.position != 0">
+            <button (click)="changeExamQuestionPosition(question, question.position-1)"
+                    class="btn btn-primary">Move up
+            </button>
+          </ng-container>
+          <ng-container *ngIf="question.position+1 != exam.examQuestions.length">
+            <button (click)="changeExamQuestionPosition(question, question.position+1)"
+                    class="btn btn-primary">Move down
+            </button>
+          </ng-container>
         </ng-container>
       </td>
     </tr>
@@ -70,43 +87,49 @@ Finished: {{exam?.finished}}
     </tr>
     <ng-container *ngFor="let answer of question.examClosedAnswers">
       <tr>
-        <td colspan="3" style="white-space: pre-wrap; width: 400px;" [innerHTML]="answer.closedAnswer"></td>
-        <td colspan="1">{{answer.correct}}</td>
+        <td colspan="3" style="white-space: pre-wrap; width: 400px;"
+            [innerHTML]="answer.closedAnswer"></td>
+        <td colspan="1"><input type="checkbox" (click)="changeCorrectExamClosedAnswer(question, answer)" [checked]="answer.correct" /></td>
       </tr>
     </ng-container>
   </table>
 </ng-container>
 
 
-
-<h2>All questions for group which you can add to exam</h2>
-<ng-container *ngFor="let question of questions">
-  <table border="1" style="margin-top: 10px;">
-    <tr>
-      <td colspan="5"><b>Question</b></td>
-    </tr>
-    <tr>
-      <td colspan="4" style="white-space: pre-wrap; width: 600px;" [innerHTML]="question.question"></td>
-      <td rowspan="50"><button (click)="addQuestionToExam(question)" class="btn btn-primary">Add to exam</button></td>
-    </tr>
-    <tr>
-      <td>Typ:
-        <ng-container *ngIf="question.type == 1">Jednokrotnego wyboru</ng-container>
-        <ng-container *ngIf="question.type == 2">Wielokrotnego wyboru</ng-container>
-      </td>
-      <td>Trudność: {{question.difficulty}}</td>
-      <td>Punkty: {{question.points}}</td>
-      <td>Czas odpowiedzi [s]: {{question.answerTime}}</td>
-    </tr>
-    <tr>
-      <td colspan="3"><b>Closed answers</b></td>
-      <td colspan="1">Is correct?</td>
-    </tr>
-    <ng-container *ngFor="let answer of question.closedAnswers">
+<ng-container *ngIf="!exam?.joining">
+  <h2>All questions for group which you can add to exam</h2>
+  <ng-container *ngFor="let question of questions">
+    <table border="1" style="margin-top: 10px;">
       <tr>
-        <td colspan="3" style="white-space: pre-wrap; width: 400px;" [innerHTML]="answer.closedAnswer"></td>
-        <td colspan="1">{{answer.correct}}</td>
+        <td colspan="5"><b>Question</b></td>
       </tr>
-    </ng-container>
-  </table>
+      <tr>
+        <td colspan="4" style="white-space: pre-wrap; width: 600px;"
+            [innerHTML]="question.question"></td>
+        <td rowspan="50">
+          <button (click)="addQuestionToExam(question)" class="btn btn-primary">Add to exam</button>
+        </td>
+      </tr>
+      <tr>
+        <td>Typ:
+          <ng-container *ngIf="question.type == 1">Jednokrotnego wyboru</ng-container>
+          <ng-container *ngIf="question.type == 2">Wielokrotnego wyboru</ng-container>
+        </td>
+        <td>Trudność: {{question.difficulty}}</td>
+        <td>Punkty: {{question.points}}</td>
+        <td>Czas odpowiedzi [s]: {{question.answerTime}}</td>
+      </tr>
+      <tr>
+        <td colspan="3"><b>Closed answers</b></td>
+        <td colspan="1">Is correct?</td>
+      </tr>
+      <ng-container *ngFor="let answer of question.closedAnswers">
+        <tr>
+          <td colspan="3" style="white-space: pre-wrap; width: 400px;"
+              [innerHTML]="answer.closedAnswer"></td>
+          <td colspan="1">{{answer.correct}}</td>
+        </tr>
+      </ng-container>
+    </table>
+  </ng-container>
 </ng-container>

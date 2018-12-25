@@ -665,4 +665,77 @@ public class ExamController {
 
     return new ResponseEntity<>(null, HttpStatus.OK);
   }
+
+
+  @PostMapping("/{id}/changeExamMemberPosition/{position}")
+  @PreAuthorize("hasAnyRole('"+ AccessRole.ROLE_ADMIN +"', '"+ AccessRole.ROLE_TEACHER +"', '"+ AccessRole.ROLE_STUDENT +"' )")
+  public ResponseEntity<?> changeExamMemberPosition(@PathVariable("id") int id,
+      @PathVariable("position") int position){
+
+    if(position < 0){
+      position = 0;
+    }
+
+    Exam exam = examService.getExamById(id);
+    if(exam == null){
+      return ErrorMessage
+          .send(Language.getMessage("error.exam.badId"), HttpStatus.BAD_REQUEST);
+    }
+
+    Group group = groupService.getGroupById(exam.getGroup().getId());
+    if(group == null){
+      return ErrorMessage
+          .send(Language.getMessage("error.group.badId"), HttpStatus.BAD_REQUEST);
+    }
+
+    ErrorCode errorCode = new ErrorCode();
+    if (!groupMemberValidator.validateStudentInGroup(group, errorCode)) {
+      return ErrorMessage.send(Language.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
+    }
+
+    examService.changeExamMemberPosition(exam, position);
+
+    return new ResponseEntity<>(null, HttpStatus.OK);
+  }
+
+  @PatchMapping("/{id}/examQuestion/{idExamQuestion}/examClosedAnswer/{idExamClosedAnswer}/changeCorrect")
+  @PreAuthorize("hasAnyRole('"+ AccessRole.ROLE_ADMIN +"', '"+ AccessRole.ROLE_TEACHER +"')")
+  public ResponseEntity<?> changeCorrectExamClosedAnswer(
+      @PathVariable("id") int id,
+      @PathVariable("idExamQuestion") int idExamQuestion,
+      @PathVariable("idExamClosedAnswer") int idExamClosedAnswer){
+
+    Exam exam = examService.getExamById(id);
+    if(exam == null){
+      return ErrorMessage
+          .send(Language.getMessage("error.exam.badId"), HttpStatus.BAD_REQUEST);
+    }
+
+    Group group = groupService.getGroupById(exam.getGroup().getId());
+    if(group == null){
+      return ErrorMessage
+          .send(Language.getMessage("error.group.badId"), HttpStatus.BAD_REQUEST);
+    }
+
+    ErrorCode errorCode = new ErrorCode();
+    if (!groupMemberValidator.validatePermissionToGroup(group, true, errorCode)) {
+      return ErrorMessage.send(Language.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
+    }
+
+    ExamQuestion examQuestion = examService.getExamQuestionById(idExamQuestion);
+    if(examQuestion == null){
+      return ErrorMessage
+          .send(Language.getMessage("error.examQuestion.badId"), HttpStatus.BAD_REQUEST);
+    }
+
+    ExamClosedAnswer examClosedAnswer = examService.getExamClosedAnswerByIdAndIdExamQuestion(idExamClosedAnswer, idExamQuestion);
+    if(examClosedAnswer == null){
+      return ErrorMessage
+          .send(Language.getMessage("error.examClosedAnswer.badId"), HttpStatus.BAD_REQUEST);
+    }
+
+    examService.changeCorrectExamClosedAnswer(examClosedAnswer);
+
+    return new ResponseEntity<>(null, HttpStatus.OK);
+  }
 }

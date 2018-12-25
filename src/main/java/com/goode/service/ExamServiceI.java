@@ -39,5 +39,8 @@ public interface ExamServiceI {
   Exam startExam(Exam exam, Timestamp finishTime);
   void addExamAnswer(Exam exam, List<ExamAnswerWrapper> examAnswerWrapper);
 
+  void changeExamMemberPosition(Exam exam, int position);
+  ExamClosedAnswer getExamClosedAnswerByIdAndIdExamQuestion(int id, int idExamQuestion);
+  void changeCorrectExamClosedAnswer(ExamClosedAnswer examClosedAnswer);
 
 }
