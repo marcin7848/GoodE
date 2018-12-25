@@ -111,6 +111,43 @@ public class ExamController {
     return new ResponseEntity<>(examService.getExamFullById(id), HttpStatus.OK);
   }
 
+  @GetMapping("/{id}/getResults")
+  @PreAuthorize("hasAnyRole('"+ AccessRole.ROLE_ADMIN +"', '"+ AccessRole.ROLE_TEACHER +"', '"+ AccessRole.ROLE_STUDENT +"')")
+  public ResponseEntity<?> getResults(@PathVariable("id") int id){
+
+    Exam exam = examService.getExamById(id);
+    if(exam == null){
+      return ErrorMessage
+          .send(Language.getMessage("error.exam.badId"), HttpStatus.BAD_REQUEST);
+    }
+
+    Group group = groupService.getGroupById(exam.getGroup().getId());
+    if(group == null){
+      return ErrorMessage
+          .send(Language.getMessage("error.group.badId"), HttpStatus.BAD_REQUEST);
+    }
+
+    ErrorCode errorCode = new ErrorCode();
+    if(!groupMemberValidator.validateStudentInGroup(group, errorCode)){
+      return ErrorMessage.send(Language.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
+    }
+
+    Account loggedAccount = accountService.getLoggedAccount();
+
+    ExamMember examMember = examService.getExamMemberByIdAccountAndIdExam(loggedAccount.getId(), exam.getId());
+    if(examMember == null){
+      return ErrorMessage
+          .send(Language.getMessage("error.exam.examMember.notExisted"), HttpStatus.BAD_REQUEST);
+    }
+
+    int[] results = examService.getResultsExam(exam);
+    JSONObject obj = new JSONObject();
+    obj.put("maxPoints", results[0]);
+    obj.put("points", results[1]);
+
+    return new ResponseEntity<>(obj.toMap(), HttpStatus.OK);
+  }
+
   @GetMapping("/{id}/get/runningManagement")
   @PreAuthorize("hasAnyRole('"+ AccessRole.ROLE_ADMIN +"', '"+ AccessRole.ROLE_TEACHER +"')")
   public ResponseEntity<?> getRunningExamManagement(@PathVariable("id") int id){

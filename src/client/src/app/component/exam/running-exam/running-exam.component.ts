@@ -168,7 +168,7 @@ export class RunningExamComponent implements OnInit {
   }
 
   checkRadioExamAnswer(name: number, value: number){
-    $("#"+name+"_"+value).prop('checked', true);
+    $("#"+name+"__"+value).prop('checked', true);
   }
 
   checkBoxExamAnswer2(name: number, value: number){

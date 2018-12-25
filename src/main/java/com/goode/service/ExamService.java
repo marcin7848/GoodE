@@ -95,6 +95,67 @@ public class ExamService implements ExamServiceI {
   }
 
   @Override
+  public int[] getResultsExam(Exam exam) {
+    Account loggedAccount = accountService.getLoggedAccount();
+    int[] results = new int[2];
+    int maxPoints = 0;
+    int points = 0;
+
+    ExamMember examMember = examMemberRepository.findExamMemberByIdAccountAndIdExam(loggedAccount.getId(), exam.getId());
+    if(examMember == null){
+      return results;
+    }
+
+    for(ExamMemberQuestion examMemberQuestion: examMember.getExamMemberQuestions()){
+      maxPoints += examMemberQuestion.getExamQuestion().getPoints();
+
+      List<ExamClosedAnswer> examClosedAnswers = new ArrayList<>();
+      for(ExamClosedAnswer examClosedAnswer: examMemberQuestion.getExamQuestion().getExamClosedAnswers()){
+        if(examClosedAnswer.isCorrect()){
+          examClosedAnswers.add(examClosedAnswer);
+        }
+      }
+
+      List<ExamAnswer> examAnswers = examMemberQuestion.getExamAnswers();
+
+      if(examClosedAnswers.isEmpty()){
+        if(!examAnswers.isEmpty() && examAnswers.size() == 1 && examAnswers.get(0).getExamClosedAnswer() == null)
+        {
+          points += examMemberQuestion.getExamQuestion().getPoints();
+          continue;
+        }
+        else{
+          continue;
+        }
+      }
+
+      if(examClosedAnswers.size() != examAnswers.size()){
+        continue;
+      }
+
+      int existAnswers = 0;
+      for(ExamClosedAnswer examClosedAnswer: examClosedAnswers) {
+        for(ExamAnswer examAnswer: examAnswers) {
+          if(examClosedAnswer.getId() == examAnswer.getExamClosedAnswer().getId()){
+            existAnswers += 1;
+            break;
+          }
+        }
+      }
+
+      if(existAnswers == examClosedAnswers.size()) {
+        points += examMemberQuestion.getExamQuestion().getPoints();
+      }
+    }
+
+    results[0] = maxPoints;
+    results[1] = points;
+
+
+    return results;
+  }
+
+  @Override
   public Exam getRunningExamManagement(int id) {
     Exam exam = this.getExamById(id);
     exam.setGroup(null);

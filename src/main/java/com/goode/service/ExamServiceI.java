@@ -26,6 +26,7 @@ public interface ExamServiceI {
   List<Exam> getAllExamByIdGroup(Group group);
   Exam getRunningExamManagement(int id);
   Exam getRunningExam(int id);
+  int[] getResultsExam(Exam exam);
 
   Exam addNew(Exam question);
   Exam edit(Exam exam);

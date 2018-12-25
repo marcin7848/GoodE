@@ -137,7 +137,6 @@ export class ExamManagementComponent implements OnInit {
     .subscribe(
       data => {
         console.log("Zmieniono correct!");
-        location.reload();
       },
       error => {
         console.log("Nie mozna pobrac!");
