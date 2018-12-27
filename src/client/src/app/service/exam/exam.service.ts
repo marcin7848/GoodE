@@ -105,4 +105,20 @@ export class ExamService {
     return this.http.patch<any>(this.baseUri + "/"+idExam+"/examQuestion/"+idExamQuestion+"/examClosedAnswer/"+idExamClosedAnswer+"/changeCorrect", body);
   }
 
+  public getResults(idExam: number){
+    return this.http.get<any>(this.baseUri + "/"+idExam+"/getResults");
+  }
+
+  public rateExam(idExam: number){
+    const body = {};
+    return this.http.patch<any>(this.baseUri + "/"+idExam+"/rate", body);
+  }
+
+  public getResultsForIdExamMemberQuestion(idExam: number, idExamMemberQuestion: number){
+    return this.http.get<any>(this.baseUri + "/"+idExam+"/getResults/"+idExamMemberQuestion);
+  }
+
+  public getResultsForAllExamMembers(idExam: number){
+    return this.http.get<any>(this.baseUri + "/"+idExam+"/getResultsForAllExamMembers");
+  }
 }

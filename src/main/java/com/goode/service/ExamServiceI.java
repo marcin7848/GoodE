@@ -1,16 +1,20 @@
 package com.goode.service;
 
+import com.goode.business.Account;
 import com.goode.business.Exam;
 import com.goode.business.ExamAnswer;
 import com.goode.business.ExamAnswerWrapper;
 import com.goode.business.ExamClosedAnswer;
 import com.goode.business.ExamMember;
 import com.goode.business.ExamMemberQuestion;
+import com.goode.business.ExamMemberQuestionResult;
 import com.goode.business.ExamQuestion;
 import com.goode.business.Group;
 import com.goode.business.Question;
 import java.sql.Timestamp;
 import java.util.List;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public interface ExamServiceI {
 
@@ -26,7 +30,10 @@ public interface ExamServiceI {
   List<Exam> getAllExamByIdGroup(Group group);
   Exam getRunningExamManagement(int id);
   Exam getRunningExam(int id);
-  int[] getResultsExam(Exam exam);
+  int[] getResultsExam(Exam exam, List<ExamMemberQuestionResult> examMemberQuestionResults, Account account);
+  Exam getAllExamMembersResults(int id);
+  Exam getExamMemberResults(int id, Account account);
+  JSONArray getResultsForAllExamMembers(Exam exam);
 
   Exam addNew(Exam question);
   Exam edit(Exam exam);
@@ -43,5 +50,5 @@ public interface ExamServiceI {
   void changeExamMemberPosition(Exam exam, int position);
   ExamClosedAnswer getExamClosedAnswerByIdAndIdExamQuestion(int id, int idExamQuestion);
   void changeCorrectExamClosedAnswer(ExamClosedAnswer examClosedAnswer);
-
+  void rateExam(int id);
 }

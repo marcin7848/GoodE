@@ -1,3 +1,163 @@
-<p>
-  exam-results works!
-</p>
+<ng-container *ngIf="resultsProcess == 0">
+  <h2>Poczekaj, aż zakończy się egzamin!</h2>
+</ng-container>
+
+<ng-container *ngIf="resultsProcess == 1">
+  <h2>Egzamin nie został jeszcze oceniony!</h2>
+  <ng-container *ngIf="loggedAccount.accessRole.role == 'ROLE_ADMIN' || loggedAccount.accessRole.role == 'ROLE_TEACHER'">
+    <button (click)="rateExam()" class="btn btn-primary">Rate exam!</button>
+  </ng-container>
+</ng-container>
+
+<ng-container *ngIf="resultsProcess == 2">
+
+  <div id="formResultDetails" style="position: absolute; right: 0; width: 800px; visibility: hidden;">
+    <h2>Result details for user: {{firstName}}&nbsp;{{lastName}}</h2>
+
+
+
+    <h2>Wynik: {{examMemberResult?.percentResult}}%</h2>
+    {{examMemberResult?.points}} / {{examMemberResult?.maxPoints}} punktów <br />
+    Wynik
+    <ng-container *ngIf="examMemberResult?.percentResult >= exam.percentToPass">
+      <b>pozytywny</b>!
+    </ng-container>
+    <ng-container *ngIf="examMemberResult?.percentResult < exam.percentToPass">
+      <b>negatywny</b>!
+    </ng-container>
+    <br />
+    <br />
+    <ng-container *ngIf="examMemberResult?.exam != null">
+      <ng-container *ngFor="let examMemberQuestion of examMemberResult.exam?.examMembers[0].examMemberQuestions">
+        <table border="1" style="margin-top: 10px;">
+          <tr>
+            <td colspan="2"><b>Question</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              Points:
+              <ng-container *ngFor="let examMemberQuestionResult of examMemberResult.examMemberQuestionResults">
+                <ng-container *ngIf="examMemberQuestionResult.idExamMemberQuestion == examMemberQuestion.id">
+                  {{examMemberQuestionResult.points}}
+                </ng-container>
+              </ng-container>
+              /{{examMemberQuestion.examQuestion.points}}</td>
+          </tr>
+          <tr>
+            <td colspan="2" style="white-space: pre-wrap; width: 600px;"
+                [innerHTML]="examMemberQuestion.examQuestion.question"></td>
+          </tr>
+          <ng-container *ngFor="let answer of examMemberQuestion.examQuestion.examClosedAnswers">
+            <tr id="{{examMemberQuestion.id + '_' + answer.id + '_correct2'}}" >
+              <td colspan="1">
+                <ng-container *ngIf="examMemberQuestion.examQuestion.type == 1">
+                  <input class="answers" id="{{examMemberQuestion.id + '__' + answer.id + '_2'}}"
+                         type="radio" disabled="disabled" name="{{examMemberQuestion.id}}" value="{{answer.id}}" />
+                  <ng-container *ngFor="let examAnswer of examMemberQuestion.examAnswers">
+                    <ng-container *ngIf="examAnswer.examClosedAnswer.id == answer.id">
+                      {{ checkRadioExamAnswer2(examMemberQuestion.id, answer.id, examAnswer.examClosedAnswer.correct) }}
+                    </ng-container>
+                  </ng-container>
+                </ng-container>
+                <ng-container *ngIf="examMemberQuestion.examQuestion.type == 2">
+                  <input class="answers" id="{{examMemberQuestion.id + '_' + answer.id + '_2'}}"
+                         type="checkbox" disabled="disabled" name="{{examMemberQuestion.id}}" value="{{answer.id}}"/>
+                  <ng-container *ngFor="let examAnswer of examMemberQuestion.examAnswers">
+                    <ng-container *ngIf="examAnswer.examClosedAnswer.id == answer.id">
+                      {{ checkBoxExamAnswer2(examMemberQuestion.id, answer.id, examAnswer.examClosedAnswer.correct) }}
+                    </ng-container>
+                  </ng-container>
+                </ng-container>
+              </td>
+              <td colspan="1" style="white-space: pre-wrap; width: 400px;"
+                  [innerHTML]="answer.closedAnswer"></td>
+            </tr>
+          </ng-container>
+        </table>
+      </ng-container>
+    </ng-container>
+  </div>
+
+
+
+  <h2>Twój wynik: {{results?.percentResult}}%</h2>
+  {{results?.points}} / {{results?.maxPoints}} punktów <br />
+  Wynik
+  <ng-container *ngIf="results?.percentResult >= exam.percentToPass">
+    <b>pozytywny</b>!
+  </ng-container>
+  <ng-container *ngIf="results?.percentResult < exam.percentToPass">
+    <b>negatywny</b>!
+  </ng-container>
+  <br />
+  <br />
+  <ng-container *ngIf="results?.exam != null">
+    <ng-container *ngFor="let examMemberQuestion of results.exam?.examMembers[0].examMemberQuestions">
+      <table border="1" style="margin-top: 10px;">
+        <tr>
+          <td colspan="2"><b>Question</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          Points:
+            <ng-container *ngFor="let examMemberQuestionResult of results.examMemberQuestionResults">
+              <ng-container *ngIf="examMemberQuestionResult.idExamMemberQuestion == examMemberQuestion.id">
+                {{examMemberQuestionResult.points}}
+              </ng-container>
+            </ng-container>
+            /{{examMemberQuestion.examQuestion.points}}</td>
+        </tr>
+        <tr>
+          <td colspan="2" style="white-space: pre-wrap; width: 600px;"
+              [innerHTML]="examMemberQuestion.examQuestion.question"></td>
+        </tr>
+        <ng-container *ngFor="let answer of examMemberQuestion.examQuestion.examClosedAnswers">
+          <tr id="{{examMemberQuestion.id + '_' + answer.id + '_correct'}}" >
+            <td colspan="1">
+              <ng-container *ngIf="examMemberQuestion.examQuestion.type == 1">
+                <input class="answers" id="{{examMemberQuestion.id + '__' + answer.id}}"
+                       type="radio" disabled="disabled" name="{{examMemberQuestion.id}}" value="{{answer.id}}"/>
+                <ng-container *ngFor="let examAnswer of examMemberQuestion.examAnswers">
+                  <ng-container *ngIf="examAnswer.examClosedAnswer.id == answer.id">
+                    {{ checkRadioExamAnswer(examMemberQuestion.id, answer.id, examAnswer.examClosedAnswer.correct) }}
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+              <ng-container *ngIf="examMemberQuestion.examQuestion.type == 2">
+                <input class="answers" id="{{examMemberQuestion.id + '_' + answer.id}}"
+                       type="checkbox" disabled="disabled" name="{{examMemberQuestion.id}}" value="{{answer.id}}"/>
+                <ng-container *ngFor="let examAnswer of examMemberQuestion.examAnswers">
+                  <ng-container *ngIf="examAnswer.examClosedAnswer.id == answer.id">
+                    {{ checkBoxExamAnswer(examMemberQuestion.id, answer.id, examAnswer.examClosedAnswer.correct) }}
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+            </td>
+            <td colspan="1" style="white-space: pre-wrap; width: 400px;"
+                [innerHTML]="answer.closedAnswer"></td>
+          </tr>
+        </ng-container>
+      </table>
+    </ng-container>
+
+    <ng-container *ngIf="loggedAccount.accessRole.role == 'ROLE_ADMIN' || loggedAccount.accessRole.role == 'ROLE_TEACHER'">
+      <h2>All Exam members results</h2>
+      <table border="1" style="margin-top: 10px;">
+        <tr>
+          <td>Username</td>
+          <td>First name</td>
+          <td>Last name</td>
+          <td>Register number</td>
+          <td>Points</td>
+          <td>Result</td>
+          <td>Details</td>
+        </tr>
+        <ng-container *ngFor="let result of resultsForAllExamMembers">
+          <tr>
+            <td>{{result.exam.examMembers[0].account.username}}</td>
+            <td>{{result.exam.examMembers[0].account.firstName}}</td>
+            <td>{{result.exam.examMembers[0].account.lastName}}</td>
+            <td>{{result.exam.examMembers[0].account.register_no}}</td>
+            <td>{{result.points}} / {{result.maxPoints}}</td>
+            <td>{{result.percentResult}}%</td>
+            <td><button (click)="showDetails(result)" class="btn btn-primary">Details</button></td>
+          </tr>
+        </ng-container>
+      </table>
+    </ng-container>
+  </ng-container>
+</ng-container>

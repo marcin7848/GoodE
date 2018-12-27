@@ -88,7 +88,7 @@ Finished: {{exam?.finished}}
     <ng-container *ngFor="let answer of question.examClosedAnswers">
       <tr>
         <td colspan="3" style="white-space: pre-wrap; width: 400px;"
-            [innerHTML]="answer.closedAnswer"></td>
+        [innerHTML]="answer.closedAnswer"></td>
         <td colspan="1"><input type="checkbox" (click)="changeCorrectExamClosedAnswer(question, answer)" [checked]="answer.correct" /></td>
       </tr>
     </ng-container>

@@ -1,5 +1,6 @@
 import {Exam} from "./Exam";
 import {ExamMemberQuestion} from "./ExamMemberQuestion";
+import {Account} from "./Account";
 
 export class ExamMember {
   id: number;
