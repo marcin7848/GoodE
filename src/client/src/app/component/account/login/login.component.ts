@@ -30,13 +30,16 @@ export class LoginComponent implements OnInit {
       this.router.navigate(['/']);
     }
 
+    this.route.params.subscribe(params => {
+      this.expired = !!params['expired'];
+      if(this.expired){
+        this.cookieService.delete("Authorization");
+      }
+    });
+
     if(this.cookieService.get("Authorization")){
       this.router.navigate(['/']);
     }
-
-    this.route.params.subscribe(params => {
-      this.expired = !!params['expired'];
-    });
 
     this.loginForm = this.formBuilder.group({
       username: ['', Validators.required],

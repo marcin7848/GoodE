@@ -123,4 +123,27 @@ public class GroupMemberValidator extends BaseValidator {
     return true;
   }
 
+  public boolean validateStudentInGroup(Group group, ErrorCode errorCode){
+    if(group == null) {
+      errorCode.rejectValue("group", "error.group.badId");
+      return false;
+    }
+
+    Account loggedAccount = accountService.getLoggedAccount();
+    if(loggedAccount.getAccessRole().getRole().equals(AccessRole.ROLE_ADMIN)){
+      return true;
+    }
+
+
+    GroupMember groupMember = groupMemberService.getGroupMemberByGroupAndAccount(group, loggedAccount);
+    if(groupMember == null){
+      errorCode.rejectValue("group", "error.groupMember.notInGroup");
+      return false;
+    }
+
+
+    return true;
+  }
+
+
 }

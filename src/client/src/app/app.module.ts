@@ -25,6 +25,11 @@ import { GroupViewComponent } from './component/group/group-view/group-view.comp
 import { GroupEditComponent } from './component/group/group-edit/group-edit.component';
 import {QuestionService} from "./service/question/question.service";
 import { QuestionComponent } from './component/question/question.component';
+import {ExamService} from "./service/exam/exam.service";
+import { ExamManagementComponent } from './component/exam/exam-management/exam-management.component';
+import { RunningExamManagementComponent } from './component/exam/running-exam-management/running-exam-management.component';
+import { RunningExamComponent } from './component/exam/running-exam/running-exam.component';
+import { ExamResultsComponent } from './component/exam/exam-results/exam-results.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +47,11 @@ import { QuestionComponent } from './component/question/question.component';
     AddNewGroupComponent,
     GroupViewComponent,
     GroupEditComponent,
-    QuestionComponent
+    QuestionComponent,
+    ExamManagementComponent,
+    RunningExamManagementComponent,
+    RunningExamComponent,
+    ExamResultsComponent
   ],
   imports: [
     routing,
@@ -61,6 +70,7 @@ import { QuestionComponent } from './component/question/question.component';
     CookieService,
     GroupService,
     QuestionService,
+    ExamService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: Interceptor,

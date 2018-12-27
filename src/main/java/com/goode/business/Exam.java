@@ -128,7 +128,8 @@ public class Exam {
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "exam")
   private List<ExamQuestion> examQuestions = null;
 
-
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "exam")
+  private List<ExamMember> examMembers = null;
 
 
 

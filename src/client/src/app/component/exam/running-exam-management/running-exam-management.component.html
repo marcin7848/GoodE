@@ -1,0 +1,70 @@
+<ng-container *ngIf="runningProcess == 0">
+  <h2>Initiate joining to exam</h2>
+  <form [formGroup]="initiateJoiningForm" (ngSubmit)="initiateJoining()">
+    Password: <input type="text" formControlName="initiateJoiningPassword"
+                     class="form-control"/><br/>
+    Color: <input type="text" formControlName="initiateJoiningColor" class="form-control"/><br/>
+    <button class="btn btn-primary">Initiate joining</button>
+    <br/>
+    Errors: {{message}}
+  </form>
+</ng-container>
+<ng-container *ngIf="runningProcess == 1">
+  <h2>Start exam</h2>
+  <ng-container *ngIf="exam?.type == 1 || exam?.type == 2">
+    Finish time:<input type="text" id="finishTimeAtStarting" class="form-control"/><br/>
+  </ng-container>
+  <button (click)="startExam()" class="btn btn-primary">Start exam</button>
+  <br/><br/>
+
+  <h2>Exam members</h2>
+  <table border="1">
+    <tr>
+      <td>Username</td>
+      <td>First name</td>
+      <td>Last name</td>
+      <td>Register number</td>
+    </tr>
+    <tr *ngFor="let examMember of exam?.examMembers">
+        <td>{{examMember.account.username}}</td>
+        <td>{{examMember.account.firstName}}</td>
+        <td>{{examMember.account.lastName}}</td>
+        <td>{{examMember.account.register_no}}</td>
+    </tr>
+  </table>
+</ng-container>
+
+<ng-container *ngIf="runningProcess == 2">
+  <h2>Exam is running!</h2>
+  Zakończenie egzaminu: {{exam?.finishTime}}<br />
+  <button (click)="finishExam()" class="btn btn-primary">Finish exam</button>
+  <br/><br/>
+
+  Powód blokady member: <input type="text" id="causeOfBlockadeExamMember" class="form-control"/>
+  <h2>Exam members</h2>
+  <table border="1">
+    <tr>
+      <td>Id exam member</td>
+      <td>Username</td>
+      <td>First name</td>
+      <td>Last name</td>
+      <td>Register number</td>
+      <td>Blockade</td>
+    </tr>
+    <tr *ngFor="let examMember of exam?.examMembers">
+      <td>{{examMember.id}}</td>
+      <td>{{examMember.account.username}}</td>
+      <td>{{examMember.account.firstName}}</td>
+      <td>{{examMember.account.lastName}}</td>
+      <td>{{examMember.account.register_no}}</td>
+      <td>
+        <ng-container *ngIf="examMember.blocked">
+          <button (click)="blockExamMember(examMember)" class="btn btn-primary">Unblock exam member</button>
+        </ng-container>
+        <ng-container *ngIf="!examMember.blocked">
+          <button (click)="blockExamMember(examMember)" class="btn btn-primary">Block exam member</button>
+        </ng-container>
+      </td>
+    </tr>
+  </table>
+</ng-container>

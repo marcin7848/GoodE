@@ -108,6 +108,11 @@ public class GroupController extends BaseController<Group, GroupService> {
           .send(Language.getMessage("error.group.badId"), HttpStatus.BAD_REQUEST);
     }
 
+    ErrorCode errorCode = new ErrorCode();
+    if(!groupMemberValidator.validateStudentInGroup(currentGroup, errorCode)){
+      return ErrorMessage.send(Language.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
+    }
+
     Account loggedAccount = accountService.getLoggedAccount();
 
     List<GroupMember> groupMembers = groupMemberService.getGroupMembersByGroup(currentGroup);
