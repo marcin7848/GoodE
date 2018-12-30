@@ -1,25 +1,55 @@
-<h2>Login</h2>
-<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-  <div class="form-group">
-    <div *ngIf="expired">
-      Dane wygasły. Zaloguj się ponownie.
-    </div>
-    <label for="username">Username</label>
-    <input type="text" formControlName="username" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.username.errors }" />
-    <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
-      <div *ngIf="f.username.errors.required">Username is required</div>
-    </div>
-  </div>
-  <div class="form-group">
-    <label for="password">Password</label>
-    <input type="password" formControlName="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
-    <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
-      <div *ngIf="f.password.errors.required">Password is required</div>
-    </div>
-  </div>
-  <div class="form-group">
-    <button [disabled]="loading" class="btn btn-primary">Login</button>
-    <img *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
-  </div>
-  <div *ngIf="error" class="alert alert-danger">{{error}}</div>
-</form>
+<mat-card class="card-main">
+  <mat-card-header class="card-header">
+    <mat-card-title class="card-title">{{ 'login' | translate }}</mat-card-title>
+    <!--<mat-card-subtitle>subtitle</mat-card-subtitle>-->
+  </mat-card-header>
+  <mat-card-content>
+
+    <form class="form-main" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <mat-form-field class="form-input">
+        <input matInput #inputUsername maxlength="15" minlength="6"
+               placeholder="{{'username' | translate}}" formControlName="username" required>
+        <mat-hint align="end">{{inputUsername.value?.length || 0}}/15</mat-hint>
+        <mat-error *ngIf="f.username.errors?.required && !f.username.errors?.minlength">
+          {{ 'fieldRequired' | translate:{'field':'username' | translate} }}
+        </mat-error>
+        <mat-error *ngIf="!f.username.errors?.required && f.username.errors?.minlength">
+          {{ 'fieldMinLength' | translate:{'field':'username' | translate, 'length': '6'} }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="form-input">
+        <input matInput #inputPassword maxlength="100" minlength="8"
+               placeholder="{{'password' | translate}}" formControlName="password" required>
+        <mat-hint align="end">{{inputPassword.value?.length || 0}}/100</mat-hint>
+        <mat-error *ngIf="f.password.errors?.required && !f.password.errors?.minlength">
+          {{ 'fieldRequired' | translate:{'field':'password' | translate} }}
+        </mat-error>
+        <mat-error *ngIf="!f.password.errors?.required && f.password.errors?.minlength">
+          {{ 'fieldMinLength' | translate:{'field':'password' | translate, 'length': '8'} }}
+        </mat-error>
+      </mat-form-field>
+
+      <div class="action-button">
+        <button mat-raised-button color="primary" [disabled]="loading">{{ 'loginButton' | translate
+          }}
+        </button>
+        <img *ngIf="loading"
+             src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
+      </div>
+
+      <div *ngIf="message" class="alert">{{message}}</div>
+    </form>
+  </mat-card-content>
+  <mat-card-actions>
+    <span class="links-margin">
+      <a class="links" routerLink="/account/resendActivationCode">{{ 'resendActivationCode' | translate }}</a>
+    </span>
+    <span class="links-margin">
+      <a class="links" routerLink="/account/sendResetPasswordRequest">{{ 'resetPassword' | translate }}</a>
+    </span>
+  </mat-card-actions>
+</mat-card>
+
+
+

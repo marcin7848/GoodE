@@ -1,0 +1,25 @@
+{
+  "username": "Username",
+  "password": "Password",
+
+
+  "fieldRequired": "Field {{field}} is required!",
+  "fieldMinLength": "Field length {{field}} must be at least {{length}} characters!",
+
+  "incorrectData": "Incorrect data!",
+
+  "login": "Login",
+  "loginButton": "Log in",
+  "register": "Register",
+  "logout": "Logout",
+  "editAccount": "Edit account",
+  "groups": "Groups",
+  "changeAccessRole": "Change access role",
+  "helloUser": "Hello, {{username}}!",
+
+  "resendActivationCode": "Resend activation code",
+  "resetPassword": "Reset password",
+
+  "home": "homek",
+  "param": "Hello {{test}}!"
+}

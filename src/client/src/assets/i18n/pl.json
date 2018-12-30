@@ -1,0 +1,25 @@
+{
+  "username": "Nazwa użytkownika",
+  "password": "Hasło",
+
+  "fieldRequired": "Pole {{field}} jest wymagane!",
+  "fieldMinLength": "Długość pola {{field}} musi być co najmniej {{length}} znaków!",
+
+  "incorrectData": "Niepoprawne dane!",
+
+  "login": "Logowanie",
+  "loginButton": "Zaloguj się",
+  "register": "Rejestracja",
+  "logout": "Wyloguj się",
+  "editAccount": "Edytuj konto",
+  "groups": "Grupy",
+  "changeAccessRole": "Zmień rolę dostępu",
+  "helloUser": "Cześć, {{username}}!",
+
+
+  "resendActivationCode": "Wyślij ponownie kod aktywacyjny",
+  "resetPassword": "Zresetuj hasło",
+
+  "home": "dom",
+  "param": "Czesc {{test}}!"
+}
