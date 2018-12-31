@@ -49,7 +49,8 @@ export class Interceptor implements HttpInterceptor {
         error => {
           if(error['status'] == 401 && error['error']['error'] != "invalid_grant"){
             this.cookieService.delete("Authorization", '/');
-            this.router.navigate(['/login', "expired"]);
+            location.href = "/login/expired";
+            //this.router.navigate(['/login', "expired"]);
           }
         }
       )

@@ -22,7 +22,7 @@
       </mat-form-field>
 
       <mat-form-field class="form-input">
-        <input matInput #inputPassword maxlength="100" minlength="8"
+        <input matInput #inputPassword type="password" maxlength="100" minlength="8"
                placeholder="{{'password' | translate}}" formControlName="password" required>
         <mat-hint align="end">{{inputPassword.value?.length || 0}}/100</mat-hint>
         <mat-error *ngIf="f.password.errors?.required && !f.password.errors?.minlength">

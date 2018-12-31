@@ -5,6 +5,8 @@
   "registerNo": "Numer indeksu",
   "firstName": "Imię",
   "lastName": "Nazwisko",
+  "newPassword": "Nowe hasło",
+  "currentPassword": "Obecne hasło",
 
   "fieldRequired": "Pole {{field}} jest wymagane!",
   "fieldMinLength": "Długość pola {{field}} musi być co najmniej {{length}} znaków!",
@@ -21,6 +23,7 @@
   "groups": "Grupy",
   "changeAccessRole": "Zmień rolę dostępu",
   "helloUser": "Cześć, {{username}}!",
+  "accessRole": "Rola dostępu",
 
   "registered": "Zarejestrowałeś się! Kliknij link aktywacyjny wysłany na Twój adres email.",
 
@@ -29,5 +32,13 @@
   "activationCodeSent": "Kod aktywacyjny został wysłany! Sprawdź swój email.",
   "resetPassword": "Zresetuj hasło",
   "activateAccountTitle": "Aktywacja konta",
-  "accountActivated": "Konto zostało aktywowane!"
+  "accountActivated": "Konto zostało aktywowane!",
+  "resetPasswordRequest": "Żądanie zresetowania hasła",
+  "resetPasswordCodeSent": "Kod resetujący hasło został wysłany. Sprawdź swój email.",
+  "resetPasswordDone": "Hasło zostało zresetowane. Zaloguj się.",
+  "accountEdited": "Konto zostało edytowane.",
+  "accessRoleChanged": "Rola dostępu została zmieniona.",
+
+  "allGroups": "Wszystkie grupy",
+  "myGroups": "Moje grupy"
 }

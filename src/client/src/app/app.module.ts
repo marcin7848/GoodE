@@ -35,6 +35,8 @@ import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 
 import {MatSelectModule} from '@angular/material/select';
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatIconModule} from '@angular/material/icon'
 
 @NgModule({
   declarations: [
@@ -77,7 +79,9 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
       }
     }),
     MatSelectModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    MatTabsModule,
+    MatIconModule
   ],
   providers: [
     AccountService,

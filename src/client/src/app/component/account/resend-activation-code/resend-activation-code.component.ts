@@ -40,7 +40,6 @@ export class ResendActivationCodeComponent implements OnInit {
     .pipe(first())
     .subscribe(
       data => {
-        this.loading = false;
         this.message = this.translateService.instant('activationCodeSent');
         setTimeout(function(){
           location.href = '/';

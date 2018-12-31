@@ -5,6 +5,9 @@
   "registerNo": "Register number",
   "firstName": "First name",
   "lastName": "Last name",
+  "newPassword": "New password",
+  "currentPassword": "Current password",
+  "accessRole": "Access role",
 
   "fieldRequired": "Field {{field}} is required!",
   "fieldMinLength": "Field length {{field}} must be at least {{length}} characters!",
@@ -29,6 +32,13 @@
   "activationCodeSent": "Activation code has sent! Check your email.",
   "resetPassword": "Reset password",
   "activateAccountTitle": "Activate account",
-  "accountActivated": "The account has activated!"
+  "accountActivated": "The account has activated!",
+  "resetPasswordRequest": "Reset password request",
+  "resetPasswordCodeSent": "Reset password code has sent! Check your email.",
+  "resetPasswordDone": "Password has reset. Log in.",
+  "accountEdited": "Account has edited.",
+  "accessRoleChanged": "Access role has changed.",
 
+  "allGroups": "All Groups",
+  "myGroups": "My Groups"
 }
