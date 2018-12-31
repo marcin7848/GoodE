@@ -1,1 +1,10 @@
-Message: {{message}}
+<mat-card class="card-main">
+  <mat-card-header class="card-header">
+    <mat-card-title class="card-title">{{ 'activateAccountTitle' | translate }}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="form-input">
+      <div *ngIf="message" class="alert">{{message}}</div>
+    </div>
+  </mat-card-content>
+</mat-card>

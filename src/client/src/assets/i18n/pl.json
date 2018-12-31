@@ -1,25 +1,33 @@
 {
   "username": "Nazwa użytkownika",
   "password": "Hasło",
+  "email": "Email",
+  "registerNo": "Numer indeksu",
+  "firstName": "Imię",
+  "lastName": "Nazwisko",
 
   "fieldRequired": "Pole {{field}} jest wymagane!",
   "fieldMinLength": "Długość pola {{field}} musi być co najmniej {{length}} znaków!",
+  "fieldPattern": "Pole {{field}} zawiera niedozwolone znaki!",
 
   "incorrectData": "Niepoprawne dane!",
 
   "login": "Logowanie",
   "loginButton": "Zaloguj się",
   "register": "Rejestracja",
+  "registerButton": "Zarejestruj się",
   "logout": "Wyloguj się",
   "editAccount": "Edytuj konto",
   "groups": "Grupy",
   "changeAccessRole": "Zmień rolę dostępu",
   "helloUser": "Cześć, {{username}}!",
 
+  "registered": "Zarejestrowałeś się! Kliknij link aktywacyjny wysłany na Twój adres email.",
 
   "resendActivationCode": "Wyślij ponownie kod aktywacyjny",
+  "resendActivationCodeButton": "Wyślij kod aktywacyjny",
+  "activationCodeSent": "Kod aktywacyjny został wysłany! Sprawdź swój email.",
   "resetPassword": "Zresetuj hasło",
-
-  "home": "dom",
-  "param": "Czesc {{test}}!"
+  "activateAccountTitle": "Aktywacja konta",
+  "accountActivated": "Konto zostało aktywowane!"
 }

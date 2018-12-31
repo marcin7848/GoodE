@@ -7,14 +7,17 @@
 
     <form class="form-main" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
       <mat-form-field class="form-input">
-        <input matInput #inputUsername maxlength="15" minlength="6"
+        <input matInput #inputUsername maxlength="15" minlength="6" pattern="^[a-zA-Z0-9_]+$"
                placeholder="{{'username' | translate}}" formControlName="username" required>
         <mat-hint align="end">{{inputUsername.value?.length || 0}}/15</mat-hint>
-        <mat-error *ngIf="f.username.errors?.required && !f.username.errors?.minlength">
+        <mat-error *ngIf="f.username.errors?.required">
           {{ 'fieldRequired' | translate:{'field':'username' | translate} }}
         </mat-error>
-        <mat-error *ngIf="!f.username.errors?.required && f.username.errors?.minlength">
+        <mat-error *ngIf="f.username.errors?.minlength && !f.username.errors?.pattern">
           {{ 'fieldMinLength' | translate:{'field':'username' | translate, 'length': '6'} }}
+        </mat-error>
+        <mat-error *ngIf="f.username.errors?.pattern">
+          {{ 'fieldPattern' | translate:{'field':'username' | translate} }}
         </mat-error>
       </mat-form-field>
 
@@ -25,7 +28,7 @@
         <mat-error *ngIf="f.password.errors?.required && !f.password.errors?.minlength">
           {{ 'fieldRequired' | translate:{'field':'password' | translate} }}
         </mat-error>
-        <mat-error *ngIf="!f.password.errors?.required && f.password.errors?.minlength">
+        <mat-error *ngIf="f.password.errors?.minlength">
           {{ 'fieldMinLength' | translate:{'field':'password' | translate, 'length': '8'} }}
         </mat-error>
       </mat-form-field>

@@ -79,13 +79,13 @@ public class Account {
 
   @Column(name = "firstname")
   @NotBlank(groups = {RegisterValidation.class, FullValidation.class, EditValidation.class})
-  @Length(min = 2, max = 30, groups = {RegisterValidation.class, FullValidation.class, EditValidation.class})
+  @Length(min = 3, max = 30, groups = {RegisterValidation.class, FullValidation.class, EditValidation.class})
   @Pattern(regexp = "^[a-zA-Z-]+$", groups = {RegisterValidation.class, FullValidation.class, EditValidation.class})
   private String firstName;
 
   @Column(name = "lastname")
   @NotBlank(groups = {RegisterValidation.class, FullValidation.class, EditValidation.class})
-  @Length(min = 2, max = 30, groups = {RegisterValidation.class, FullValidation.class, EditValidation.class})
+  @Length(min = 3, max = 30, groups = {RegisterValidation.class, FullValidation.class, EditValidation.class})
   @Pattern(regexp = "^[a-zA-Z-]+$", groups = {RegisterValidation.class, FullValidation.class, EditValidation.class})
   private String lastName;
 

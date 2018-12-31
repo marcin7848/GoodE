@@ -1,25 +1,34 @@
 {
   "username": "Username",
   "password": "Password",
-
+  "email": "Email",
+  "registerNo": "Register number",
+  "firstName": "First name",
+  "lastName": "Last name",
 
   "fieldRequired": "Field {{field}} is required!",
   "fieldMinLength": "Field length {{field}} must be at least {{length}} characters!",
+  "fieldPattern": "Field {{field}} contains illegal characters!",
 
   "incorrectData": "Incorrect data!",
 
   "login": "Login",
   "loginButton": "Log in",
   "register": "Register",
+  "registerButton": "Register",
   "logout": "Logout",
   "editAccount": "Edit account",
   "groups": "Groups",
   "changeAccessRole": "Change access role",
   "helloUser": "Hello, {{username}}!",
 
-  "resendActivationCode": "Resend activation code",
-  "resetPassword": "Reset password",
+  "registered": "You have registered! Click on the activation link sent to your email.",
 
-  "home": "homek",
-  "param": "Hello {{test}}!"
+  "resendActivationCode": "Resend activation code",
+  "resendActivationCodeButton": "Send activation code",
+  "activationCodeSent": "Activation code has sent! Check your email.",
+  "resetPassword": "Reset password",
+  "activateAccountTitle": "Activate account",
+  "accountActivated": "The account has activated!"
+
 }

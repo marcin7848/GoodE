@@ -1,6 +1,36 @@
-<h2>Resend activation code</h2>
-<form [formGroup]="resendActivationCodeForm" (ngSubmit)="onSubmit()">
-  Email: <input type="text" formControlName="email" class="form-control" /><br />
-  <button class="btn btn-primary">Resend activation code</button><br />
-  Message: {{message}}
-</form>
+<mat-card class="card-main">
+  <mat-card-header class="card-header">
+    <mat-card-title class="card-title">{{ 'resendActivationCode' | translate }}</mat-card-title>
+    <!--<mat-card-subtitle>subtitle</mat-card-subtitle>-->
+  </mat-card-header>
+  <mat-card-content>
+
+    <form class="form-main" [formGroup]="resendActivationCodeForm" (ngSubmit)="onSubmit()">
+    <mat-form-field class="form-input">
+      <input matInput #inputEmail maxlength="100" minlength="6"
+             pattern="^[a-zA-Z0-9._-]+@([a-zA-Z0-9-_]+\.)+[a-zA-Z0-9-_]+$"
+             placeholder="{{'email' | translate}}" formControlName="email" required>
+      <mat-hint align="end">{{inputEmail.value?.length || 0}}/100</mat-hint>
+      <mat-error *ngIf="f.email.errors?.required">
+        {{ 'fieldRequired' | translate:{'field':'email' | translate} }}
+      </mat-error>
+      <mat-error *ngIf="f.email.errors?.minlength && !f.email.errors?.pattern">
+        {{ 'fieldMinLength' | translate:{'field':'email' | translate, 'length': '6'} }}
+      </mat-error>
+      <mat-error *ngIf="f.email.errors?.pattern">
+        {{ 'fieldPattern' | translate:{'field':'email' | translate} }}
+      </mat-error>
+    </mat-form-field>
+
+      <div class="action-button">
+        <button mat-raised-button color="primary" [disabled]="loading">{{ 'resendActivationCodeButton' | translate
+          }}
+        </button>
+        <img *ngIf="loading"
+             src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
+      </div>
+
+      <div *ngIf="message" class="alert">{{message}}</div>
+    </form>
+  </mat-card-content>
+</mat-card>
