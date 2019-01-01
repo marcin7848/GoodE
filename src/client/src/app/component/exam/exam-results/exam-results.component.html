@@ -1,13 +1,200 @@
-<ng-container *ngIf="resultsProcess == 0">
-  <h2>Poczekaj, aż zakończy się egzamin!</h2>
-</ng-container>
+<mat-card class="card-main">
+  <div *ngIf="message" class="alert-top">{{message}}</div>
+  <mat-card-header class="card-header">
+    <mat-card-title class="card-title">{{ 'resultForExam' | translate }}:&nbsp;{{exam?.title}}</mat-card-title>
+  </mat-card-header>
+  <ng-container *ngIf="formMode == 0">
+    <mat-card-content>
+      <mat-tab-group>
+        <mat-tab label="{{ 'result' | translate }}">
+          <ng-container *ngIf="resultsProcess == 0">
+            <h2>{{ 'waitForFinishExam' | translate }}</h2>
+          </ng-container>
+          <ng-container *ngIf="resultsProcess == 1">
+            <h2>{{ 'examNotRated' | translate }}</h2>
+            <ng-container *ngIf="loggedAccount.accessRole.role == 'ROLE_ADMIN' || loggedAccount.accessRole.role == 'ROLE_TEACHER'">
+              <button mat-raised-button color="primary" class="body-buttons" (click)="rateExam()" >{{ 'rateExam' | translate }}</button>
+            </ng-container>
+          </ng-container>
+          <ng-container *ngIf="resultsProcess == 2">
+            <h2>{{ 'yourResult' | translate }}:&nbsp;{{results?.percentResult}}%</h2>
+            {{results?.points}} / {{results?.maxPoints}} {{ 'pointsResult' | translate }} <br />
+            {{ 'result' | translate }}
+            <ng-container *ngIf="results?.percentResult >= exam.percentToPass">
+              <b>{{ 'resultPositive' | translate }}</b>!
+            </ng-container>
+            <ng-container *ngIf="results?.percentResult < exam.percentToPass">
+              <b>{{ 'resultNegative' | translate }}</b>!
+            </ng-container>
 
-<ng-container *ngIf="resultsProcess == 1">
-  <h2>Egzamin nie został jeszcze oceniony!</h2>
-  <ng-container *ngIf="loggedAccount.accessRole.role == 'ROLE_ADMIN' || loggedAccount.accessRole.role == 'ROLE_TEACHER'">
-    <button (click)="rateExam()" class="btn btn-primary">Rate exam!</button>
+
+
+            <ng-container *ngIf="results?.exam != null">
+              <ng-container *ngFor="let examMemberQuestion of results.exam?.examMembers[0].examMemberQuestions">
+
+              </ng-container>
+            </ng-container>
+          </ng-container>
+        </mat-tab>
+
+        <mat-tab label="{{ 'allExamMemberResults' | translate }}">
+          <ng-container *ngIf="resultsProcess == 0">
+            <h2>{{ 'waitForFinishExam' | translate }}</h2>
+          </ng-container>
+          <ng-container *ngIf="resultsProcess == 1">
+            <h2>{{ 'examNotRated' | translate }}</h2>
+            <ng-container *ngIf="loggedAccount.accessRole.role == 'ROLE_ADMIN' || loggedAccount.accessRole.role == 'ROLE_TEACHER'">
+              <button mat-raised-button color="primary" class="body-buttons" (click)="rateExam()" >{{ 'rateExam' | translate }}</button>
+            </ng-container>
+          </ng-container>
+          <ng-container *ngIf="resultsProcess == 2">
+
+          </ng-container>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-card-content>
   </ng-container>
-</ng-container>
+
+  <ng-container *ngIf="formMode == 1">
+    <mat-card-content>
+      <ng-container *ngIf="editMode == 0">
+        <h2>{{ 'addNewExam' | translate }}</h2>
+      </ng-container>
+      <ng-container *ngIf="editMode == 1">
+        <h2>{{ 'editExam' | translate }}</h2>
+      </ng-container>
+
+      <form class="form-main" [formGroup]="examForm">
+        <mat-form-field class="form-input">
+          <input matInput #inputTitle maxlength="40" minlength="4"
+                 pattern="^[ĄĆĘŁŃÓŚŹŻąćęłńóśźża-zA-Z0-9_\-\/ +\.]+$"
+                 placeholder="{{'title' | translate}}" formControlName="title" required>
+          <mat-hint align="end">{{inputTitle.value?.length || 0}}/40</mat-hint>
+          <mat-error *ngIf="f.title.errors?.required">
+            {{ 'fieldRequired' | translate:{'field':'title' | translate} }}
+          </mat-error>
+          <mat-error *ngIf="f.title.errors?.minlength && !f.title.errors?.pattern">
+            {{ 'fieldMinLength' | translate:{'field':'title' | translate, 'length': '4'} }}
+          </mat-error>
+          <mat-error *ngIf="f.title.errors?.pattern">
+            {{ 'fieldPattern' | translate:{'field':'title' | translate} }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field style="width: 400px;" class="form-input">
+          <mat-select style="width: 400px;" formControlName="type" placeholder="{{ 'type' | translate }}" required>
+            <mat-option style="width: 400px;" [value]="1">{{ 'examType1' | translate }}</mat-option>
+            <mat-option style="width: 400px;" [value]="2">{{ 'examType2' | translate }}</mat-option>
+            <mat-option style="width: 400px;" [value]="3">{{ 'examType3' | translate }}</mat-option>
+            <mat-option style="width: 400px;" [value]="4">{{ 'examType4' | translate }}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="f.type.errors?.required">
+            {{ 'fieldRequired' | translate:{'field':'type' | translate} }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="form-input">
+          <input matInput #inputDifficulty maxlength="2" pattern="[0-9]+$"
+                 placeholder="{{'difficulty' | translate}}" formControlName="difficulty" required>
+          <mat-hint align="end">{{inputDifficulty.value?.length || 0}}/2</mat-hint>
+          <mat-error *ngIf="f.difficulty.errors?.required">
+            {{ 'fieldRequired' | translate:{'field':'difficulty' | translate} }}
+          </mat-error>
+          <mat-error *ngIf="f.difficulty.errors?.pattern">
+            {{ 'fieldPattern' | translate:{'field':'difficulty' | translate} }}
+          </mat-error>
+        </mat-form-field>
+
+        <div class="form-slide">
+          <mat-slide-toggle color="primary" formControlName="showAllQuestions">
+            {{'showAllQuestions' | translate}}
+          </mat-slide-toggle>
+        </div>
+
+        <div class="form-slide">
+          <mat-slide-toggle color="primary" formControlName="returnToQuestions">
+            {{'returnToQuestions' | translate}}
+          </mat-slide-toggle>
+        </div>
+
+        <div class="form-slide">
+          <mat-slide-toggle color="primary" formControlName="sendResultsInstantly">
+            {{'sendResultsInstantly' | translate}}
+          </mat-slide-toggle>
+        </div>
+
+        <div class="form-slide">
+          <mat-slide-toggle color="primary" formControlName="showFullResults">
+            {{'showFullResults' | translate}}
+          </mat-slide-toggle>
+        </div>
+
+        <div class="form-slide">
+          <mat-slide-toggle color="primary" formControlName="mixQuestions">
+            {{'mixQuestions' | translate}}
+          </mat-slide-toggle>
+        </div>
+
+        <mat-form-field class="form-input">
+          <input matInput #inputPercentToPass maxlength="3" pattern="[0-9]+$"
+                 placeholder="{{'percentToPass' | translate}}" formControlName="percentToPass" required>
+          <mat-hint align="end">{{inputPercentToPass.value?.length || 0}}/3</mat-hint>
+          <mat-error *ngIf="f.percentToPass.errors?.required">
+            {{ 'fieldRequired' | translate:{'field':'percentToPass' | translate} }}
+          </mat-error>
+          <mat-error *ngIf="f.percentToPass.errors?.pattern">
+            {{ 'fieldPattern' | translate:{'field':'percentToPass' | translate} }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="form-input">
+          <input matInput #inputNumberOfQuestions maxlength="3" pattern="[0-9]+$"
+                 placeholder="{{'numberOfQuestions' | translate}}" formControlName="numberOfQuestions" required>
+          <mat-hint align="end">{{inputNumberOfQuestions.value?.length || 0}}/3</mat-hint>
+          <mat-error *ngIf="f.numberOfQuestions.errors?.required">
+            {{ 'fieldRequired' | translate:{'field':'numberOfQuestions' | translate} }}
+          </mat-error>
+          <mat-error *ngIf="f.numberOfQuestions.errors?.pattern">
+            {{ 'fieldPattern' | translate:{'field':'numberOfQuestions' | translate} }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="form-input">
+          <input matInput #inputMaxTime maxlength="3" pattern="[0-9]+$"
+                 placeholder="{{'maxTime' | translate}}" formControlName="maxTime" required>
+          <mat-hint align="end">{{inputMaxTime.value?.length || 0}}/3</mat-hint>
+          <mat-error *ngIf="f.maxTime.errors?.required">
+            {{ 'fieldRequired' | translate:{'field':'maxTime' | translate} }}
+          </mat-error>
+          <mat-error *ngIf="f.maxTime.errors?.pattern">
+            {{ 'fieldPattern' | translate:{'field':'maxTime' | translate} }}
+          </mat-error>
+        </mat-form-field>
+
+        <div class="action-button">
+
+          <ng-container *ngIf="editMode == 0">
+            <button mat-raised-button color="primary" class="body-buttons" (click)="addNewExam()" [disabled]="loading">{{'addNewExam' | translate}}</button>
+          </ng-container>
+          <ng-container *ngIf="editMode == 1">
+            <button mat-raised-button color="primary" class="body-buttons" (click)="editExam(currentExam)" [disabled]="loading">{{'editExam' | translate}}</button>
+          </ng-container>
+
+          <button mat-raised-button color="primary" class="body-buttons" (click)="cancelFormExam()">{{'cancel' | translate}}</button>
+
+          <img *ngIf="loading"
+               src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
+        </div>
+
+        <div *ngIf="messageExam" class="alert">{{messageExam}}</div>
+      </form>
+    </mat-card-content>
+  </ng-container>
+</mat-card>
+
+
+
+
 
 <ng-container *ngIf="resultsProcess == 2">
 
@@ -77,15 +264,7 @@
 
 
 
-  <h2>Twój wynik: {{results?.percentResult}}%</h2>
-  {{results?.points}} / {{results?.maxPoints}} punktów <br />
-  Wynik
-  <ng-container *ngIf="results?.percentResult >= exam.percentToPass">
-    <b>pozytywny</b>!
-  </ng-container>
-  <ng-container *ngIf="results?.percentResult < exam.percentToPass">
-    <b>negatywny</b>!
-  </ng-container>
+
   <br />
   <br />
   <ng-container *ngIf="results?.exam != null">

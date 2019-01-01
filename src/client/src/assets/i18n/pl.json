@@ -92,5 +92,18 @@
   "examType1": "Brak czasu, wszystkie pytania",
   "examType2": "Brak czasu, określona ilość wylosowanych pytań",
   "examType3": "Z czasem, wszystkie pytania",
-  "examType4": "Z czasem, ilość pytań nie przekraczająca określonego czasu"
+  "examType4": "Z czasem, ilość pytań nie przekraczająca określonego czasu",
+
+  "resultForExam": "Wynik dla egzaminu",
+  "result": "Wynik",
+  "allExamMemberResults": "Wyniki wszystkich członków egzaminu",
+  "waitForFinishExam": "Poczekaj na zakończenie egzaminu",
+  "examNotRated": "Egzamin nie został oceniony. Czekaj!",
+  "rateExam": "Oceń egzamin",
+  "yourResult": "Twój wynik",
+  "pointsResult": "punktów",
+  "resultPositive": "pozytywny",
+  "resultNegative": "negatywny"
+
+
 }

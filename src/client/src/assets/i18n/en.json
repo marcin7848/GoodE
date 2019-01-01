@@ -71,7 +71,6 @@
   "deleteGroup": "Delete group",
   "questionsPanel": "Questions panel",
 
-
   "groupMembers": "Group members",
   "exams": "Exams",
   "finishedExams": "Finished exams",
@@ -93,7 +92,18 @@
   "examType1": "Without time, all questions",
   "examType2": "Without time, a specific number of randomly questions",
   "examType3": "With time, all questions",
-  "examType4": "With time, number of questions not exceeding a certain time"
+  "examType4": "With time, number of questions not exceeding a certain time",
+
+  "resultForExam": "Result for exam",
+  "result": "Result",
+  "allExamMemberResults": "All exam members results",
+  "waitForFinishExam": "Wait for finish exam",
+  "examNotRated": "Exam not rated. Wait!",
+  "rateExam": "Rate exam",
+  "yourResult": "Your result",
+  "pointsResult": "points",
+  "resultPositive": "positive",
+  "resultNegative": "negative"
 
 
 }

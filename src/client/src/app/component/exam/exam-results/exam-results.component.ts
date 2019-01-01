@@ -26,6 +26,9 @@ export class ExamResultsComponent implements OnInit {
   resultsProcess = 0;
   loggedAccount: Account;
   resultsForAllExamMembers: Results[];
+  formMode = 0;
+  loading = false;
+  submitted = false;
 
   //results details variable
   firstName: string;
