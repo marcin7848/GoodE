@@ -41,7 +41,8 @@ public class Group {
   private String name;
 
   @Column(name = "description")
-  @Length(max = 100, groups = {FullValidation.class, AddNewValidation.class})
+  @Length(max = 70, groups = {FullValidation.class, AddNewValidation.class})
+  @Pattern(regexp = "^[\\p{L}0-9_\\-\\/ +\\.]+$", groups = {FullValidation.class, AddNewValidation.class})
   private String description;
 
   @Column(name = "password")

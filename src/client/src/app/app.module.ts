@@ -36,7 +36,9 @@ import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {MatSelectModule} from '@angular/material/select';
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {MatTabsModule} from '@angular/material/tabs';
-import {MatIconModule} from '@angular/material/icon'
+import {MatIconModule} from '@angular/material/icon';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {MatTableModule} from '@angular/material/table';
 
 @NgModule({
   declarations: [
@@ -81,7 +83,9 @@ import {MatIconModule} from '@angular/material/icon'
     MatSelectModule,
     BrowserAnimationsModule,
     MatTabsModule,
-    MatIconModule
+    MatIconModule,
+    MatSlideToggleModule,
+    MatTableModule
   ],
   providers: [
     AccountService,

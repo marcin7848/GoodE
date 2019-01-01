@@ -19,6 +19,8 @@ export class GroupEditComponent implements OnInit {
   loggedAccount: Account;
   id: number;
   group: Group;
+  loading = false;
+  submitted = false;
 
   constructor(private formBuilder: FormBuilder,
               private groupService: GroupService,
@@ -37,7 +39,7 @@ export class GroupEditComponent implements OnInit {
         }
       },
       error => {
-        console.log("Nie mozna pobrac!");
+        this.router.navigate(['/']);
       });
 
 
@@ -56,8 +58,7 @@ export class GroupEditComponent implements OnInit {
           this.f.hidden.setValue(this.group.hidden);
         },
         error => {
-          console.log("Nie mozna pobrac!");
-          this.message = error["error"]["error"];
+          this.router.navigate(['/']);
         });
     });
 
@@ -65,27 +66,33 @@ export class GroupEditComponent implements OnInit {
       name: ['', Validators.required],
       description: [''],
       password: [''],
-      possibleToJoin: ['', Validators.required],
-      acceptance: ['', Validators.required],
-      hidden: ['', Validators.required]
+      possibleToJoin: [false, Validators.required],
+      acceptance: [false, Validators.required],
+      hidden: [false, Validators.required]
     });
   }
 
   get f() { return this.editGroupForm.controls; }
 
   onSubmit(idGroup: number){
+    this.submitted = true;
+
+    if (this.editGroupForm.invalid) {
+      return;
+    }
+
+    this.loading = true;
+
     this.groupService.editGroup(idGroup, this.f.name.value, this.f.description.value,
       this.f.password.value, this.f.possibleToJoin.value, this.f.acceptance.value,
       this.f.hidden.value, null)
     .pipe(first())
     .subscribe(
       data => {
-        console.log("Grupa wyedyowana!");
         this.router.navigate(['/group/'+this.id+'/view']);
       },
       error => {
-        console.log(error);
-        console.log("Niepoprawne dane!");
+        this.loading = false;
         this.message = error["error"]["error"];
       });
   }

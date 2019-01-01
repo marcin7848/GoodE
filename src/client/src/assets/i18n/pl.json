@@ -7,12 +7,30 @@
   "lastName": "Nazwisko",
   "newPassword": "Nowe hasło",
   "currentPassword": "Obecne hasło",
+  "name": "Nazwa",
+  "description": "Opis",
+  "actions": "Akcje",
+  "title": "Tytuł",
+  "type": "Typ",
+  "difficulty": "Trudność [1-10]",
+  "showAllQuestions": "Pokazać wszystkie pytania naraz?",
+  "returnToQuestions": "Możliwy powrót do pytań?",
+  "sendResultsInstantly": "Wysłać wyniki od razu po zakończeniu?",
+  "showFullResults": "Pokazać cały egzamin przy wynikach?",
+  "mixQuestions": "Mieszać pytania na egzaminie?",
+  "percentToPass": "Ilość procent do zdania [0-100]",
+  "numberOfQuestions": "Liczba pytań",
+  "maxTime": "Maksymalny czas na egzamin [min]",
 
   "fieldRequired": "Pole {{field}} jest wymagane!",
   "fieldMinLength": "Długość pola {{field}} musi być co najmniej {{length}} znaków!",
   "fieldPattern": "Pole {{field}} zawiera niedozwolone znaki!",
 
   "incorrectData": "Niepoprawne dane!",
+
+  "add": "Dodaj",
+  "edit": "Edytuj",
+  "cancel": "Anuluj",
 
   "login": "Logowanie",
   "loginButton": "Zaloguj się",
@@ -40,5 +58,39 @@
   "accessRoleChanged": "Rola dostępu została zmieniona.",
 
   "allGroups": "Wszystkie grupy",
-  "myGroups": "Moje grupy"
+  "myGroups": "Moje grupy",
+  "addNewGroup": "Dodaj nową grupę",
+  "possibleToJoin": "Możliwość dołączenia?",
+  "acceptance": "Członkowie potrzebują akceptacji?",
+  "hidden": "Grupa ukryta?",
+  "groupAdded": "Grupa została dodana!",
+
+  "joinToGroup": "Dołącz do grupy",
+  "leaveGroup": "Opuść grupę",
+  "editGroup": "Edytuj grupę",
+  "deleteGroup": "Usuń grupę",
+  "questionsPanel": "Panel pytań",
+
+  "groupMembers": "Członkowie grupy",
+  "exams": "Egzaminy",
+  "finishedExams": "Zakończone egzaminy",
+
+  "teachers": "Nauczyciele",
+  "students": "Studenci",
+  "waiting": "Oczekujący",
+  "addNewExam": "Dodaj nowy egzamin",
+  "editExam": "Edytuj egzamin",
+  "manageExam": "Zarządzaj",
+  "seeResults": "Zobacz wyniki",
+  "joinToExam": "Dołącz do egzaminu",
+
+  "acceptMember": "Zaakceptuj członka",
+  "reduceToStudent": "Zdegraduj do studenta",
+  "promoteToTeacher": "Awansuj na nauczyciela",
+  "deleteGroupMember": "Usuń członka",
+
+  "examType1": "Brak czasu, wszystkie pytania",
+  "examType2": "Brak czasu, określona ilość wylosowanych pytań",
+  "examType3": "Z czasem, wszystkie pytania",
+  "examType4": "Z czasem, ilość pytań nie przekraczająca określonego czasu"
 }

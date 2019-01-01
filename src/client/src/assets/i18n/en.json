@@ -8,12 +8,30 @@
   "newPassword": "New password",
   "currentPassword": "Current password",
   "accessRole": "Access role",
+  "name": "Name",
+  "description": "Description",
+  "actions": "Actions",
+  "title": "Title",
+  "type": "Type",
+  "difficulty": "Difficulty [1-10]",
+  "showAllQuestions": "Show all questions at once?",
+  "returnToQuestions": "Possible to return to questions?",
+  "sendResultsInstantly": "Send results instantly after finish?",
+  "showFullResults": "Show full exam at results?",
+  "mixQuestions": "Mix questions on exam?",
+  "percentToPass": "Percent to pass [0-100]",
+  "numberOfQuestions": "Number of questions",
+  "maxTime": "Max time for exam [min]",
 
   "fieldRequired": "Field {{field}} is required!",
   "fieldMinLength": "Field length {{field}} must be at least {{length}} characters!",
   "fieldPattern": "Field {{field}} contains illegal characters!",
 
   "incorrectData": "Incorrect data!",
+
+  "add": "Add",
+  "edit": "Edit",
+  "cancel": "Cancel",
 
   "login": "Login",
   "loginButton": "Log in",
@@ -40,5 +58,42 @@
   "accessRoleChanged": "Access role has changed.",
 
   "allGroups": "All Groups",
-  "myGroups": "My Groups"
+  "myGroups": "My Groups",
+  "addNewGroup": "Add new group",
+  "possibleToJoin": "Possible to join?",
+  "acceptance": "Members need acceptance?",
+  "hidden": "Group hidden?",
+  "groupAdded": "Group has added!",
+
+  "joinToGroup": "Join to group",
+  "leaveGroup": "Leave group",
+  "editGroup": "Edit group",
+  "deleteGroup": "Delete group",
+  "questionsPanel": "Questions panel",
+
+
+  "groupMembers": "Group members",
+  "exams": "Exams",
+  "finishedExams": "Finished exams",
+
+  "teachers": "Teachers",
+  "students": "Students",
+  "waiting": "Waiting",
+  "addNewExam": "Add new exam",
+  "editExam": "Edit exam",
+  "manageExam": "Manage exam",
+  "seeResults": "See results",
+  "joinToExam": "Join to exam",
+
+  "acceptMember": "Accept member",
+  "reduceToStudent": "Reduce to a student",
+  "promoteToTeacher": "Promote to a teacher",
+  "deleteGroupMember": "Delete member",
+
+  "examType1": "Without time, all questions",
+  "examType2": "Without time, a specific number of randomly questions",
+  "examType3": "With time, all questions",
+  "examType4": "With time, number of questions not exceeding a certain time"
+
+
 }
