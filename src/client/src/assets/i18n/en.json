@@ -23,6 +23,9 @@
   "numberOfQuestions": "Number of questions",
   "maxTime": "Max time for exam [min]",
   "answerTime": "Answer time [min]",
+  "color": "Color [#000000]",
+  "idExamMember": "Id exam member",
+  "blockade": "Blockade",
 
   "fieldRequired": "Field {{field}} is required!",
   "fieldMinLength": "Field length {{field}} must be at least {{length}} characters!",
@@ -144,5 +147,11 @@
   "addAllQuestions": "Add all questions",
   "deleteQuestionFromExam": "Delete question from exam",
   "moveUp": "Move up",
-  "moveDown": "Move down"
+  "moveDown": "Move down",
+
+  "examRunningManagement": "Exam running management",
+  "initiateJoiningToExam": "Initiate joining to exam",
+  "initiate": "Initiate",
+  "startExam": "Start exam",
+  "durationTime": "Duration of the exam [min]"
 }

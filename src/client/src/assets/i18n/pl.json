@@ -22,6 +22,9 @@
   "numberOfQuestions": "Liczba pytań",
   "maxTime": "Maksymalny czas na egzamin [min]",
   "answerTime": "Czas odpowiedzi [min]",
+  "color": "Kolor [#000000]",
+  "idExamMember": "Id członka",
+  "blockade": "Blokada",
 
   "fieldRequired": "Pole {{field}} jest wymagane!",
   "fieldMinLength": "Długość pola {{field}} musi być co najmniej {{length}} znaków!",
@@ -145,5 +148,11 @@
   "addAllQuestions": "Dodaj wszystkie pytania",
   "deleteQuestionFromExam": "Usuń pytanie z egzaminu",
   "moveUp": "Przenieś do góry",
-  "moveDown": "Przenieś w dół"
+  "moveDown": "Przenieś w dół",
+
+  "examRunningManagement": "Zarządzanie uruchomionym egzaminem",
+  "initiateJoiningToExam": "Zainicjuj dołączanie do egzaminu",
+  "initiate": "Zainicjuj",
+  "startExam": "Rozpocznij egzamin",
+  "durationTime": "Czas trwania egzaminu [min]"
 }
