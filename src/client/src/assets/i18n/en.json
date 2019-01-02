@@ -36,6 +36,8 @@
   "max": "Max",
   "close": "Close",
   "back": "Back",
+  "true": "Yes",
+  "false": "No",
 
   "details": "Details",
   "resultDetails": "Result details",
@@ -126,6 +128,21 @@
   "addNewAnswer": "Add new answer",
   "editAnswer": "Edit answer",
   "deleteAnswer": "Delete answer",
-  "closedAnswer": "Answer"
+  "closedAnswer": "Answer",
 
+  "examManagement": "Exam management",
+  "runningExamManagement": "Running exam management",
+  "examInfo": "Exam info",
+  "examQuestions": "Exam questions",
+  "examQuestionsToAdd": "Exam questions to add",
+  "joining": "Joining",
+  "started": "Started",
+  "finished": "Finished",
+  "cannotAddNewQuestionsToExam": "Exam has been started. You cannot add new questions.",
+
+  "addQuestionToExam": "Add question to exam",
+  "addAllQuestions": "Add all questions",
+  "deleteQuestionFromExam": "Delete question from exam",
+  "moveUp": "Move up",
+  "moveDown": "Move down"
 }

@@ -94,6 +94,7 @@ public class ExamService implements ExamServiceI {
         exam.getExamQuestions().get(i).getExamClosedAnswers().get(j).setExamQuestion(null);
         exam.getExamQuestions().get(i).getExamClosedAnswers().get(j).setExamAnswers(null);
       }
+      exam.getExamQuestions().get(i).getExamClosedAnswers().sort(Comparator.comparing(ExamClosedAnswer::getId));
     }
     return exam;
   }

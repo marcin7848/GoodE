@@ -39,6 +39,7 @@ import {MatTabsModule} from '@angular/material/tabs';
 import {MatIconModule} from '@angular/material/icon';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatTableModule} from '@angular/material/table';
+import {MatDividerModule} from '@angular/material/divider';
 
 @NgModule({
   declarations: [
@@ -85,7 +86,8 @@ import {MatTableModule} from '@angular/material/table';
     MatTabsModule,
     MatIconModule,
     MatSlideToggleModule,
-    MatTableModule
+    MatTableModule,
+    MatDividerModule
   ],
   providers: [
     AccountService,

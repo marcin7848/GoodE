@@ -35,6 +35,8 @@
   "max": "Max",
   "close": "Zamknij",
   "back": "Powrót",
+  "true": "Tak",
+  "false": "Nie",
 
   "details": "Szczegóły",
   "resultDetails": "Szczegóły wyniku",
@@ -126,7 +128,22 @@
   "addNewAnswer": "Dodaj nową odpowiedź",
   "editAnswer": "Edytuj odpowiedź",
   "deleteAnswer": "Usuń odpowiedź",
-  "closedAnswer": "Odpowiedź"
+  "closedAnswer": "Odpowiedź",
 
+  "examManagement": "Zarządzanie egzaminem",
+  "runningExamManagement": "Zarządzanie uruchomionym egzaminem",
+  "examInfo": "Informacje",
+  "examQuestions": "Pytania egzaminacyjne",
+  "examQuestionsToAdd": "Pytania do dodania",
+  "joining": "Dołączanie",
+  "started": "Rozpoczęty",
+  "finished": "Zakończony",
 
+  "cannotAddNewQuestionsToExam": "Egzamin został rozpoczęty. Nie możesz dodawać nowych pytań.",
+
+  "addQuestionToExam": "Dodaj pytanie do egzaminu",
+  "addAllQuestions": "Dodaj wszystkie pytania",
+  "deleteQuestionFromExam": "Usuń pytanie z egzaminu",
+  "moveUp": "Przenieś do góry",
+  "moveDown": "Przenieś w dół"
 }
