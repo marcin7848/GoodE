@@ -32,6 +32,11 @@
   "add": "Add",
   "edit": "Edit",
   "cancel": "Cancel",
+  "max": "Max",
+  "close": "Close",
+
+  "details": "Details",
+  "resultDetails": "Result details",
 
   "login": "Login",
   "loginButton": "Log in",
@@ -103,7 +108,10 @@
   "yourResult": "Your result",
   "pointsResult": "points",
   "resultPositive": "positive",
-  "resultNegative": "negative"
+  "resultNegative": "negative",
+
+  "question": "Question",
+  "points": "Points"
 
 
 }

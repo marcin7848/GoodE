@@ -7,6 +7,8 @@ import {first} from "rxjs/operators";
 import {Exam} from "../../../model/Exam";
 import {Results} from "../../../model/Results";
 import {Account} from "../../../model/Account";
+import {GroupMember} from "../../../model/GroupMember";
+import {MatTableDataSource} from "@angular/material";
 
 declare var jquery: any;
 declare var $: any;
@@ -33,7 +35,14 @@ export class ExamResultsComponent implements OnInit {
   //results details variable
   firstName: string;
   lastName: string;
+  registerNo: number;
+  points: number;
+  maxPoints: number;
+  percentResult: number;
   examMemberResult: Results;
+
+  dataSourceOfResultsForAllExamMembers = new MatTableDataSource(this.resultsForAllExamMembers);
+  displayedColumnsResultsForAllExamMembers: string[] = ['username', 'firstName', 'lastName', 'registerNo', 'points', 'result', 'details'];
 
   constructor(private formBuilder: FormBuilder,
               private router: Router,
@@ -61,14 +70,45 @@ export class ExamResultsComponent implements OnInit {
                 .subscribe(
                   data => {
                     this.resultsForAllExamMembers = data['listOfResultsForAllExamMembers'];
+
                     for (let i = 0; i < this.resultsForAllExamMembers.length; i++) {
                       this.resultsForAllExamMembers[i].percentResult = Math.round((this.resultsForAllExamMembers[i].points / this.resultsForAllExamMembers[i].maxPoints) * 100);
-                    }
+                      if(i+1 >= this.resultsForAllExamMembers.length){
+                        this.dataSourceOfResultsForAllExamMembers = new MatTableDataSource(this.resultsForAllExamMembers);
 
+                        this.dataSourceOfResultsForAllExamMembers.filterPredicate = function(data, filter): boolean {
+                          if(data.exam.examMembers[0].account.username.toLowerCase().includes(filter)){
+                            return true;
+                          }
+                          if(data.exam.examMembers[0].account.firstName.toLowerCase().includes(filter)){
+                            return true;
+                          }
+                          if(data.exam.examMembers[0].account.lastName.toLowerCase().includes(filter)){
+                            return true;
+                          }
+                          if(data.exam.examMembers[0].account.register_no.toString().toLowerCase().includes(filter)){
+                            return true;
+                          }
+
+                          if(data.points.toString().toLowerCase().includes(filter)){
+                            return true;
+                          }
+
+                          if(data.maxPoints.toString().toLowerCase().includes(filter)){
+                            return true;
+                          }
+
+                          if(data.percentResult.toString().toLowerCase().includes(filter)){
+                            return true;
+                          }
+
+                          return false;
+                        };
+
+                      }
+                    }
                   },
                   error => {
-                    console.log(error);
-                    console.log("Nie mozna wykonac!");
                     this.message = error["error"]["error"];
                   });
               }
@@ -95,8 +135,6 @@ export class ExamResultsComponent implements OnInit {
                         this.results.exam = data['exam'] ? data['exam'] : null;
                       },
                       error => {
-                        console.log(error);
-                        console.log("Nie mozna wykonac!");
                         this.message = error["error"]["error"];
                       });
 
@@ -110,8 +148,6 @@ export class ExamResultsComponent implements OnInit {
                           this.results.percentResult = Math.round((this.results.points / this.results.maxPoints) * 100);
                         },
                         error => {
-                          console.log(error);
-                          console.log("Nie mozna wykonac!");
                           this.message = error["error"]["error"];
                         });
                     }
@@ -121,14 +157,12 @@ export class ExamResultsComponent implements OnInit {
               }
             },
             error => {
-              console.log("Nie mozna pobrac!");
               this.message = error["error"]["error"];
             });
 
 
         },
         error => {
-          console.log("Nie mozna pobrac!");
         });
     });
   }
@@ -176,12 +210,9 @@ export class ExamResultsComponent implements OnInit {
     .pipe(first())
     .subscribe(
       data => {
-        console.log("Oceniono egzamin!");
-        location.reload();
+        this.ngOnInit()
       },
       error => {
-        console.log(error);
-        console.log("Nie mozna wykonac!");
         this.message = error["error"]["error"];
       });
   }
@@ -189,9 +220,19 @@ export class ExamResultsComponent implements OnInit {
   showDetails(result: Results){
     this.firstName = result.exam.examMembers[0].account.firstName;
     this.lastName = result.exam.examMembers[0].account.lastName;
+    this.registerNo = result.exam.examMembers[0].account.register_no;
+    this.points = result.points;
+    this.maxPoints = result.maxPoints;
+    this.percentResult = result.percentResult;
     this.examMemberResult = result;
+    this.formMode = 1;
+  }
 
+  applyFilterResultsForAllExamMembers(filterValue: string) {
+    this.dataSourceOfResultsForAllExamMembers.filter = filterValue.trim().toLowerCase();
+  }
 
-    $("#formResultDetails").css("visibility", "visible");
+  closeDetails(){
+    this.formMode = 0;
   }
 }

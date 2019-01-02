@@ -1,7 +1,8 @@
 <mat-card class="card-main">
   <div *ngIf="message" class="alert-top">{{message}}</div>
   <mat-card-header class="card-header">
-    <mat-card-title class="card-title">{{ 'resultForExam' | translate }}:&nbsp;{{exam?.title}}</mat-card-title>
+    <mat-card-title class="card-title">{{ 'resultForExam' | translate }}:&nbsp;{{exam?.title}}
+    </mat-card-title>
   </mat-card-header>
   <ng-container *ngIf="formMode == 0">
     <mat-card-content>
@@ -12,13 +13,16 @@
           </ng-container>
           <ng-container *ngIf="resultsProcess == 1">
             <h2>{{ 'examNotRated' | translate }}</h2>
-            <ng-container *ngIf="loggedAccount.accessRole.role == 'ROLE_ADMIN' || loggedAccount.accessRole.role == 'ROLE_TEACHER'">
-              <button mat-raised-button color="primary" class="body-buttons" (click)="rateExam()" >{{ 'rateExam' | translate }}</button>
+            <ng-container
+              *ngIf="loggedAccount.accessRole.role == 'ROLE_ADMIN' || loggedAccount.accessRole.role == 'ROLE_TEACHER'">
+              <button mat-raised-button color="primary" class="body-buttons" (click)="rateExam()">{{
+                'rateExam' | translate }}
+              </button>
             </ng-container>
           </ng-container>
           <ng-container *ngIf="resultsProcess == 2">
             <h2>{{ 'yourResult' | translate }}:&nbsp;{{results?.percentResult}}%</h2>
-            {{results?.points}} / {{results?.maxPoints}} {{ 'pointsResult' | translate }} <br />
+            {{results?.points}} / {{results?.maxPoints}} {{ 'pointsResult' | translate }} <br/>
             {{ 'result' | translate }}
             <ng-container *ngIf="results?.percentResult >= exam.percentToPass">
               <b>{{ 'resultPositive' | translate }}</b>!
@@ -26,12 +30,71 @@
             <ng-container *ngIf="results?.percentResult < exam.percentToPass">
               <b>{{ 'resultNegative' | translate }}</b>!
             </ng-container>
-
-
-
+            <br/>
             <ng-container *ngIf="results?.exam != null">
-              <ng-container *ngFor="let examMemberQuestion of results.exam?.examMembers[0].examMemberQuestions">
+              <ng-container
+                *ngFor="let examMemberQuestion of results.exam?.examMembers[0].examMemberQuestions">
+                <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp question-table">
+                  <thead style="background-color: #99c2ff;">
+                  <tr>
+                    <th class="mdl-data-table__cell--non-numeric">{{ 'question' | translate }}</th>
+                    <th style="text-align: right;">{{ 'points' | translate }}:
+                      <ng-container
+                        *ngFor="let examMemberQuestionResult of results.examMemberQuestionResults">
+                        <ng-container
+                          *ngIf="examMemberQuestionResult.idExamMemberQuestion == examMemberQuestion.id">
+                          {{examMemberQuestionResult.points}}
+                        </ng-container>
+                      </ng-container>
+                      / {{examMemberQuestion.examQuestion.points}}
+                    </th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                    <td colspan="2" class="mdl-data-table__cell--non-numeric"
+                        style="white-space: pre-wrap; width: 100%"
+                        [innerHTML]="examMemberQuestion.examQuestion.question"></td>
+                  </tr>
+                  </tbody>
+                  <tbody>
+                  <ng-container
+                    *ngFor="let answer of examMemberQuestion.examQuestion.examClosedAnswers">
+                    <tr id="{{examMemberQuestion.id + '_' + answer.id + '_correct'}}">
+                      <td class="mdl-data-table__cell--non-numeric" colspan="1"
+                          style="white-space: pre-wrap; width: 95%; min-width: 800px;"
+                          [innerHTML]="answer.closedAnswer"></td>
 
+                      <td class="mdl-data-table__cell--non-numeric" colspan="1"
+                          style="text-align: right;">
+                        <ng-container *ngIf="examMemberQuestion.examQuestion.type == 1">
+                          <input class="answers" id="{{examMemberQuestion.id + '__' + answer.id}}"
+                                 type="radio" disabled="disabled" name="{{examMemberQuestion.id}}"
+                                 value="{{answer.id}}"/>
+                          <ng-container *ngFor="let examAnswer of examMemberQuestion.examAnswers">
+                            <ng-container *ngIf="examAnswer.examClosedAnswer.id == answer.id">
+                              {{ checkRadioExamAnswer(examMemberQuestion.id, answer.id,
+                              examAnswer.examClosedAnswer.correct) }}
+                            </ng-container>
+                          </ng-container>
+                        </ng-container>
+                        <ng-container *ngIf="examMemberQuestion.examQuestion.type == 2">
+                          <input class="answers" id="{{examMemberQuestion.id + '_' + answer.id}}"
+                                 type="checkbox" disabled="disabled"
+                                 name="{{examMemberQuestion.id}}"
+                                 value="{{answer.id}}"/>
+                          <ng-container *ngFor="let examAnswer of examMemberQuestion.examAnswers">
+                            <ng-container *ngIf="examAnswer.examClosedAnswer.id == answer.id">
+                              {{ checkBoxExamAnswer(examMemberQuestion.id, answer.id,
+                              examAnswer.examClosedAnswer.correct) }}
+                            </ng-container>
+                          </ng-container>
+                        </ng-container>
+                      </td>
+                    </tr>
+                  </ng-container>
+                  </tbody>
+                </table>
               </ng-container>
             </ng-container>
           </ng-container>
@@ -43,12 +106,61 @@
           </ng-container>
           <ng-container *ngIf="resultsProcess == 1">
             <h2>{{ 'examNotRated' | translate }}</h2>
-            <ng-container *ngIf="loggedAccount.accessRole.role == 'ROLE_ADMIN' || loggedAccount.accessRole.role == 'ROLE_TEACHER'">
-              <button mat-raised-button color="primary" class="body-buttons" (click)="rateExam()" >{{ 'rateExam' | translate }}</button>
+            <ng-container
+              *ngIf="loggedAccount.accessRole.role == 'ROLE_ADMIN' || loggedAccount.accessRole.role == 'ROLE_TEACHER'">
+              <button mat-raised-button color="primary" class="body-buttons" (click)="rateExam()">{{
+                'rateExam' | translate }}
+              </button>
             </ng-container>
           </ng-container>
           <ng-container *ngIf="resultsProcess == 2">
+            <mat-form-field>
+              <input matInput (keyup)="applyFilterResultsForAllExamMembers($event.target.value)"
+                     placeholder="Filter">
+            </mat-form-field>
+            <table mat-table [dataSource]="dataSourceOfResultsForAllExamMembers"
+                   class="mat-elevation-z8">
+              <ng-container matColumnDef="username">
+                <th mat-header-cell *matHeaderCellDef> {{ 'username' | translate }}</th>
+                <td mat-cell *matCellDef="let result"> {{result.exam.examMembers[0].account.username}}</td>
+              </ng-container>
 
+              <ng-container matColumnDef="firstName">
+                <th mat-header-cell *matHeaderCellDef> {{ 'firstName' | translate }}</th>
+                <td mat-cell *matCellDef="let result"> {{result.exam.examMembers[0].account.firstName}}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="lastName">
+                <th mat-header-cell *matHeaderCellDef> {{ 'lastName' | translate }}</th>
+                <td mat-cell *matCellDef="let result"> {{result.exam.examMembers[0].account.lastName}}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="registerNo">
+                <th mat-header-cell *matHeaderCellDef> {{ 'registerNo' | translate }}</th>
+                <td mat-cell *matCellDef="let result"> {{result.exam.examMembers[0].account.register_no}}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="points">
+                <th mat-header-cell *matHeaderCellDef> {{ 'points' | translate }} / {{ 'max' | translate }}</th>
+                <td mat-cell *matCellDef="let result"> {{result.points}} / {{result.maxPoints}}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="result">
+                <th mat-header-cell *matHeaderCellDef> {{ 'result' | translate }}</th>
+                <td mat-cell *matCellDef="let result"> {{result.percentResult}}%</td>
+              </ng-container>
+
+              <ng-container matColumnDef="details">
+                <th mat-header-cell *matHeaderCellDef> {{ 'details' | translate }}</th>
+                <td mat-cell *matCellDef="let result">
+                  <button mat-raised-button color="primary" class="body-buttons" (click)="showDetails(result)">{{ 'details' | translate }}</button>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumnsResultsForAllExamMembers"></tr>
+              <tr mat-row
+                  *matRowDef="let row; columns: displayedColumnsResultsForAllExamMembers;"></tr>
+            </table>
           </ng-container>
         </mat-tab>
       </mat-tab-group>
@@ -57,286 +169,93 @@
 
   <ng-container *ngIf="formMode == 1">
     <mat-card-content>
-      <ng-container *ngIf="editMode == 0">
-        <h2>{{ 'addNewExam' | translate }}</h2>
-      </ng-container>
-      <ng-container *ngIf="editMode == 1">
-        <h2>{{ 'editExam' | translate }}</h2>
-      </ng-container>
+      <ng-container *ngIf="resultsProcess == 2">
+        <h2>{{ 'resultDetails' | translate }}</h2>
 
-      <form class="form-main" [formGroup]="examForm">
-        <mat-form-field class="form-input">
-          <input matInput #inputTitle maxlength="40" minlength="4"
-                 pattern="^[ĄĆĘŁŃÓŚŹŻąćęłńóśźża-zA-Z0-9_\-\/ +\.]+$"
-                 placeholder="{{'title' | translate}}" formControlName="title" required>
-          <mat-hint align="end">{{inputTitle.value?.length || 0}}/40</mat-hint>
-          <mat-error *ngIf="f.title.errors?.required">
-            {{ 'fieldRequired' | translate:{'field':'title' | translate} }}
-          </mat-error>
-          <mat-error *ngIf="f.title.errors?.minlength && !f.title.errors?.pattern">
-            {{ 'fieldMinLength' | translate:{'field':'title' | translate, 'length': '4'} }}
-          </mat-error>
-          <mat-error *ngIf="f.title.errors?.pattern">
-            {{ 'fieldPattern' | translate:{'field':'title' | translate} }}
-          </mat-error>
-        </mat-form-field>
+        {{firstName}}&nbsp;{{lastName}}<br />
+        {{registerNo}}<br />
+        {{ 'result' | translate }}:&nbsp;{{percentResult}}%<br />
+        {{points}} / {{maxPoints}} {{ 'pointsResult' | translate }} <br/>
+        {{ 'result' | translate }}
+        <ng-container *ngIf="percentResult >= exam.percentToPass">
+          <b>{{ 'resultPositive' | translate }}</b>!
+        </ng-container>
+        <ng-container *ngIf="percentResult < exam.percentToPass">
+          <b>{{ 'resultNegative' | translate }}</b>!
+        </ng-container>
+        <br/>
 
-        <mat-form-field style="width: 400px;" class="form-input">
-          <mat-select style="width: 400px;" formControlName="type" placeholder="{{ 'type' | translate }}" required>
-            <mat-option style="width: 400px;" [value]="1">{{ 'examType1' | translate }}</mat-option>
-            <mat-option style="width: 400px;" [value]="2">{{ 'examType2' | translate }}</mat-option>
-            <mat-option style="width: 400px;" [value]="3">{{ 'examType3' | translate }}</mat-option>
-            <mat-option style="width: 400px;" [value]="4">{{ 'examType4' | translate }}</mat-option>
-          </mat-select>
-          <mat-error *ngIf="f.type.errors?.required">
-            {{ 'fieldRequired' | translate:{'field':'type' | translate} }}
-          </mat-error>
-        </mat-form-field>
+        <button mat-raised-button color="primary" class="body-buttons"
+                (click)="closeDetails()">{{ 'close' | translate }}
+        </button>
 
-        <mat-form-field class="form-input">
-          <input matInput #inputDifficulty maxlength="2" pattern="[0-9]+$"
-                 placeholder="{{'difficulty' | translate}}" formControlName="difficulty" required>
-          <mat-hint align="end">{{inputDifficulty.value?.length || 0}}/2</mat-hint>
-          <mat-error *ngIf="f.difficulty.errors?.required">
-            {{ 'fieldRequired' | translate:{'field':'difficulty' | translate} }}
-          </mat-error>
-          <mat-error *ngIf="f.difficulty.errors?.pattern">
-            {{ 'fieldPattern' | translate:{'field':'difficulty' | translate} }}
-          </mat-error>
-        </mat-form-field>
+        <ng-container *ngIf="examMemberResult?.exam != null">
+          <ng-container
+            *ngFor="let examMemberQuestion of examMemberResult.exam?.examMembers[0].examMemberQuestions">
+            <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp question-table">
+              <thead style="background-color: #99c2ff;">
+              <tr>
+                <th class="mdl-data-table__cell--non-numeric">{{ 'question' | translate }}</th>
+                <th style="text-align: right;">{{ 'points' | translate }}:
+                  <ng-container
+                    *ngFor="let examMemberQuestionResult of results.examMemberQuestionResults">
+                    <ng-container
+                      *ngIf="examMemberQuestionResult.idExamMemberQuestion == examMemberQuestion.id">
+                      {{examMemberQuestionResult.points}}
+                    </ng-container>
+                  </ng-container>
+                  / {{examMemberQuestion.examQuestion.points}}
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td colspan="2" class="mdl-data-table__cell--non-numeric"
+                    style="white-space: pre-wrap; width: 100%"
+                    [innerHTML]="examMemberQuestion.examQuestion.question"></td>
+              </tr>
+              </tbody>
+              <tbody>
+              <ng-container
+                *ngFor="let answer of examMemberQuestion.examQuestion.examClosedAnswers">
+                <tr id="{{examMemberQuestion.id + '_' + answer.id + '_correct2'}}">
+                  <td class="mdl-data-table__cell--non-numeric" colspan="1"
+                      style="white-space: pre-wrap; width: 95%; min-width: 800px;"
+                      [innerHTML]="answer.closedAnswer"></td>
 
-        <div class="form-slide">
-          <mat-slide-toggle color="primary" formControlName="showAllQuestions">
-            {{'showAllQuestions' | translate}}
-          </mat-slide-toggle>
-        </div>
-
-        <div class="form-slide">
-          <mat-slide-toggle color="primary" formControlName="returnToQuestions">
-            {{'returnToQuestions' | translate}}
-          </mat-slide-toggle>
-        </div>
-
-        <div class="form-slide">
-          <mat-slide-toggle color="primary" formControlName="sendResultsInstantly">
-            {{'sendResultsInstantly' | translate}}
-          </mat-slide-toggle>
-        </div>
-
-        <div class="form-slide">
-          <mat-slide-toggle color="primary" formControlName="showFullResults">
-            {{'showFullResults' | translate}}
-          </mat-slide-toggle>
-        </div>
-
-        <div class="form-slide">
-          <mat-slide-toggle color="primary" formControlName="mixQuestions">
-            {{'mixQuestions' | translate}}
-          </mat-slide-toggle>
-        </div>
-
-        <mat-form-field class="form-input">
-          <input matInput #inputPercentToPass maxlength="3" pattern="[0-9]+$"
-                 placeholder="{{'percentToPass' | translate}}" formControlName="percentToPass" required>
-          <mat-hint align="end">{{inputPercentToPass.value?.length || 0}}/3</mat-hint>
-          <mat-error *ngIf="f.percentToPass.errors?.required">
-            {{ 'fieldRequired' | translate:{'field':'percentToPass' | translate} }}
-          </mat-error>
-          <mat-error *ngIf="f.percentToPass.errors?.pattern">
-            {{ 'fieldPattern' | translate:{'field':'percentToPass' | translate} }}
-          </mat-error>
-        </mat-form-field>
-
-        <mat-form-field class="form-input">
-          <input matInput #inputNumberOfQuestions maxlength="3" pattern="[0-9]+$"
-                 placeholder="{{'numberOfQuestions' | translate}}" formControlName="numberOfQuestions" required>
-          <mat-hint align="end">{{inputNumberOfQuestions.value?.length || 0}}/3</mat-hint>
-          <mat-error *ngIf="f.numberOfQuestions.errors?.required">
-            {{ 'fieldRequired' | translate:{'field':'numberOfQuestions' | translate} }}
-          </mat-error>
-          <mat-error *ngIf="f.numberOfQuestions.errors?.pattern">
-            {{ 'fieldPattern' | translate:{'field':'numberOfQuestions' | translate} }}
-          </mat-error>
-        </mat-form-field>
-
-        <mat-form-field class="form-input">
-          <input matInput #inputMaxTime maxlength="3" pattern="[0-9]+$"
-                 placeholder="{{'maxTime' | translate}}" formControlName="maxTime" required>
-          <mat-hint align="end">{{inputMaxTime.value?.length || 0}}/3</mat-hint>
-          <mat-error *ngIf="f.maxTime.errors?.required">
-            {{ 'fieldRequired' | translate:{'field':'maxTime' | translate} }}
-          </mat-error>
-          <mat-error *ngIf="f.maxTime.errors?.pattern">
-            {{ 'fieldPattern' | translate:{'field':'maxTime' | translate} }}
-          </mat-error>
-        </mat-form-field>
-
-        <div class="action-button">
-
-          <ng-container *ngIf="editMode == 0">
-            <button mat-raised-button color="primary" class="body-buttons" (click)="addNewExam()" [disabled]="loading">{{'addNewExam' | translate}}</button>
+                  <td class="mdl-data-table__cell--non-numeric" colspan="1"
+                      style="text-align: right;">
+                    <ng-container *ngIf="examMemberQuestion.examQuestion.type == 1">
+                      <input class="answers" id="{{examMemberQuestion.id + '__' + answer.id+'_2'}}"
+                             type="radio" disabled="disabled" name="{{examMemberQuestion.id}}"
+                             value="{{answer.id}}"/>
+                      <ng-container *ngFor="let examAnswer of examMemberQuestion.examAnswers">
+                        <ng-container *ngIf="examAnswer.examClosedAnswer.id == answer.id">
+                          {{ checkRadioExamAnswer2(examMemberQuestion.id, answer.id,
+                          examAnswer.examClosedAnswer.correct) }}
+                        </ng-container>
+                      </ng-container>
+                    </ng-container>
+                    <ng-container *ngIf="examMemberQuestion.examQuestion.type == 2">
+                      <input class="answers" id="{{examMemberQuestion.id + '_' + answer.id+'_2'}}"
+                             type="checkbox" disabled="disabled"
+                             name="{{examMemberQuestion.id}}"
+                             value="{{answer.id}}"/>
+                      <ng-container *ngFor="let examAnswer of examMemberQuestion.examAnswers">
+                        <ng-container *ngIf="examAnswer.examClosedAnswer.id == answer.id">
+                          {{ checkBoxExamAnswer2(examMemberQuestion.id, answer.id,
+                          examAnswer.examClosedAnswer.correct) }}
+                        </ng-container>
+                      </ng-container>
+                    </ng-container>
+                  </td>
+                </tr>
+              </ng-container>
+              </tbody>
+            </table>
           </ng-container>
-          <ng-container *ngIf="editMode == 1">
-            <button mat-raised-button color="primary" class="body-buttons" (click)="editExam(currentExam)" [disabled]="loading">{{'editExam' | translate}}</button>
-          </ng-container>
-
-          <button mat-raised-button color="primary" class="body-buttons" (click)="cancelFormExam()">{{'cancel' | translate}}</button>
-
-          <img *ngIf="loading"
-               src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
-        </div>
-
-        <div *ngIf="messageExam" class="alert">{{messageExam}}</div>
-      </form>
+        </ng-container>
+      </ng-container>
     </mat-card-content>
   </ng-container>
 </mat-card>
-
-
-
-
-
-<ng-container *ngIf="resultsProcess == 2">
-
-  <div id="formResultDetails" style="position: absolute; right: 0; width: 800px; visibility: hidden;">
-    <h2>Result details for user: {{firstName}}&nbsp;{{lastName}}</h2>
-
-
-
-    <h2>Wynik: {{examMemberResult?.percentResult}}%</h2>
-    {{examMemberResult?.points}} / {{examMemberResult?.maxPoints}} punktów <br />
-    Wynik
-    <ng-container *ngIf="examMemberResult?.percentResult >= exam.percentToPass">
-      <b>pozytywny</b>!
-    </ng-container>
-    <ng-container *ngIf="examMemberResult?.percentResult < exam.percentToPass">
-      <b>negatywny</b>!
-    </ng-container>
-    <br />
-    <br />
-    <ng-container *ngIf="examMemberResult?.exam != null">
-      <ng-container *ngFor="let examMemberQuestion of examMemberResult.exam?.examMembers[0].examMemberQuestions">
-        <table border="1" style="margin-top: 10px;">
-          <tr>
-            <td colspan="2"><b>Question</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              Points:
-              <ng-container *ngFor="let examMemberQuestionResult of examMemberResult.examMemberQuestionResults">
-                <ng-container *ngIf="examMemberQuestionResult.idExamMemberQuestion == examMemberQuestion.id">
-                  {{examMemberQuestionResult.points}}
-                </ng-container>
-              </ng-container>
-              /{{examMemberQuestion.examQuestion.points}}</td>
-          </tr>
-          <tr>
-            <td colspan="2" style="white-space: pre-wrap; width: 600px;"
-                [innerHTML]="examMemberQuestion.examQuestion.question"></td>
-          </tr>
-          <ng-container *ngFor="let answer of examMemberQuestion.examQuestion.examClosedAnswers">
-            <tr id="{{examMemberQuestion.id + '_' + answer.id + '_correct2'}}" >
-              <td colspan="1">
-                <ng-container *ngIf="examMemberQuestion.examQuestion.type == 1">
-                  <input class="answers" id="{{examMemberQuestion.id + '__' + answer.id + '_2'}}"
-                         type="radio" disabled="disabled" name="{{examMemberQuestion.id}}" value="{{answer.id}}" />
-                  <ng-container *ngFor="let examAnswer of examMemberQuestion.examAnswers">
-                    <ng-container *ngIf="examAnswer.examClosedAnswer.id == answer.id">
-                      {{ checkRadioExamAnswer2(examMemberQuestion.id, answer.id, examAnswer.examClosedAnswer.correct) }}
-                    </ng-container>
-                  </ng-container>
-                </ng-container>
-                <ng-container *ngIf="examMemberQuestion.examQuestion.type == 2">
-                  <input class="answers" id="{{examMemberQuestion.id + '_' + answer.id + '_2'}}"
-                         type="checkbox" disabled="disabled" name="{{examMemberQuestion.id}}" value="{{answer.id}}"/>
-                  <ng-container *ngFor="let examAnswer of examMemberQuestion.examAnswers">
-                    <ng-container *ngIf="examAnswer.examClosedAnswer.id == answer.id">
-                      {{ checkBoxExamAnswer2(examMemberQuestion.id, answer.id, examAnswer.examClosedAnswer.correct) }}
-                    </ng-container>
-                  </ng-container>
-                </ng-container>
-              </td>
-              <td colspan="1" style="white-space: pre-wrap; width: 400px;"
-                  [innerHTML]="answer.closedAnswer"></td>
-            </tr>
-          </ng-container>
-        </table>
-      </ng-container>
-    </ng-container>
-  </div>
-
-
-
-
-  <br />
-  <br />
-  <ng-container *ngIf="results?.exam != null">
-    <ng-container *ngFor="let examMemberQuestion of results.exam?.examMembers[0].examMemberQuestions">
-      <table border="1" style="margin-top: 10px;">
-        <tr>
-          <td colspan="2"><b>Question</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          Points:
-            <ng-container *ngFor="let examMemberQuestionResult of results.examMemberQuestionResults">
-              <ng-container *ngIf="examMemberQuestionResult.idExamMemberQuestion == examMemberQuestion.id">
-                {{examMemberQuestionResult.points}}
-              </ng-container>
-            </ng-container>
-            /{{examMemberQuestion.examQuestion.points}}</td>
-        </tr>
-        <tr>
-          <td colspan="2" style="white-space: pre-wrap; width: 600px;"
-              [innerHTML]="examMemberQuestion.examQuestion.question"></td>
-        </tr>
-        <ng-container *ngFor="let answer of examMemberQuestion.examQuestion.examClosedAnswers">
-          <tr id="{{examMemberQuestion.id + '_' + answer.id + '_correct'}}" >
-            <td colspan="1">
-              <ng-container *ngIf="examMemberQuestion.examQuestion.type == 1">
-                <input class="answers" id="{{examMemberQuestion.id + '__' + answer.id}}"
-                       type="radio" disabled="disabled" name="{{examMemberQuestion.id}}" value="{{answer.id}}"/>
-                <ng-container *ngFor="let examAnswer of examMemberQuestion.examAnswers">
-                  <ng-container *ngIf="examAnswer.examClosedAnswer.id == answer.id">
-                    {{ checkRadioExamAnswer(examMemberQuestion.id, answer.id, examAnswer.examClosedAnswer.correct) }}
-                  </ng-container>
-                </ng-container>
-              </ng-container>
-              <ng-container *ngIf="examMemberQuestion.examQuestion.type == 2">
-                <input class="answers" id="{{examMemberQuestion.id + '_' + answer.id}}"
-                       type="checkbox" disabled="disabled" name="{{examMemberQuestion.id}}" value="{{answer.id}}"/>
-                <ng-container *ngFor="let examAnswer of examMemberQuestion.examAnswers">
-                  <ng-container *ngIf="examAnswer.examClosedAnswer.id == answer.id">
-                    {{ checkBoxExamAnswer(examMemberQuestion.id, answer.id, examAnswer.examClosedAnswer.correct) }}
-                  </ng-container>
-                </ng-container>
-              </ng-container>
-            </td>
-            <td colspan="1" style="white-space: pre-wrap; width: 400px;"
-                [innerHTML]="answer.closedAnswer"></td>
-          </tr>
-        </ng-container>
-      </table>
-    </ng-container>
-
-    <ng-container *ngIf="loggedAccount.accessRole.role == 'ROLE_ADMIN' || loggedAccount.accessRole.role == 'ROLE_TEACHER'">
-      <h2>All Exam members results</h2>
-      <table border="1" style="margin-top: 10px;">
-        <tr>
-          <td>Username</td>
-          <td>First name</td>
-          <td>Last name</td>
-          <td>Register number</td>
-          <td>Points</td>
-          <td>Result</td>
-          <td>Details</td>
-        </tr>
-        <ng-container *ngFor="let result of resultsForAllExamMembers">
-          <tr>
-            <td>{{result.exam.examMembers[0].account.username}}</td>
-            <td>{{result.exam.examMembers[0].account.firstName}}</td>
-            <td>{{result.exam.examMembers[0].account.lastName}}</td>
-            <td>{{result.exam.examMembers[0].account.register_no}}</td>
-            <td>{{result.points}} / {{result.maxPoints}}</td>
-            <td>{{result.percentResult}}%</td>
-            <td><button (click)="showDetails(result)" class="btn btn-primary">Details</button></td>
-          </tr>
-        </ng-container>
-      </table>
-    </ng-container>
-  </ng-container>
-</ng-container>

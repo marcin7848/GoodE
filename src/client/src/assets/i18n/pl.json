@@ -31,6 +31,11 @@
   "add": "Dodaj",
   "edit": "Edytuj",
   "cancel": "Anuluj",
+  "max": "Max",
+  "close": "Zamknij",
+
+  "details": "Szczegóły",
+  "resultDetails": "Szczegóły wyniku",
 
   "login": "Logowanie",
   "loginButton": "Zaloguj się",
@@ -103,7 +108,9 @@
   "yourResult": "Twój wynik",
   "pointsResult": "punktów",
   "resultPositive": "pozytywny",
-  "resultNegative": "negatywny"
+  "resultNegative": "negatywny",
 
+  "question": "Pytanie",
+  "points": "Punkty"
 
 }
