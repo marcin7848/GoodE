@@ -22,6 +22,7 @@
   "percentToPass": "Percent to pass [0-100]",
   "numberOfQuestions": "Number of questions",
   "maxTime": "Max time for exam [min]",
+  "answerTime": "Answer time [min]",
 
   "fieldRequired": "Field {{field}} is required!",
   "fieldMinLength": "Field length {{field}} must be at least {{length}} characters!",
@@ -34,6 +35,7 @@
   "cancel": "Cancel",
   "max": "Max",
   "close": "Close",
+  "back": "Back",
 
   "details": "Details",
   "resultDetails": "Result details",
@@ -111,7 +113,19 @@
   "resultNegative": "negative",
 
   "question": "Question",
-  "points": "Points"
+  "points": "Points",
 
+  "questionsForGroup": "Questions for group",
+  "addNewQuestion": "Add new question",
+  "editQuestion": "Edit question",
+  "deleteQuestion": "Delete question",
+  "singleChoiceQuestion": "Single choice question",
+  "multipleChoiceQuestion": "Multiple choice question",
+  "closedAnswers": "Closed answers",
+  "isCorrect": "Is correct?",
+  "addNewAnswer": "Add new answer",
+  "editAnswer": "Edit answer",
+  "deleteAnswer": "Delete answer",
+  "closedAnswer": "Answer"
 
 }

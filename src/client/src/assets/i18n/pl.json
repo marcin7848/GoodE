@@ -21,6 +21,7 @@
   "percentToPass": "Ilość procent do zdania [0-100]",
   "numberOfQuestions": "Liczba pytań",
   "maxTime": "Maksymalny czas na egzamin [min]",
+  "answerTime": "Czas odpowiedzi [min]",
 
   "fieldRequired": "Pole {{field}} jest wymagane!",
   "fieldMinLength": "Długość pola {{field}} musi być co najmniej {{length}} znaków!",
@@ -33,6 +34,7 @@
   "cancel": "Anuluj",
   "max": "Max",
   "close": "Zamknij",
+  "back": "Powrót",
 
   "details": "Szczegóły",
   "resultDetails": "Szczegóły wyniku",
@@ -111,6 +113,20 @@
   "resultNegative": "negatywny",
 
   "question": "Pytanie",
-  "points": "Punkty"
+  "points": "Punkty",
+
+  "questionsForGroup": "Pytania dla grupy",
+  "addNewQuestion": "Dodaj nowe pytanie",
+  "editQuestion": "Edytuj pytanie",
+  "deleteQuestion": "Usuń pytanie",
+  "singleChoiceQuestion": "Jednokrotnego wyboru",
+  "multipleChoiceQuestion": "Wielokrotnego wyboru",
+  "closedAnswers": "Zamknięte odpowiedzi",
+  "isCorrect": "Jest poprawna?",
+  "addNewAnswer": "Dodaj nową odpowiedź",
+  "editAnswer": "Edytuj odpowiedź",
+  "deleteAnswer": "Usuń odpowiedź",
+  "closedAnswer": "Odpowiedź"
+
 
 }
