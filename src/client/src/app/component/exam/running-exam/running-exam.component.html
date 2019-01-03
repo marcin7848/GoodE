@@ -1,140 +1,225 @@
-<ng-container *ngIf="blockade == 1">
-  <h2>Zostałeś zablokowany na egzaminie!</h2>
-  Powód: {{causeOfBlockade}}
-</ng-container>
-<ng-container *ngIf="runningProcess == 0">
-  <h2>Join to exam!</h2>
-  <form [formGroup]="joinToExamForm" (ngSubmit)="joinToExam()">
-    Password: <input type="text" formControlName="joinToExamPassword"
-                     class="form-control"/><br/>
-    <button class="btn btn-primary">Join to exam</button>
-    <br/>
-    Errors: {{message}}
-  </form>
-</ng-container>
+<mat-card class="card-main">
+  <mat-card-header class="card-header">
+    <mat-card-title class="card-title">{{ 'exam' | translate }}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <ng-container *ngIf="blockade == 1">
+      <h3>{{ 'youAreBlocked' | translate }}</h3>
+      {{ 'reason' | translate }}: {{causeOfBlockade}}
+    </ng-container>
 
-<ng-container *ngIf="runningProcess == 1 && exam?.started == false">
-  <h2>Czekaj aż egzamin się rozpocznie!</h2>
-</ng-container>
+    <ng-container *ngIf="blockade == 0">
+      <ng-container *ngIf="runningProcess == 0">
+        <h5>Join to exam!</h5>
+        <form class="form-main" [formGroup]="joinToExamForm" (ngSubmit)="joinToExam()">
+          <mat-form-field class="form-input">
+            <input matInput #inputPassword maxlength="50" minlength="5"
+                   placeholder="{{'password' | translate}}" formControlName="joinToExamPassword"
+                   required>
+            <mat-hint align="end">{{inputPassword.value?.length || 0}}/50</mat-hint>
+            <mat-error *ngIf="jte.joinToExamPassword.errors?.required">
+              {{ 'fieldRequired' | translate:{'field':'password' | translate} }}
+            </mat-error>
+            <mat-error *ngIf="jte.joinToExamPassword.errors?.minlength">
+              {{ 'fieldMinLength' | translate:{'field':'password' | translate, 'length': '5'} }}
+            </mat-error>
+          </mat-form-field>
 
-<ng-container *ngIf="runningProcess == 1 && exam?.started == true">
-  <ng-container *ngIf="exam?.showAllQuestions == true">
-    <ng-container
-      *ngIf="exam?.examMembers[0].position < exam?.examMembers[0].examMemberQuestions.length || exam?.returnToQuestions">
-      <ng-container *ngFor="let examMemberQuestion of exam?.examMembers[0].examMemberQuestions">
-        <table border="1" style="margin-top: 10px;">
-          <tr>
-            <td colspan="2"><b>Question</b></td>
-          </tr>
-          <tr>
-            <td colspan="2" style="white-space: pre-wrap; width: 600px;"
-                [innerHTML]="examMemberQuestion.examQuestion.question"></td>
-          </tr>
-          <ng-container *ngFor="let answer of examMemberQuestion.examQuestion.examClosedAnswers">
-            <tr>
-              <td colspan="1">
-                <ng-container *ngIf="examMemberQuestion.examQuestion.type == 1">
-                  <input class="answers" id="{{examMemberQuestion.id + '__' + answer.id}}"
-                         type="radio" name="{{examMemberQuestion.id}}" value="{{answer.id}}"/>
-                  <ng-container *ngFor="let examAnswer of examMemberQuestion.examAnswers">
-                    <ng-container *ngIf="examAnswer.examClosedAnswer.id == answer.id">
-                      {{ checkRadioExamAnswer(examMemberQuestion.id, answer.id) }}
-                    </ng-container>
-                  </ng-container>
-                </ng-container>
-                <ng-container *ngIf="examMemberQuestion.examQuestion.type == 2">
-                  <input class="answers" id="{{examMemberQuestion.id + '_' + answer.id}}"
-                         type="checkbox" name="{{examMemberQuestion.id}}" value="{{answer.id}}"/>
-                  <ng-container *ngFor="let examAnswer of examMemberQuestion.examAnswers">
-                    <ng-container *ngIf="examAnswer.examClosedAnswer.id == answer.id">
-                      {{ checkBoxExamAnswer(examMemberQuestion.id, answer.id) }}
-                    </ng-container>
-                  </ng-container>
-                </ng-container>
-              </td>
-              <td colspan="1" style="white-space: pre-wrap; width: 400px;"
-                  [innerHTML]="answer.closedAnswer"></td>
-            </tr>
+          <div class="action-button">
+            <button mat-raised-button color="primary" class="body-buttons" [disabled]="loading">{{
+              'joinToExam' | translate
+              }}
+            </button>
+            <img *ngIf="loading"
+                 src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
+          </div>
+
+          <div *ngIf="message" class="alert">{{message}}</div>
+        </form>
+      </ng-container>
+
+      <ng-container *ngIf="runningProcess == 1 && exam?.started == false">
+        <h4>{{ 'waitForExamStart' | translate }}</h4>
+      </ng-container>
+
+      <ng-container *ngIf="runningProcess == 1 && exam?.started == true">
+        <div id="idExamMemberBackground"
+             style="width: 150px; height: 120px; position: absolute; right: 20px; top: 20px; line-height: 120px;text-align: center;color: white;font-size: 40px;">
+          {{exam?.examMembers[0].id}}
+        </div>
+        <div>{{ 'examWillFinished' | translate }}: {{timeToEndExam.hours}}h
+          {{timeToEndExam.minutes}}min {{timeToEndExam.seconds}}sec
+        </div>
+
+        <br/>
+        <br/>
+        <ng-container *ngIf="exam?.showAllQuestions == true">
+          <ng-container *ngIf="(exam?.type == 3 || exam?.type == 4) && !exam?.returnToQuestions">
+            <div>{{ 'timeToEndExamQuestionFull' | translate }}: {{timeToEndQuestion.hours}}h
+              {{timeToEndQuestion.minutes}}min {{timeToEndQuestion.seconds}}sec
+            </div>
           </ng-container>
-        </table>
-      </ng-container>
-      <button (click)="addAnswers()" class="btn btn-primary">Add answers</button>
-    </ng-container>
-    <ng-container
-      *ngIf="exam?.examMembers[0].position >= exam?.examMembers[0].examMemberQuestions.length && !exam?.returnToQuestions">
-      <h2>Wypelniles egzamin. Czekaj az sie zakonczy dla wszystkich!</h2>
-    </ng-container>
-  </ng-container>
+          <ng-container
+            *ngIf="exam?.examMembers[0].position < exam?.examMembers[0].examMemberQuestions.length || exam?.returnToQuestions">
+            <ng-container
+              *ngFor="let examMemberQuestion of exam?.examMembers[0].examMemberQuestions">
+              <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp question-table">
+                <thead style="background-color: #99c2ff;">
+                <tr>
+                  <th class="mdl-data-table__cell--non-numeric">{{ 'question' | translate }}
+                    {{examMemberQuestion.position+1}}
+                  </th>
+                  <th style="text-align: right;">{{ 'points' | translate }}:
+                    {{examMemberQuestion.examQuestion.points}}
+                  </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                  <td colspan="2" class="mdl-data-table__cell--non-numeric"
+                      style="white-space: pre-wrap; width: 100%"
+                      [innerHTML]="examMemberQuestion.examQuestion.question"></td>
+                </tr>
+                </tbody>
+                <tbody>
+                <ng-container
+                  *ngFor="let answer of examMemberQuestion.examQuestion.examClosedAnswers">
+                  <tr id="{{examMemberQuestion.id + '_' + answer.id + '_correct'}}">
+                    <td class="mdl-data-table__cell--non-numeric" colspan="1"
+                        style="white-space: pre-wrap; width: 95%; min-width: 800px;"
+                        [innerHTML]="answer.closedAnswer"></td>
 
-  <ng-container *ngIf="exam?.showAllQuestions == false">
-    <ng-container *ngFor="let examMemberQuestion of exam?.examMembers[0].examMemberQuestions">
-      <ng-container *ngIf="examMemberQuestion.position == exam?.examMembers[0].position">
-        <b>Pytanie {{examMemberQuestion.position}}</b>
-        <ng-container *ngIf="exam?.returnToQuestions == true">
-          <button (click)="changeExamMemberPositionManually(examMemberQuestion.position)"
-                  class="btn btn-primary">Go to this question
-          </button>
-        </ng-container>
-        <br/>
-      </ng-container>
-      <ng-container *ngIf="examMemberQuestion.position != exam?.examMembers[0].position">
-        Pytanie {{examMemberQuestion.position}}
-        <ng-container *ngIf="exam?.returnToQuestions == true">
-          <button (click)="changeExamMemberPositionManually(examMemberQuestion.position)"
-                  class="btn btn-primary">Go to this question
-          </button>
-        </ng-container>
-        <br/>
-      </ng-container>
-    </ng-container>
+                    <td class="mdl-data-table__cell--non-numeric" colspan="1"
+                        style="text-align: right;">
+                      <ng-container *ngIf="examMemberQuestion.examQuestion.type == 1">
+                        <input class="answers" id="{{examMemberQuestion.id + '__' + answer.id}}"
+                               type="radio" name="{{examMemberQuestion.id}}"
+                               value="{{answer.id}}"/>
+                      </ng-container>
+                      <ng-container *ngIf="examMemberQuestion.examQuestion.type == 2">
 
-    <ng-container
-      *ngIf="exam?.examMembers[0].position < exam?.examMembers[0].examMemberQuestions.length">
-      <ng-container *ngFor="let examMemberQuestion of exam?.examMembers[0].examMemberQuestions">
-        <ng-container *ngIf="examMemberQuestion.position == exam?.examMembers[0].position">
-          <table border="1" style="margin-top: 10px;">
-            <tr>
-              <td colspan="2"><b>Question</b></td>
-            </tr>
-            <tr>
-              <td colspan="2" style="white-space: pre-wrap; width: 600px;"
-                  [innerHTML]="examMemberQuestion.examQuestion.question"></td>
-            </tr>
-            <ng-container *ngFor="let answer of examMemberQuestion.examQuestion.examClosedAnswers">
-              <tr>
-                <td colspan="1">
-                  <ng-container *ngIf="examMemberQuestion.examQuestion.type == 1">
-                    <input class="answers" id="{{examMemberQuestion.id + '___' + answer.id}}"
-                           type="radio" name="{{examMemberQuestion.id}}" value="{{answer.id}}"/>
-                    <ng-container *ngFor="let examAnswer of examMemberQuestion.examAnswers">
-                      <ng-container *ngIf="examAnswer.examClosedAnswer.id == answer.id">
-                        {{ checkRadioExamAnswer2(examMemberQuestion.id, answer.id) }}
+                        <input class="answers" id="{{examMemberQuestion.id + '_' + answer.id}}"
+                               type="checkbox"
+                               name="{{examMemberQuestion.id}}"
+                               value="{{answer.id}}"/>
                       </ng-container>
-                    </ng-container>
-                  </ng-container>
-                  <ng-container *ngIf="examMemberQuestion.examQuestion.type == 2">
-                    <input class="answers" id="{{examMemberQuestion.id + '____' + answer.id}}"
-                           type="checkbox" name="{{examMemberQuestion.id}}" value="{{answer.id}}"/>
-                    <ng-container *ngFor="let examAnswer of examMemberQuestion.examAnswers">
-                      <ng-container *ngIf="examAnswer.examClosedAnswer.id == answer.id">
-                        {{ checkBoxExamAnswer2(examMemberQuestion.id, answer.id) }}
-                      </ng-container>
-                    </ng-container>
-                  </ng-container>
-                </td>
-                <td colspan="1" style="white-space: pre-wrap; width: 400px;"
-                    [innerHTML]="answer.closedAnswer"></td>
-              </tr>
+                    </td>
+                  </tr>
+                </ng-container>
+                </tbody>
+              </table>
             </ng-container>
-          </table>
+
+            <button mat-raised-button color="primary" class="body-buttons" [disabled]="loading"
+                    style="margin-top: 15px;"
+                    (click)="addAnswers()">{{'addAnswers' | translate }}
+            </button>
+            <img *ngIf="loading"
+                 src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
+
+          </ng-container>
+          <ng-container
+            *ngIf="exam?.examMembers[0].position >= exam?.examMembers[0].examMemberQuestions.length && !exam?.returnToQuestions">
+            <h5>{{ 'examCompletedWait' | translate }}</h5>
+          </ng-container>
+        </ng-container>
+
+        <ng-container *ngIf="exam?.showAllQuestions == false">
+          {{'listOfQuestions' | translate }}: <br/>
+          <ng-container *ngFor="let examMemberQuestion of exam?.examMembers[0].examMemberQuestions">
+            <ng-container *ngIf="examMemberQuestion.position == exam?.examMembers[0].position">
+              <ng-container *ngIf="exam?.returnToQuestions == false">
+                <b>{{'question' | translate }} {{examMemberQuestion.position+1}}</b>&nbsp;&nbsp;
+              </ng-container>
+              <ng-container *ngIf="exam?.returnToQuestions == true">
+                <a class="links card-links" routerLink="#"
+                   (click)="changeExamMemberPositionManually(examMemberQuestion.position)"><b>{{
+                  'question' | translate }} {{examMemberQuestion.position+1}}</b></a>&nbsp;&nbsp;
+              </ng-container>
+            </ng-container>
+            <ng-container *ngIf="examMemberQuestion.position != exam?.examMembers[0].position">
+              <ng-container *ngIf="exam?.returnToQuestions == false">
+                {{'question' | translate }} {{examMemberQuestion.position+1}}&nbsp;&nbsp;
+              </ng-container>
+              <ng-container *ngIf="exam?.returnToQuestions == true">
+                <a class="links card-links" routerLink="#"
+                   (click)="changeExamMemberPositionManually(examMemberQuestion.position)">{{
+                  'question' | translate }} {{examMemberQuestion.position+1}}</a>&nbsp;&nbsp;
+              </ng-container>
+            </ng-container>
+          </ng-container>
+
+          <ng-container *ngIf="(exam?.type == 3 || exam?.type == 4) && !exam?.returnToQuestions">
+            <div>{{ 'timeToEndExamQuestion' | translate }}: {{timeToEndQuestion.hours}}h
+              {{timeToEndQuestion.minutes}}min {{timeToEndQuestion.seconds}}sec
+            </div>
+          </ng-container>
+
+          <ng-container
+            *ngIf="exam?.examMembers[0].position < exam?.examMembers[0].examMemberQuestions.length">
+            <ng-container
+              *ngFor="let examMemberQuestion of exam?.examMembers[0].examMemberQuestions">
+              <ng-container *ngIf="examMemberQuestion.position == exam?.examMembers[0].position">
+                <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp question-table">
+                  <thead style="background-color: #99c2ff;">
+                  <tr>
+                    <th class="mdl-data-table__cell--non-numeric">{{ 'question' | translate }}
+                      {{examMemberQuestion.position+1}}
+                    </th>
+                    <th style="text-align: right;">{{ 'points' | translate }}:
+                      {{examMemberQuestion.examQuestion.points}}
+                    </th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                    <td colspan="2" class="mdl-data-table__cell--non-numeric"
+                        style="white-space: pre-wrap; width: 100%"
+                        [innerHTML]="examMemberQuestion.examQuestion.question"></td>
+                  </tr>
+                  </tbody>
+                  <tbody>
+                  <ng-container
+                    *ngFor="let answer of examMemberQuestion.examQuestion.examClosedAnswers">
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric" colspan="1"
+                          style="white-space: pre-wrap; width: 95%; min-width: 800px;"
+                          [innerHTML]="answer.closedAnswer"></td>
+
+                      <td class="mdl-data-table__cell--non-numeric" colspan="1"
+                          style="text-align: right;">
+                        <ng-container *ngIf="examMemberQuestion.examQuestion.type == 1">
+                          <input class="answers" id="{{examMemberQuestion.id + '___' + answer.id}}"
+                                 type="radio" name="{{examMemberQuestion.id}}"
+                                 value="{{answer.id}}"/>
+                        </ng-container>
+                        <ng-container *ngIf="examMemberQuestion.examQuestion.type == 2">
+                          <input class="answers" id="{{examMemberQuestion.id + '____' + answer.id}}"
+                                 type="checkbox"
+                                 name="{{examMemberQuestion.id}}"
+                                 value="{{answer.id}}"/>
+                        </ng-container>
+                      </td>
+                    </tr>
+                  </ng-container>
+                  </tbody>
+                </table>
+              </ng-container>
+            </ng-container>
+
+            <button mat-raised-button color="primary" class="body-buttons" [disabled]="loading"
+                    style="margin-top: 15px;"
+                    (click)="addAnswers()">{{'addAnswer' | translate }}
+            </button>
+            <img *ngIf="loading"
+                 src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
+          </ng-container>
+          <ng-container
+            *ngIf="exam?.examMembers[0].position >= exam?.examMembers[0].examMemberQuestions.length">
+            <h5>{{ 'examCompletedWait' | translate }}</h5>
+          </ng-container>
         </ng-container>
       </ng-container>
-      <button (click)="addAnswers()" class="btn btn-primary">Add answers</button>
     </ng-container>
-    <ng-container
-      *ngIf="exam?.examMembers[0].position >= exam?.examMembers[0].examMemberQuestions.length">
-      <h2>Wypelniles egzamin. Czekaj az sie zakonczy dla wszystkich!</h2>
-    </ng-container>
-  </ng-container>
-
-</ng-container>
+  </mat-card-content>
+</mat-card>

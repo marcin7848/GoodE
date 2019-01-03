@@ -163,6 +163,18 @@
   "unblockExamMember": "Odblokuj członka",
   "blockExamMember": "Zablokuj członka",
   "finishExam": "Zakończ egzamin",
-  "giveTheCauseOfBlockade": "Podaj powód blokady użytkownika"
+  "giveTheCauseOfBlockade": "Podaj powód blokady użytkownika",
+
+  "exam": "Egzamin",
+  "youAreBlocked": "Jesteś zablokowany!",
+  "reason": "Powód",
+  "waitForExamStart": "Czekaj na start egzaminu.",
+  "addAnswers": "Dodaj odpowiedzi",
+  "addAnswer": "Dodaj odpowiedź",
+  "examCompletedWait": "Uzupełniłeś egzamin. Poczekaj na jego zakończenie.",
+  "listOfQuestions": "Lista pytań",
+  "timeToEndExam": "Czas do zakończenia egzaminu",
+  "timeToEndExamQuestion": "Czas do zakończenia pytania",
+  "timeToEndExamQuestionFull": "Czas do zakończenia Twojego egzaminu"
 
 }

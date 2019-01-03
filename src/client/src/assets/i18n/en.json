@@ -162,5 +162,17 @@
   "unblockExamMember": "Unblock member",
   "blockExamMember": "Block member",
   "finishExam": "Finish exam",
-  "giveTheCauseOfBlockade": "Give the cause of member's blockade"
+  "giveTheCauseOfBlockade": "Give the cause of member's blockade",
+
+  "exam": "Exam",
+  "youAreBlocked": "You are blocked!",
+  "reason": "Reason",
+  "waitForExamStart": "Wait for exam start.",
+  "addAnswers": "Add answers",
+  "addAnswer": "Add answer",
+  "examCompletedWait": "You are completed exam. Wait for finish of exam.",
+  "listOfQuestions": "List of questions",
+  "timeToEndExam": "Time to end exam",
+  "timeToEndExamQuestion": "Time to end question",
+  "timeToEndExamQuestionFull": "Time to end your exam"
 }

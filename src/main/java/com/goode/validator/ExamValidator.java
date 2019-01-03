@@ -21,11 +21,6 @@ public class ExamValidator extends BaseValidator{
 
   public boolean validateExamData(Exam exam, ErrorCode errorCode){
 
-    if(!exam.isShowAllQuestions() && !exam.isReturnToQuestions()){
-      errorCode.rejectValue("isReturnToQuestions", "error.exam.isReturnToQuestions.cannotBeNull");
-      return false;
-    }
-
     if(exam.getType() == 2 && exam.getNumberOfQuestions() < 1){
       errorCode.rejectValue("numberOfQuestions", "error.exam.numberOfQuestions.cannotBe0");
       return false;
@@ -66,14 +61,14 @@ public class ExamValidator extends BaseValidator{
 
     if(exam.getType() == 3){
       for(ExamQuestion eq: examQuestions) {
-          if(eq.getAnswerTime() < 15){
+          if(eq.getAnswerTime() < 1){
             errorCode.rejectValue("answerTime", "error.exam.joining.answerTime.moreThan15");
             return false;
           }
       }
     }
 
-    if(exam.getType() == 4 && exam.getMaxTime() < 30){
+    if(exam.getType() == 4 && exam.getMaxTime() < 5){
       errorCode.rejectValue("maxTime", "error.exam.joining.maxTime.moreThan30");
       return false;
     }
