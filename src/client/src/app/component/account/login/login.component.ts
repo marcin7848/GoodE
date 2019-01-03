@@ -4,6 +4,7 @@ import {AccountService} from "../../../service/account/account.service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {first} from "rxjs/operators";
 import { CookieService } from 'ngx-cookie-service';
+import {TranslateService} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-login',
@@ -14,7 +15,7 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   loading = false;
   submitted = false;
-  error = '';
+  message = '';
   expired = false;
 
   constructor(
@@ -22,21 +23,26 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private accountService: AccountService,
-    private cookieService: CookieService) {}
+    private cookieService: CookieService,
+    private translateService: TranslateService) {}
 
   ngOnInit() {
     if(this.router.url === '/logout'){
       this.cookieService.delete("Authorization");
-      this.router.navigate(['/']);
-    }
-
-    if(this.cookieService.get("Authorization")){
-      this.router.navigate(['/']);
+      location.href = '/';
+      return;
     }
 
     this.route.params.subscribe(params => {
       this.expired = !!params['expired'];
+      if(this.expired){
+        this.cookieService.delete("Authorization");
+      }
     });
+
+    if(this.cookieService.get("Authorization")){
+      this.router.navigate(['/']);
+    }
 
     this.loginForm = this.formBuilder.group({
       username: ['', Validators.required],
@@ -50,7 +56,6 @@ export class LoginComponent implements OnInit {
   onSubmit() {
     this.submitted = true;
 
-    // stop here if form is invalid
     if (this.loginForm.invalid) {
       return;
     }
@@ -61,10 +66,10 @@ export class LoginComponent implements OnInit {
     .subscribe(
       data => {
         this.cookieService.set("Authorization", data['access_token']);
+        location.href = '/';
       },
       error => {
-        console.log(error);
-        this.error = "Niepoprawne dane!";
+        this.message = this.translateService.instant('incorrectData');
         this.loading = false;
       });
   }

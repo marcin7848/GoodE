@@ -1,0 +1,214 @@
+<script src="running-exam-management.component.ts"></script>
+<mat-card class="card-main">
+  <mat-card-header class="card-header">
+    <mat-card-title class="card-title">{{ 'examRunningManagement' | translate }}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <ng-container *ngIf="runningProcess == 0">
+      <h5>{{ 'initiateJoiningToExam' | translate }}</h5>
+      <form class="form-main" [formGroup]="initiateJoiningForm" (ngSubmit)="initiateJoining()">
+
+        <mat-form-field class="form-input">
+          <input matInput #inputPassword maxlength="50" minlength="5"
+                 placeholder="{{'password' | translate}}" formControlName="initiateJoiningPassword"
+                 required>
+          <mat-hint align="end">{{inputPassword.value?.length || 0}}/50</mat-hint>
+          <mat-error *ngIf="ij.initiateJoiningPassword.errors?.required">
+            {{ 'fieldRequired' | translate:{'field':'password' | translate} }}
+          </mat-error>
+          <mat-error *ngIf="ij.initiateJoiningPassword.errors?.minlength">
+            {{ 'fieldMinLength' | translate:{'field':'password' | translate, 'length': '5'} }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="form-input">
+          <input matInput #inputInitiateJoiningColor maxlength="7" minlength="7"
+                 pattern="^[a-zA-Z0-9#]+$"
+                 placeholder="{{'color' | translate}}" formControlName="initiateJoiningColor"
+                 required>
+          <mat-hint align="end">{{inputInitiateJoiningColor.value?.length || 0}}/7</mat-hint>
+          <mat-error *ngIf="ij.initiateJoiningColor.errors?.required">
+            {{ 'fieldRequired' | translate:{'field':'color' | translate} }}
+          </mat-error>
+          <mat-error
+            *ngIf="ij.initiateJoiningColor.errors?.minlength && !ij.initiateJoiningColor.errors?.pattern">
+            {{ 'fieldMinLength' | translate:{'field':'color' | translate, 'length': '7'} }}
+          </mat-error>
+          <mat-error *ngIf="ij.initiateJoiningColor.errors?.pattern">
+            {{ 'fieldPattern' | translate:{'field':'color' | translate} }}
+          </mat-error>
+        </mat-form-field>
+
+        <div class="action-button">
+          <button mat-raised-button color="primary" class="body-buttons" [disabled]="loading">{{
+            'initiate' | translate
+            }}
+          </button>
+          <img *ngIf="loading"
+               src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
+        </div>
+
+        <div *ngIf="message" class="alert">{{message}}</div>
+      </form>
+    </ng-container>
+
+    <ng-container *ngIf="runningProcess == 1">
+      <h5>{{ 'startExam' | translate }}</h5>
+      <ng-container *ngIf="exam?.type == 1 || exam?.type == 2">
+        <form class="form-main" [formGroup]="startExamForm" (ngSubmit)="startExam()">
+          <mat-form-field class="form-input">
+            <input matInput #inputFinishTime maxlength="4" minlength="1" pattern="^[0-9]+$"
+                   id="finishTimeAtStarting" formControlName="finishTime"
+                   placeholder="{{'durationTime' | translate}}" required>
+            <mat-hint align="end">{{inputFinishTime.value?.length || 0}}/4</mat-hint>
+            <mat-error *ngIf="se.finishTime.errors?.required">
+              {{ 'fieldRequired' | translate:{'field':'durationTime' | translate} }}
+            </mat-error>
+            <mat-error
+              *ngIf="se.finishTime.errors?.minlength && !se.finishTime.errors?.pattern">
+              {{ 'fieldMinLength' | translate:{'field':'durationTime' | translate, 'length': '1'} }}
+            </mat-error>
+            <mat-error *ngIf="se.finishTime.errors?.pattern">
+              {{ 'fieldPattern' | translate:{'field':'durationTime' | translate} }}
+            </mat-error>
+          </mat-form-field>
+          <div class="action-button">
+            <button mat-raised-button color="primary" class="body-buttons" [disabled]="loading">{{
+              'startExam' | translate
+              }}
+            </button>
+            <img *ngIf="loading"
+                 src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
+          </div>
+        </form>
+      </ng-container>
+
+      <ng-container *ngIf="exam?.type != 1 && exam?.type != 2">
+        <div class="action-button">
+          <button mat-raised-button color="primary" (click)="startExam()" class="body-buttons"
+                  [disabled]="loading">{{ 'startExam' | translate
+            }}
+          </button>
+          <img *ngIf="loading"
+               src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
+        </div>
+      </ng-container>
+
+      <div *ngIf="message" class="alert">{{message}}</div>
+
+      <mat-form-field>
+        <input matInput (keyup)="applyFilterExamMembers($event.target.value)" placeholder="Filter">
+      </mat-form-field>
+
+      <table mat-table [dataSource]="dataSourceOfExamMembers"
+             class="mat-elevation-z8">
+
+        <ng-container matColumnDef="idExamMember">
+          <th mat-header-cell *matHeaderCellDef> {{ 'idExamMember' | translate }}</th>
+          <td mat-cell *matCellDef="let examMember"> {{examMember.id}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="username">
+          <th mat-header-cell *matHeaderCellDef> {{ 'username' | translate }}</th>
+          <td mat-cell *matCellDef="let examMember"> {{examMember.account.username}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="firstName">
+          <th mat-header-cell *matHeaderCellDef> {{ 'firstName' | translate }}</th>
+          <td mat-cell *matCellDef="let examMember"> {{examMember.account.firstName}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="lastName">
+          <th mat-header-cell *matHeaderCellDef> {{ 'lastName' | translate }}</th>
+          <td mat-cell *matCellDef="let examMember"> {{examMember.account.lastName}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="registerNo">
+          <th mat-header-cell *matHeaderCellDef> {{ 'registerNo' | translate }}</th>
+          <td mat-cell *matCellDef="let examMember"> {{examMember.account.register_no}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="blockade">
+          <th mat-header-cell *matHeaderCellDef> {{ 'blockade' | translate }}</th>
+          <td mat-cell *matCellDef="let examMember">
+
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsExamMembers"></tr>
+        <tr mat-row
+            *matRowDef="let row; columns: displayedColumnsExamMembers;"></tr>
+      </table>
+    </ng-container>
+
+    <ng-container *ngIf="runningProcess == 2">
+      <h5>{{ 'examRunning' | translate }}</h5>
+
+      <div>{{ 'examWillFinished' | translate }}: {{timeToEndExam.hours}}h {{timeToEndExam.minutes}}min {{timeToEndExam.seconds}}sec</div>
+      <br />
+
+      <button id="finishExamButton" mat-raised-button color="primary" class="body-buttons-no-margin"
+              (click)="finishExam()">{{ 'finishExam' | translate }}</button>
+      <br />
+      <div *ngIf="message" class="alert">{{message}}</div>
+      <br />
+      <mat-form-field>
+        <input id="causeOfBlockadeExamMember" matInput placeholder="{{ 'giveTheCauseOfBlockade' | translate }}">
+      </mat-form-field>
+
+      <br />
+      <mat-form-field>
+        <input matInput (keyup)="applyFilterExamMembers($event.target.value)" placeholder="Filter">
+      </mat-form-field>
+
+      <table mat-table [dataSource]="dataSourceOfExamMembers"
+             class="mat-elevation-z8">
+
+        <ng-container matColumnDef="idExamMember">
+          <th mat-header-cell *matHeaderCellDef> {{ 'idExamMember' | translate }}</th>
+          <td mat-cell *matCellDef="let examMember"> {{examMember.id}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="username">
+          <th mat-header-cell *matHeaderCellDef> {{ 'username' | translate }}</th>
+          <td mat-cell *matCellDef="let examMember"> {{examMember.account.username}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="firstName">
+          <th mat-header-cell *matHeaderCellDef> {{ 'firstName' | translate }}</th>
+          <td mat-cell *matCellDef="let examMember"> {{examMember.account.firstName}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="lastName">
+          <th mat-header-cell *matHeaderCellDef> {{ 'lastName' | translate }}</th>
+          <td mat-cell *matCellDef="let examMember"> {{examMember.account.lastName}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="registerNo">
+          <th mat-header-cell *matHeaderCellDef> {{ 'registerNo' | translate }}</th>
+          <td mat-cell *matCellDef="let examMember"> {{examMember.account.register_no}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="blockade">
+          <th mat-header-cell *matHeaderCellDef> {{ 'blockade' | translate }}</th>
+          <td mat-cell *matCellDef="let examMember">
+            <ng-container *ngIf="examMember.blocked">
+              <button mat-raised-button color="primary" class="body-buttons"
+                      (click)="blockExamMember(examMember)">{{ 'unblockExamMember' | translate }}
+              </button>
+            </ng-container>
+            <ng-container *ngIf="!examMember.blocked">
+              <button mat-raised-button color="primary" class="body-buttons"
+                      (click)="blockExamMember(examMember)">{{ 'blockExamMember' | translate }}
+              </button>
+            </ng-container>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsExamMembers"></tr>
+        <tr mat-row
+            *matRowDef="let row; columns: displayedColumnsExamMembers;"></tr>
+      </table>
+    </ng-container>
+  </mat-card-content>
+</mat-card>

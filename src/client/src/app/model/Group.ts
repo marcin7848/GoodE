@@ -1,15 +1,16 @@
 import {GroupMember} from "./GroupMember";
+import {QuestionGroup} from "./QuestionGroup";
 
 export class Group{
   id: number;
   name: string;
   description: string;
   password: string;
-  can_join: boolean;
-  need_acceptance: boolean;
-  is_show: boolean;
-  id_group_parent: number;
-  order: number;
+  possibleToJoin: boolean;
+  acceptance: boolean;
+  hidden: boolean;
+  idGroupParent: number;
+  position: number;
   creationTime: string;
   groupMembers: GroupMember[];
 

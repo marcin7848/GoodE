@@ -4,6 +4,7 @@ import com.goode.ErrorCode;
 import com.goode.business.AccessRole;
 import com.goode.business.Account;
 import com.goode.repository.AccountRepository;
+import com.goode.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -14,14 +15,16 @@ public class AccessRoleValidator extends BaseValidator {
   @Autowired
   AccountRepository accountRepository;
 
+  @Autowired
+  AccountService accountService;
+
   public Account validateChangeAccountAccessRole(int accountId, String role, ErrorCode errorCode){
     if (accountId == Account.MAIN_ADMINISTRATOR_ID) {
       errorCode.rejectValue("accountId", "error.account.changeAccessRole.mainAdmin");
       return null;
     }
 
-    Account loggedAccount = accountRepository
-        .findAccountByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+    Account loggedAccount = accountService.getLoggedAccount();
 
     if (loggedAccount == null || (loggedAccount.getId() != Account.MAIN_ADMINISTRATOR_ID && role
         .equals(AccessRole.ROLE_ADMIN))) {

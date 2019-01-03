@@ -1,3 +1,51 @@
-<router-outlet></router-outlet>
+<div class="background">
+  <div class="background-header">
+    <div class="logo_box">
+      <span class="logo_text">GoodE</span>
+    </div>
+    <div class="header_menu_box">
+      <div class="header_menu">
+        <ng-container *ngIf="loggedAccount?.id == 0">
+          <span class="header_links">
+              <a class="after" routerLink="/register">{{ 'register' | translate }}</a>
+          </span>
+          <span class="header_links">
+              <a class="after" routerLink="/login">{{ 'login' | translate }}</a>
+          </span>
+        </ng-container>
 
+        <ng-container *ngIf="loggedAccount?.id != 0">
+          <span class="header_links">
+              {{ 'helloUser' | translate:{'username':loggedAccount?.username} }}
+          </span>
+          <ng-container *ngIf="loggedAccount?.accessRole.role == 'ROLE_ADMIN'">
+            <span class="header_links">
+              <a class="after" routerLink="/account/changeAccessRole">{{ 'changeAccessRole' | translate }}</a>
+          </span>
+          </ng-container>
+          <span class="header_links">
+              <a class="after" routerLink="/group">{{ 'groups' | translate }}</a>
+          </span>
+          <span class="header_links">
+              <a class="after" routerLink="/account/edit">{{ 'editAccount' | translate }}</a>
+          </span>
+          <span class="header_links">
+              <a class="after" routerLink="/logout">{{ 'logout' | translate }}</a>
+          </span>
+        </ng-container>
 
+      </div>
+    </div>
+    <div class="language_box">
+      <mat-form-field class="language">
+        <mat-select (selectionChange)="changeLanguage($event.value)" [(value)]="selected">
+          <mat-option value="pl">PL</mat-option>
+          <mat-option value="en">EN</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="body_box">
+    <router-outlet></router-outlet>
+  </div>
+</div>

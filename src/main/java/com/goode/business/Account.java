@@ -34,9 +34,9 @@ public class Account {
 
   public static final int MAIN_ADMINISTRATOR_ID = 1; //for safety, block some actions e.g. change accessRole for main admin
 
-  public interface ValidationStepOne {}
-
-  public interface ValidationStepTwo {}
+  public interface RegisterValidation {}
+  public interface EditValidation {}
+  public interface FullValidation {}
 
   @Id
   @Column(name = "id_account")
@@ -45,51 +45,52 @@ public class Account {
   private int id;
 
   @Column(name = "username")
-  @NotBlank(groups = {ValidationStepOne.class, ValidationStepTwo.class})
-  @Length(min = 6, max = 15, groups = {ValidationStepOne.class, ValidationStepTwo.class})
-  @Pattern(regexp = "^[a-zA-Z0-9_]+$", groups = {ValidationStepOne.class, ValidationStepTwo.class})
+  @NotBlank(groups = {RegisterValidation.class, FullValidation.class})
+  @Length(min = 6, max = 15, groups = {RegisterValidation.class, FullValidation.class})
+  @Pattern(regexp = "^[a-zA-Z0-9_]+$", groups = {RegisterValidation.class, FullValidation.class})
   private String username;
 
   @Column(name = "email")
-  @NotBlank(groups = {ValidationStepOne.class, ValidationStepTwo.class})
-  @Length(min = 6, max = 100, groups = {ValidationStepOne.class, ValidationStepTwo.class})
-  @Pattern(regexp = "^[a-zA-Z0-9._-]+@([a-zA-Z0-9-_]+\\.)+[a-zA-Z0-9-_]+$", groups = {ValidationStepOne.class, ValidationStepTwo.class})
+  @NotBlank(groups = {RegisterValidation.class, FullValidation.class, EditValidation.class})
+  @Length(min = 6, max = 100, groups = {RegisterValidation.class, FullValidation.class, EditValidation.class})
+  @Pattern(regexp = "^[a-zA-Z0-9._-]+@([a-zA-Z0-9-_]+\\.)+[a-zA-Z0-9-_]+$", groups = {
+      RegisterValidation.class, FullValidation.class, EditValidation.class})
   private String email;
 
   @Column(name = "password")
-  @NotBlank(groups = {ValidationStepOne.class, ValidationStepTwo.class})
-  @Length(min = 8, max = 100, groups = {ValidationStepOne.class, ValidationStepTwo.class})
+  @NotBlank(groups = {RegisterValidation.class, FullValidation.class, EditValidation.class})
+  @Length(min = 8, max = 100, groups = {RegisterValidation.class, FullValidation.class, EditValidation.class})
   private String password;
 
   @Column(name = "register_no")
-  @NotNull(groups = {ValidationStepOne.class, ValidationStepTwo.class})
-  @Min(value = 1, groups = {ValidationStepOne.class, ValidationStepTwo.class})
+  @NotNull(groups = {RegisterValidation.class, FullValidation.class})
+  @Min(value = 1, groups = {RegisterValidation.class, FullValidation.class})
   private Integer register_no;
 
   @ManyToOne(fetch = FetchType.EAGER, optional = false)
   @JoinColumn(name = "id_access_role")
   @OnDelete(action = OnDeleteAction.NO_ACTION)
-  @NotNull(groups = {ValidationStepTwo.class})
+  @NotNull(groups = {FullValidation.class})
   private AccessRole accessRole;
 
   @Column(name = "enabled")
-  @NotNull(groups = {ValidationStepTwo.class})
+  @NotNull(groups = {FullValidation.class})
   private boolean enabled;
 
   @Column(name = "firstname")
-  @NotBlank(groups = {ValidationStepOne.class, ValidationStepTwo.class})
-  @Length(min = 2, max = 30, groups = {ValidationStepOne.class, ValidationStepTwo.class})
-  @Pattern(regexp = "^[a-zA-Z-]+$", groups = {ValidationStepOne.class, ValidationStepTwo.class})
+  @NotBlank(groups = {RegisterValidation.class, FullValidation.class, EditValidation.class})
+  @Length(min = 3, max = 30, groups = {RegisterValidation.class, FullValidation.class, EditValidation.class})
+  @Pattern(regexp = "^[a-zA-Z-]+$", groups = {RegisterValidation.class, FullValidation.class, EditValidation.class})
   private String firstName;
 
   @Column(name = "lastname")
-  @NotBlank(groups = {ValidationStepOne.class, ValidationStepTwo.class})
-  @Length(min = 2, max = 30, groups = {ValidationStepOne.class, ValidationStepTwo.class})
-  @Pattern(regexp = "^[a-zA-Z-]+$", groups = {ValidationStepOne.class, ValidationStepTwo.class})
+  @NotBlank(groups = {RegisterValidation.class, FullValidation.class, EditValidation.class})
+  @Length(min = 3, max = 30, groups = {RegisterValidation.class, FullValidation.class, EditValidation.class})
+  @Pattern(regexp = "^[a-zA-Z-]+$", groups = {RegisterValidation.class, FullValidation.class, EditValidation.class})
   private String lastName;
 
   @Column(name = "creation_time", updatable = false)
-  @NotNull(groups = {ValidationStepTwo.class})
+  @NotNull(groups = {FullValidation.class})
   private Timestamp creationTime;
 
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "account")
@@ -101,5 +102,10 @@ public class Account {
   @ToString.Exclude
   @JsonIgnore
   private List<GroupMember> groupMembers;
+
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "account")
+  @ToString.Exclude
+  @JsonIgnore
+  private List<ExamMember> examMembers;
 
 }

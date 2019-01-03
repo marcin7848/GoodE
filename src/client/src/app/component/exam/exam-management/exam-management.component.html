@@ -1,0 +1,225 @@
+<mat-card class="card-main">
+
+    <div class="card-main-buttons">
+      <a class="links card-links" routerLink="/group/{{exam?.group.id}}/view">{{ 'back' |
+        translate
+        }}</a>
+      <ng-container *ngIf="!exam?.finished">
+        <a class="links card-links" routerLink="#" (click)="startExam()">{{ 'runningExamManagement' | translate }}</a>
+      </ng-container>
+    </div>
+  <mat-card-header class="card-header">
+    <mat-card-title class="card-title">{{ 'examManagement' | translate }}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-tab-group>
+      <mat-tab label="{{ 'examInfo' | translate }}">
+        <mat-list>
+          <mat-list-item style="font-size: 14px;">{{ 'title' | translate }}: {{exam?.title}}</mat-list-item>
+          <mat-divider></mat-divider>
+          <mat-list-item style="font-size: 14px;">{{ 'difficulty' | translate }}: {{exam?.difficulty}}</mat-list-item>
+          <mat-divider></mat-divider>
+          <mat-list-item style="font-size: 14px;">{{ 'showAllQuestions' | translate }}:
+            <ng-container *ngIf="exam?.showAllQuestions">{{ 'true' | translate }}</ng-container>
+            <ng-container *ngIf="!exam?.showAllQuestions">{{ 'false' | translate }}</ng-container>
+          </mat-list-item>
+          <mat-divider></mat-divider>
+          <mat-list-item style="font-size: 14px;">{{ 'returnToQuestions' | translate }}:
+            <ng-container *ngIf="exam?.returnToQuestions">{{ 'true' | translate }}</ng-container>
+            <ng-container *ngIf="!exam?.returnToQuestions">{{ 'false' | translate }}</ng-container>
+          </mat-list-item>
+          <mat-divider></mat-divider>
+          <mat-list-item style="font-size: 14px;">{{ 'sendResultsInstantly' | translate }}:
+            <ng-container *ngIf="exam?.sendResultsInstantly">{{ 'true' | translate }}</ng-container>
+            <ng-container *ngIf="!exam?.sendResultsInstantly">{{ 'false' | translate }}</ng-container>
+          </mat-list-item>
+          <mat-divider></mat-divider>
+          <mat-list-item style="font-size: 14px;">{{ 'mixQuestions' | translate }}:
+            <ng-container *ngIf="exam?.mixQuestions">{{ 'true' | translate }}</ng-container>
+            <ng-container *ngIf="!exam?.mixQuestions">{{ 'false' | translate }}</ng-container>
+          </mat-list-item>
+          <mat-divider></mat-divider>
+          <mat-list-item style="font-size: 14px;">{{ 'maxTime' | translate }}: {{exam?.maxTime}}</mat-list-item>
+          <mat-divider></mat-divider>
+          <mat-list-item style="font-size: 14px;">{{ 'numberOfQuestions' | translate }}: {{exam?.numberOfQuestions}}</mat-list-item>
+          <mat-divider></mat-divider>
+          <mat-list-item style="font-size: 14px;">{{ 'percentToPass' | translate }}: {{exam?.percentToPass}}</mat-list-item>
+          <mat-divider></mat-divider>
+          <mat-list-item style="font-size: 14px;">{{ 'joining' | translate }}:
+            <ng-container *ngIf="exam?.joining">{{ 'true' | translate }}</ng-container>
+            <ng-container *ngIf="!exam?.joining">{{ 'false' | translate }}</ng-container>
+          </mat-list-item>
+          <mat-divider></mat-divider>
+          <mat-list-item style="font-size: 14px;">{{ 'started' | translate }}:
+            <ng-container *ngIf="exam?.started">{{ 'true' | translate }}</ng-container>
+            <ng-container *ngIf="!exam?.started">{{ 'false' | translate }}</ng-container>
+          </mat-list-item>
+          <mat-divider></mat-divider>
+          <mat-list-item style="font-size: 14px;">{{ 'finished' | translate }}:
+            <ng-container *ngIf="exam?.finished">{{ 'true' | translate }}</ng-container>
+            <ng-container *ngIf="!exam?.finished">{{ 'false' | translate }}</ng-container>
+          </mat-list-item>
+        </mat-list>
+      </mat-tab>
+
+      <mat-tab label="{{ 'examQuestions' | translate }}">
+        <ng-container
+          *ngFor="let question of exam?.examQuestions">
+          <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp question-table">
+            <thead style="background-color: #99c2ff;">
+            <tr>
+              <th colspan="5" class="mdl-data-table__cell--non-numeric">{{ 'question' | translate }}
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td colspan="4" class="mdl-data-table__cell--non-numeric"
+                  style="white-space: pre-wrap; width: 100%"
+                  [innerHTML]="question.question"></td>
+              <td rowspan="2" class="mdl-data-table__cell--non-numeric">
+                <ng-container *ngIf="!exam?.joining">
+                  <button mat-raised-button color="primary" class="body-buttons"
+                          (click)="deleteExamQuestion(question)" [disabled]="loading">{{ 'deleteQuestionFromExam' | translate }}
+                  </button>
+                  <img *ngIf="loading"
+                       src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
+
+                  <br />
+                  <ng-container *ngIf="question.position != 0">
+                    <button mat-raised-button color="primary" class="body-buttons"
+                            (click)="changeExamQuestionPosition(question, question.position-1)">{{ 'moveUp' | translate }}
+                    </button>
+                  </ng-container>
+                  <ng-container *ngIf="question.position+1 != exam.examQuestions.length">
+                    <button mat-raised-button color="primary" class="body-buttons"
+                            (click)="changeExamQuestionPosition(question, question.position+1)">{{ 'moveDown' | translate }}
+                    </button>
+                  </ng-container>
+                </ng-container>
+              </td>
+            </tr>
+            <tr>
+              <td class="mdl-data-table__cell--non-numeric">
+                {{ 'type' | translate }}:
+                <ng-container *ngIf="question.type == 1">{{ 'singleChoiceQuestion' | translate }}
+                </ng-container>
+                <ng-container *ngIf="question.type == 2">{{ 'multipleChoiceQuestion' | translate }}
+                </ng-container>
+              </td>
+              <td>
+                {{ 'difficulty' | translate }}: {{question.difficulty}}
+              </td>
+              <td>
+                {{ 'points' | translate }}: {{question.points}}
+              </td>
+              <td>
+                {{ 'answerTime' | translate }}: {{question.answerTime}}
+              </td>
+            </tr>
+            </tbody>
+            <thead style="background-color: #cce0ff;">
+            <tr>
+              <th colspan="4" class="mdl-data-table__cell--non-numeric">{{ 'closedAnswers' | translate
+                }}
+              </th>
+              <th colspan="1">{{ 'isCorrect' | translate }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <ng-container *ngFor="let answer of question.examClosedAnswers">
+              <tr>
+                <td colspan="4" class="mdl-data-table__cell--non-numeric"
+                    style="white-space: pre-wrap; width: 100%"
+                    [innerHTML]="answer.closedAnswer"></td>
+                <td colspan="1">
+                  <input type="checkbox" (click)="changeCorrectExamClosedAnswer(question, answer)"
+                         [checked]="answer.correct"/>
+                </td>
+              </tr>
+            </ng-container>
+            </tbody>
+          </table>
+        </ng-container>
+      </mat-tab>
+
+      <mat-tab label="{{ 'examQuestionsToAdd' | translate }}">
+        <ng-container *ngIf="exam?.joining">
+          {{ 'cannotAddNewQuestionsToExam' | translate }}
+        </ng-container>
+        <ng-container *ngIf="!exam?.joining">
+          <ng-container *ngIf="!exam?.finished">
+              <button mat-raised-button color="primary" class="body-buttons" (click)="addAllExamQuestions()" [disabled]="loading">{{ 'addAllQuestions' | translate }}</button>
+            <img *ngIf="loading"
+                 src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
+          </ng-container>
+          <ng-container
+            *ngFor="let question of questions">
+            <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp question-table">
+              <thead style="background-color: #99c2ff;">
+              <tr>
+                <th colspan="5" class="mdl-data-table__cell--non-numeric">{{ 'question' | translate }}
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td colspan="4" class="mdl-data-table__cell--non-numeric"
+                    style="white-space: pre-wrap; width: 100%"
+                    [innerHTML]="question.question"></td>
+                <td rowspan="2" class="mdl-data-table__cell--non-numeric">
+                  <button mat-raised-button color="primary" class="body-buttons"
+                          (click)="addQuestionToExam(question)" [disabled]="loading">{{ 'addQuestionToExam' | translate }}</button>
+                  <img *ngIf="loading"
+                       src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
+                </td>
+              </tr>
+              <tr>
+                <td class="mdl-data-table__cell--non-numeric">
+                  {{ 'type' | translate }}:
+                  <ng-container *ngIf="question.type == 1">{{ 'singleChoiceQuestion' | translate }}
+                  </ng-container>
+                  <ng-container *ngIf="question.type == 2">{{ 'multipleChoiceQuestion' | translate }}
+                  </ng-container>
+                </td>
+                <td>
+                  {{ 'difficulty' | translate }}: {{question.difficulty}}
+                </td>
+                <td>
+                  {{ 'points' | translate }}: {{question.points}}
+                </td>
+                <td>
+                  {{ 'answerTime' | translate }}: {{question.answerTime}}
+                </td>
+              </tr>
+              </tbody>
+              <thead style="background-color: #cce0ff;">
+              <tr>
+                <th colspan="4" class="mdl-data-table__cell--non-numeric">{{ 'closedAnswers' | translate
+                  }}
+                </th>
+                <th colspan="1">{{ 'isCorrect' | translate }}</th>
+              </tr>
+              </thead>
+              <tbody>
+              <ng-container *ngFor="let answer of question.closedAnswers">
+                <tr>
+                  <td colspan="4" class="mdl-data-table__cell--non-numeric"
+                      style="white-space: pre-wrap; width: 100%"
+                      [innerHTML]="answer.closedAnswer"></td>
+                  <td colspan="1">
+                    <input type="checkbox" (click)="changeCorrectAnswer(question, answer)"
+                           [checked]="answer.correct"/>
+                  </td>
+                </tr>
+              </ng-container>
+              </tbody>
+            </table>
+          </ng-container>
+        </ng-container>
+      </mat-tab>
+    </mat-tab-group>
+  </mat-card-content>
+</mat-card>
+
+

@@ -1,0 +1,64 @@
+<mat-card class="card-main">
+  <mat-card-header class="card-header">
+    <mat-card-title class="card-title">{{ 'addNewGroup' | translate }}</mat-card-title>
+    <!--<mat-card-subtitle>subtitle</mat-card-subtitle>-->
+  </mat-card-header>
+  <mat-card-content>
+
+    <form class="form-main" [formGroup]="addNewGroupForm" (ngSubmit)="onSubmit()">
+      <mat-form-field class="form-input">
+        <input matInput #inputName maxlength="40" minlength="4"
+               pattern="^[ĄĆĘŁŃÓŚŹŻąćęłńóśźża-zA-Z0-9_\-\/ +\.]+$"
+               placeholder="{{'name' | translate}}" formControlName="name" required>
+        <mat-hint align="end">{{inputName.value?.length || 0}}/40</mat-hint>
+        <mat-error *ngIf="f.name.errors?.required">
+          {{ 'fieldRequired' | translate:{'field':'name' | translate} }}
+        </mat-error>
+        <mat-error *ngIf="f.name.errors?.minlength && !f.name.errors?.pattern">
+          {{ 'fieldMinLength' | translate:{'field':'name' | translate, 'length': '4'} }}
+        </mat-error>
+        <mat-error *ngIf="f.name.errors?.pattern">
+          {{ 'fieldPattern' | translate:{'field':'name' | translate} }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="form-input">
+        <input matInput #inputDescription maxlength="70"
+               pattern="^[ĄĆĘŁŃÓŚŹŻąćęłńóśźża-zA-Z0-9_\-\/ +\.]+$"
+               placeholder="{{'description' | translate}}" formControlName="description">
+        <mat-hint align="end">{{inputDescription.value?.length || 0}}/70</mat-hint>
+        <mat-error *ngIf="f.description.errors?.pattern">
+          {{ 'fieldPattern' | translate:{'field':'description' | translate} }}
+        </mat-error>
+      </mat-form-field>
+
+      <div class="form-slide">
+        <mat-slide-toggle color="primary" formControlName="possibleToJoin">
+          {{'possibleToJoin' | translate}}
+        </mat-slide-toggle>
+      </div>
+
+      <div class="form-slide">
+        <mat-slide-toggle color="primary" formControlName="acceptance">
+          {{'acceptance' | translate}}
+        </mat-slide-toggle>
+      </div>
+
+      <div class="form-slide">
+        <mat-slide-toggle color="primary" formControlName="hidden">
+          {{'hidden' | translate}}
+        </mat-slide-toggle>
+      </div>
+
+      <div class="action-button">
+        <button mat-raised-button color="primary"  class="body-buttons" [disabled]="loading">{{ 'add' | translate
+          }}
+        </button>
+        <img *ngIf="loading"
+             src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
+      </div>
+
+      <div *ngIf="message" class="alert">{{message}}</div>
+    </form>
+  </mat-card-content>
+</mat-card>

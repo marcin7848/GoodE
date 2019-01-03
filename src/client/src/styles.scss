@@ -1,3 +1,189 @@
 /* You can add global styles to this file, and also import other style files */
 
-@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
+a.after,a.after:visited,a.after:hover,a.after:active{
+  -webkit-backface-visibility:hidden;
+  backface-visibility:hidden;
+  position:relative;
+  transition:0.5s color ease;
+  text-decoration:none;
+  color: #fffacd;
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
+
+a.after:hover{
+  color:#c9f227;
+}
+
+a.after:after{
+  content: "";
+  transition:0.5s all ease;
+  -webkit-backface-visibility:hidden;
+  backface-visibility:hidden;
+  position:absolute;
+  height:2px;
+  width:0;
+  background:#c9f227;
+  bottom:-0.15em;
+  left:50%;
+  -webkit-transform:translateX(-50%);
+  transform:translateX(-50%);
+}
+
+a.after:hover:after{
+  width:100%;
+}
+
+a.links,a.links:visited,a.links:hover,a.links:active{
+  -webkit-backface-visibility:hidden;
+  backface-visibility:hidden;
+  position:relative;
+  transition:0.5s color ease;
+  text-decoration:none;
+  color: #0f4880;
+}
+
+a.links:hover{
+  color:#cf000f;
+}
+
+a.links:after{
+  content: "";
+  transition:0.5s all ease;
+  -webkit-backface-visibility:hidden;
+  backface-visibility:hidden;
+  position:absolute;
+  height:2px;
+  width:0;
+  background:#cf000f;
+  bottom:-0.15em;
+  left:50%;
+  -webkit-transform:translateX(-50%);
+  transform:translateX(-50%);
+}
+
+a.links:hover:after{
+  width:100%;
+}
+
+table {
+  width: 100%;
+}
+
+.mat-raised-button.body-buttons{
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.mat-raised-button.body-buttons-no-margin{
+  margin-right: 5px;
+}
+
+
+::ng-deep .mat-select-content{
+  width:300px;
+}
+
+
+.background{
+  min-height: 720px;
+  min-width: 1000px;
+  width: 100%;
+  height: 100%;
+  background-color: azure;
+  margin: 0;
+}
+
+.background-header{
+  width: 100%;
+  height: 50px;
+  background-color: #008b8b;
+  color: #fffacd;
+}
+
+.logo_box{
+  height: 100%;
+  width: 150px;
+  display: inline-block;
+  text-align: center;
+  vertical-align: top;
+}
+
+.language_box{
+  height: 100%;
+  width: 40px;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.header_menu_box{
+  height: 100%;
+  width: calc(100% - 190px);
+  display: inline-block;
+  vertical-align: top;
+}
+
+.body_box{
+  width: 95%;
+  margin: 0 auto;
+}
+
+.card-main{
+  margin-top: 20px;
+}
+
+.card-header{
+  border-bottom: 1px #000000 solid;
+}
+
+.card-title{
+  font-weight: bold;
+  font-size: 20px !important;
+}
+
+.form-main{
+  display: flex;
+  flex-direction: column;
+}
+
+.form-input{
+  width: 15%;
+  margin-top: 15px;
+}
+
+.form-slide{
+  margin-top: 15px;
+}
+
+.action-button{
+  margin-top: 20px;
+}
+
+.alert{
+  margin-top: 10px;
+  color: #f44336;
+}
+
+.alert-top{
+  margin-bottom: 10px;
+  color: #f44336;
+}
+
+.links-margin{
+  margin-left: 20px;
+}
+
+.card-main-buttons{
+  width: 100%;
+  height: 40px;
+}
+
+.card-links{
+  margin-bottom: 5px;
+  margin-right: 15px;
+}
+
+.question-table{
+  margin-top: 25px;
+}

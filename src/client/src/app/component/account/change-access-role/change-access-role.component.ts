@@ -4,6 +4,7 @@ import {AccountService} from "../../../service/account/account.service";
 import {ActivatedRoute} from "@angular/router";
 import {first} from "rxjs/operators";
 import {AccessRole} from "../../../model/AccessRole";
+import {TranslateService} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-change-access-role',
@@ -12,13 +13,15 @@ import {AccessRole} from "../../../model/AccessRole";
 })
 export class ChangeAccessRoleComponent implements OnInit {
   formG: FormGroup;
-  accessGranted = false;
   message = "";
   accessRoles: AccessRole[];
+  loading = false;
+  submitted = false;
 
   constructor(private formBuilder: FormBuilder,
               private accountService: AccountService,
-              private route: ActivatedRoute) { }
+              private route: ActivatedRoute,
+              private translateService: TranslateService) { }
 
   ngOnInit() {
     this.formG = this.formBuilder.group({
@@ -30,12 +33,10 @@ export class ChangeAccessRoleComponent implements OnInit {
     .pipe(first())
     .subscribe(
       data => {
-        this.accessGranted = true;
-        console.log(data);
         this.accessRoles = data;
       },
       error => {
-        this.message = error["error"]["error"];
+        location.href = '/';
       });
 
   }
@@ -43,13 +44,23 @@ export class ChangeAccessRoleComponent implements OnInit {
   get f() { return this.formG.controls; }
 
   onSubmit(){
+    this.submitted = true;
+
+    if (this.formG.invalid) {
+      return;
+    }
+
+    this.loading = true;
+
     this.accountService.changeAccessRole(this.f.username.value, this.f.accessRole.value)
     .pipe(first())
     .subscribe(
       data => {
-        this.message = "Access Rola zmieniona!";
+        this.loading = false;
+        this.message = this.translateService.instant('accessRoleChanged');
       },
       error => {
+        this.loading = false;
         this.message = error["error"]["error"];
       });
   }
