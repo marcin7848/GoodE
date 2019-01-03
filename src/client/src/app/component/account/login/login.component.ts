@@ -30,6 +30,7 @@ export class LoginComponent implements OnInit {
     if(this.router.url === '/logout'){
       this.cookieService.delete("Authorization");
       location.href = '/';
+      return;
     }
 
     this.route.params.subscribe(params => {
