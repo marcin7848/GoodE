@@ -116,6 +116,9 @@
   "pointsResult": "points",
   "resultPositive": "positive",
   "resultNegative": "negative",
+  "userBlocked": "User has been blocked on exam. Reason",
+  "blocked": "Blocked",
+  "notTookPartInExam": "You did not take part in the exam",
 
   "question": "Question",
   "points": "Points",
@@ -153,5 +156,11 @@
   "initiateJoiningToExam": "Initiate joining to exam",
   "initiate": "Initiate",
   "startExam": "Start exam",
-  "durationTime": "Duration of the exam [min]"
+  "durationTime": "Duration of the exam [min]",
+  "examRunning": "Exam is running!",
+  "examWillFinished": "Exam will end in",
+  "unblockExamMember": "Unblock member",
+  "blockExamMember": "Block member",
+  "finishExam": "Finish exam",
+  "giveTheCauseOfBlockade": "Give the cause of member's blockade"
 }

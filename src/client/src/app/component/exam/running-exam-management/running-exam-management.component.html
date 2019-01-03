@@ -145,44 +145,75 @@
             *matRowDef="let row; columns: displayedColumnsExamMembers;"></tr>
       </table>
     </ng-container>
+
+    <ng-container *ngIf="runningProcess == 2">
+      <h5>{{ 'examRunning' | translate }}</h5>
+
+      <div>{{ 'examWillFinished' | translate }}: {{timeToEndExam.hours}}h {{timeToEndExam.minutes}}min {{timeToEndExam.seconds}}sec</div>
+      <br />
+
+      <button id="finishExamButton" mat-raised-button color="primary" class="body-buttons-no-margin"
+              (click)="finishExam()">{{ 'finishExam' | translate }}</button>
+      <br />
+      <div *ngIf="message" class="alert">{{message}}</div>
+      <br />
+      <mat-form-field>
+        <input id="causeOfBlockadeExamMember" matInput placeholder="{{ 'giveTheCauseOfBlockade' | translate }}">
+      </mat-form-field>
+
+      <br />
+      <mat-form-field>
+        <input matInput (keyup)="applyFilterExamMembers($event.target.value)" placeholder="Filter">
+      </mat-form-field>
+
+      <table mat-table [dataSource]="dataSourceOfExamMembers"
+             class="mat-elevation-z8">
+
+        <ng-container matColumnDef="idExamMember">
+          <th mat-header-cell *matHeaderCellDef> {{ 'idExamMember' | translate }}</th>
+          <td mat-cell *matCellDef="let examMember"> {{examMember.id}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="username">
+          <th mat-header-cell *matHeaderCellDef> {{ 'username' | translate }}</th>
+          <td mat-cell *matCellDef="let examMember"> {{examMember.account.username}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="firstName">
+          <th mat-header-cell *matHeaderCellDef> {{ 'firstName' | translate }}</th>
+          <td mat-cell *matCellDef="let examMember"> {{examMember.account.firstName}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="lastName">
+          <th mat-header-cell *matHeaderCellDef> {{ 'lastName' | translate }}</th>
+          <td mat-cell *matCellDef="let examMember"> {{examMember.account.lastName}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="registerNo">
+          <th mat-header-cell *matHeaderCellDef> {{ 'registerNo' | translate }}</th>
+          <td mat-cell *matCellDef="let examMember"> {{examMember.account.register_no}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="blockade">
+          <th mat-header-cell *matHeaderCellDef> {{ 'blockade' | translate }}</th>
+          <td mat-cell *matCellDef="let examMember">
+            <ng-container *ngIf="examMember.blocked">
+              <button mat-raised-button color="primary" class="body-buttons"
+                      (click)="blockExamMember(examMember)">{{ 'unblockExamMember' | translate }}
+              </button>
+            </ng-container>
+            <ng-container *ngIf="!examMember.blocked">
+              <button mat-raised-button color="primary" class="body-buttons"
+                      (click)="blockExamMember(examMember)">{{ 'blockExamMember' | translate }}
+              </button>
+            </ng-container>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsExamMembers"></tr>
+        <tr mat-row
+            *matRowDef="let row; columns: displayedColumnsExamMembers;"></tr>
+      </table>
+    </ng-container>
   </mat-card-content>
 </mat-card>
-
-
-<ng-container *ngIf="runningProcess == 2">
-  <h2>Exam is running!</h2>
-  Zakończenie egzaminu: {{exam?.finishTime}}<br/>
-  <button (click)="finishExam()" class="btn btn-primary">Finish exam</button>
-  <br/><br/>
-
-  Powód blokady member: <input type="text" id="causeOfBlockadeExamMember" class="form-control"/>
-  <h2>Exam members</h2>
-  <table border="1">
-    <tr>
-      <td>Id exam member</td>
-      <td>Username</td>
-      <td>First name</td>
-      <td>Last name</td>
-      <td>Register number</td>
-      <td>Blockade</td>
-    </tr>
-    <tr *ngFor="let examMember of exam?.examMembers">
-      <td>{{examMember.id}}</td>
-      <td>{{examMember.account.username}}</td>
-      <td>{{examMember.account.firstName}}</td>
-      <td>{{examMember.account.lastName}}</td>
-      <td>{{examMember.account.register_no}}</td>
-      <td>
-        <ng-container *ngIf="examMember.blocked">
-          <button (click)="blockExamMember(examMember)" class="btn btn-primary">Unblock exam
-            member
-          </button>
-        </ng-container>
-        <ng-container *ngIf="!examMember.blocked">
-          <button (click)="blockExamMember(examMember)" class="btn btn-primary">Block exam member
-          </button>
-        </ng-container>
-      </td>
-    </tr>
-  </table>
-</ng-container>

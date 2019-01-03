@@ -116,6 +116,9 @@
   "pointsResult": "punktów",
   "resultPositive": "pozytywny",
   "resultNegative": "negatywny",
+  "userBlocked": "Użytkownik został zablokowany na egzaminie. Powód",
+  "blocked": "Zablokowany",
+  "notTookPartInExam": "Nie brałeś/aś udziału w egzaminie.",
 
   "question": "Pytanie",
   "points": "Punkty",
@@ -154,5 +157,12 @@
   "initiateJoiningToExam": "Zainicjuj dołączanie do egzaminu",
   "initiate": "Zainicjuj",
   "startExam": "Rozpocznij egzamin",
-  "durationTime": "Czas trwania egzaminu [min]"
+  "durationTime": "Czas trwania egzaminu [min]",
+  "examRunning": "Egzamin jest uruchomiony!",
+  "examWillFinished": "Egzamin zakończy się za",
+  "unblockExamMember": "Odblokuj członka",
+  "blockExamMember": "Zablokuj członka",
+  "finishExam": "Zakończ egzamin",
+  "giveTheCauseOfBlockade": "Podaj powód blokady użytkownika"
+
 }

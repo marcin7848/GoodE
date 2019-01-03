@@ -36,6 +36,12 @@ export class RunningExamManagementComponent implements OnInit {
   dataSourceOfExamMembers = new MatTableDataSource(this.examMembers);
   displayedColumnsExamMembers: string[] = ['idExamMember', 'username', 'firstName', 'lastName', 'registerNo', 'blockade'];
 
+  timeToEndExam = {
+    hours: 0,
+    minutes: 0,
+    seconds: 0
+  };
+
   constructor(private formBuilder: FormBuilder,
               private router: Router,
               private route: ActivatedRoute,
@@ -71,6 +77,8 @@ export class RunningExamManagementComponent implements OnInit {
       .subscribe(
         data => {
           this.exam = data;
+
+          this.refreshTimeToEnd();
 
           this.examMembers = [];
           this.examMembers = this.exam.examMembers;
@@ -109,6 +117,9 @@ export class RunningExamManagementComponent implements OnInit {
             else {
               if (this.exam.finished == false) {
                 this.runningProcess = 2;
+                setTimeout(() => {
+                  this.ngOnInit();
+                }, 60000*5);
               }
               else {
                 this.router.navigate(['/exam/' + this.exam.id + '/results']);
@@ -176,32 +187,55 @@ export class RunningExamManagementComponent implements OnInit {
   }
 
   blockExamMember(examMember) {
+    this.loading = true;
     this.examService.blockExamMember(this.exam.id, examMember.id, $("#causeOfBlockadeExamMember").val())
     .pipe(first())
     .subscribe(
       data => {
-        console.log("Zablokowano/odblokowano uzytkownika");
-        location.reload();
+        this.loading = false;
+        this.ngOnInit();
       },
       error => {
-        console.log(error);
-        console.log("Nie mozna wykonac!");
+        this.loading = false;
         this.message = error["error"]["error"];
       });
   }
 
   finishExam() {
+    this.loading = true;
+
     this.examService.finishExam(this.exam.id).subscribe(data => {
-        console.log("Zakonczono egzamin!");
         this.router.navigate(['/exam/' + this.exam.id + '/results']);
       },
       error => {
-        console.log("Nie mozna wykonac!");
+        this.loading = false;
         this.message = error["error"]["error"];
       });
   }
 
   applyFilterExamMembers(filterValue: string) {
     this.dataSourceOfExamMembers.filter = filterValue.trim().toLowerCase();
+  }
+
+  refreshTimeToEnd(){
+    let date = new Date();
+    if(date.getTime() >= parseInt(this.exam.finishTime)){
+      $("#finishExamButton").click();
+      return;
+    }
+
+
+    let ms = parseInt(this.exam.finishTime) - date.getTime();
+    let hours = Math.floor(ms / (1000*60*60));
+    let minutes = Math.floor((ms-hours * 1000 * 60 * 60) / (1000*60));
+    let seconds = Math.floor((ms-hours * 1000 * 60 * 60 - minutes * 1000 * 60) / 1000);
+
+    this.timeToEndExam.hours = hours;
+    this.timeToEndExam.minutes = minutes;
+    this.timeToEndExam.seconds = seconds;
+
+    setTimeout(() => {
+      this.refreshTimeToEnd();
+      }, 1000);
   }
 }

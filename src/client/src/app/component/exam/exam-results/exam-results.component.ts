@@ -31,6 +31,7 @@ export class ExamResultsComponent implements OnInit {
   formMode = 0;
   loading = false;
   submitted = false;
+  tookPartInExam = false;
 
   //results details variable
   firstName: string;
@@ -40,9 +41,11 @@ export class ExamResultsComponent implements OnInit {
   maxPoints: number;
   percentResult: number;
   examMemberResult: Results;
+  blocked: boolean;
+  causeOfBlockade: string;
 
   dataSourceOfResultsForAllExamMembers = new MatTableDataSource(this.resultsForAllExamMembers);
-  displayedColumnsResultsForAllExamMembers: string[] = ['username', 'firstName', 'lastName', 'registerNo', 'points', 'result', 'details'];
+  displayedColumnsResultsForAllExamMembers: string[] = ['username', 'firstName', 'lastName', 'registerNo', 'points', 'result', 'blocked', 'details'];
 
   constructor(private formBuilder: FormBuilder,
               private router: Router,
@@ -73,32 +76,36 @@ export class ExamResultsComponent implements OnInit {
 
                     for (let i = 0; i < this.resultsForAllExamMembers.length; i++) {
                       this.resultsForAllExamMembers[i].percentResult = Math.round((this.resultsForAllExamMembers[i].points / this.resultsForAllExamMembers[i].maxPoints) * 100);
-                      if(i+1 >= this.resultsForAllExamMembers.length){
+                      if (i + 1 >= this.resultsForAllExamMembers.length) {
                         this.dataSourceOfResultsForAllExamMembers = new MatTableDataSource(this.resultsForAllExamMembers);
 
-                        this.dataSourceOfResultsForAllExamMembers.filterPredicate = function(data, filter): boolean {
-                          if(data.exam.examMembers[0].account.username.toLowerCase().includes(filter)){
+                        this.dataSourceOfResultsForAllExamMembers.filterPredicate = function (data, filter): boolean {
+                          if (data.exam.examMembers[0].account.username.toLowerCase().includes(filter)) {
                             return true;
                           }
-                          if(data.exam.examMembers[0].account.firstName.toLowerCase().includes(filter)){
+                          if (data.exam.examMembers[0].account.firstName.toLowerCase().includes(filter)) {
                             return true;
                           }
-                          if(data.exam.examMembers[0].account.lastName.toLowerCase().includes(filter)){
+                          if (data.exam.examMembers[0].account.lastName.toLowerCase().includes(filter)) {
                             return true;
                           }
-                          if(data.exam.examMembers[0].account.register_no.toString().toLowerCase().includes(filter)){
-                            return true;
-                          }
-
-                          if(data.points.toString().toLowerCase().includes(filter)){
+                          if (data.exam.examMembers[0].account.register_no.toString().toLowerCase().includes(filter)) {
                             return true;
                           }
 
-                          if(data.maxPoints.toString().toLowerCase().includes(filter)){
+                          if (data.points.toString().toLowerCase().includes(filter)) {
                             return true;
                           }
 
-                          if(data.percentResult.toString().toLowerCase().includes(filter)){
+                          if (data.maxPoints.toString().toLowerCase().includes(filter)) {
+                            return true;
+                          }
+
+                          if (data.percentResult.toString().toLowerCase().includes(filter)) {
+                            return true;
+                          }
+
+                          if (data.exam.examMembers[0].blocked.toString().toLowerCase().includes(filter)) {
                             return true;
                           }
 
@@ -123,44 +130,44 @@ export class ExamResultsComponent implements OnInit {
                   if (this.exam.rated) {
                     this.resultsProcess = 2;
 
-                    this.examService.getResults(this.exam.id)
-                    .pipe(first())
-                    .subscribe(
-                      data => {
-                        this.results = data;
-                        this.results.points = parseInt(data['points']);
-                        this.results.maxPoints = parseInt(data['maxPoints']);
-                        this.results.examMemberQuestionResults = data['examMemberQuestionResults'] ? data['examMemberQuestionResults'] : null;
-                        this.results.percentResult = Math.round((this.results.points / this.results.maxPoints) * 100);
-                        this.results.exam = data['exam'] ? data['exam'] : null;
-                      },
-                      error => {
-                        this.message = error["error"]["error"];
-                      });
-
-                    if (this.exam.showFullResults) {
+                    if (this.exam.examMembers[0].id != 0) {
+                      this.tookPartInExam = true;
                       this.examService.getResults(this.exam.id)
                       .pipe(first())
                       .subscribe(
                         data => {
+                          this.results = data;
                           this.results.points = parseInt(data['points']);
                           this.results.maxPoints = parseInt(data['maxPoints']);
+                          this.results.examMemberQuestionResults = data['examMemberQuestionResults'] ? data['examMemberQuestionResults'] : null;
                           this.results.percentResult = Math.round((this.results.points / this.results.maxPoints) * 100);
+                          this.results.exam = data['exam'] ? data['exam'] : null;
                         },
                         error => {
                           this.message = error["error"]["error"];
                         });
+
+                      if (this.exam.showFullResults) {
+                        this.examService.getResults(this.exam.id)
+                        .pipe(first())
+                        .subscribe(
+                          data => {
+                            this.results.points = parseInt(data['points']);
+                            this.results.maxPoints = parseInt(data['maxPoints']);
+                            this.results.percentResult = Math.round((this.results.points / this.results.maxPoints) * 100);
+                          },
+                          error => {
+                            this.message = error["error"]["error"];
+                          });
+                      }
                     }
                   }
                 }
-
               }
             },
             error => {
               this.message = error["error"]["error"];
             });
-
-
         },
         error => {
         });
@@ -217,7 +224,7 @@ export class ExamResultsComponent implements OnInit {
       });
   }
 
-  showDetails(result: Results){
+  showDetails(result: Results) {
     this.firstName = result.exam.examMembers[0].account.firstName;
     this.lastName = result.exam.examMembers[0].account.lastName;
     this.registerNo = result.exam.examMembers[0].account.register_no;
@@ -225,6 +232,8 @@ export class ExamResultsComponent implements OnInit {
     this.maxPoints = result.maxPoints;
     this.percentResult = result.percentResult;
     this.examMemberResult = result;
+    this.blocked = result.exam.examMembers[0].blocked;
+    this.causeOfBlockade = result.exam.examMembers[0].causeOfBlockade;
     this.formMode = 1;
   }
 
@@ -232,7 +241,7 @@ export class ExamResultsComponent implements OnInit {
     this.dataSourceOfResultsForAllExamMembers.filter = filterValue.trim().toLowerCase();
   }
 
-  closeDetails(){
+  closeDetails() {
     this.formMode = 0;
   }
 }
