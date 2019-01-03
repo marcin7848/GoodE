@@ -37,12 +37,12 @@ public class Group {
   @Column(name = "name")
   @NotBlank(groups = {FullValidation.class, AddNewValidation.class})
   @Length(min = 4, max = 40, groups = {FullValidation.class, AddNewValidation.class})
-  @Pattern(regexp = "^[\\p{L}0-9_\\-\\/ +\\.]+$", groups = {FullValidation.class, AddNewValidation.class})
+  @Pattern(regexp = "^[\\p{L}0-9_\\-\\/ +\\.,]+$", groups = {FullValidation.class, AddNewValidation.class})
   private String name;
 
   @Column(name = "description")
   @Length(max = 70, groups = {FullValidation.class, AddNewValidation.class})
-  @Pattern(regexp = "^[\\p{L}0-9_\\-\\/ +\\.]+$", groups = {FullValidation.class, AddNewValidation.class})
+  @Pattern(regexp = "^[\\p{L}0-9_\\-\\/ +\\.,]+$", groups = {FullValidation.class, AddNewValidation.class})
   private String description;
 
   @Column(name = "password")

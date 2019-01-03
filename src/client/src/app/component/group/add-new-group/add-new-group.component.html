@@ -8,7 +8,7 @@
     <form class="form-main" [formGroup]="addNewGroupForm" (ngSubmit)="onSubmit()">
       <mat-form-field class="form-input">
         <input matInput #inputName maxlength="40" minlength="4"
-               pattern="^[ĄĆĘŁŃÓŚŹŻąćęłńóśźża-zA-Z0-9_\-\/ +\.]+$"
+               pattern="^[ĄĆĘŁŃÓŚŹŻąćęłńóśźża-zA-Z0-9_\-\/ +\.,]+$"
                placeholder="{{'name' | translate}}" formControlName="name" required>
         <mat-hint align="end">{{inputName.value?.length || 0}}/40</mat-hint>
         <mat-error *ngIf="f.name.errors?.required">
@@ -24,7 +24,7 @@
 
       <mat-form-field class="form-input">
         <input matInput #inputDescription maxlength="70"
-               pattern="^[ĄĆĘŁŃÓŚŹŻąćęłńóśźża-zA-Z0-9_\-\/ +\.]+$"
+               pattern="^[ĄĆĘŁŃÓŚŹŻąćęłńóśźża-zA-Z0-9_\-\/ +\.,]+$"
                placeholder="{{'description' | translate}}" formControlName="description">
         <mat-hint align="end">{{inputDescription.value?.length || 0}}/70</mat-hint>
         <mat-error *ngIf="f.description.errors?.pattern">
