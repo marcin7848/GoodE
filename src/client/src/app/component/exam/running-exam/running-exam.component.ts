@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ExamService} from "../../../service/exam/exam.service";
@@ -8,8 +8,8 @@ import {Exam} from "../../../model/Exam";
 import {first} from "rxjs/operators";
 import {ExamAnswerWrapper} from "../../../model/ExamAnswerWrapper";
 
-declare var jquery:any;
-declare var $ :any;
+declare var jquery: any;
+declare var $: any;
 
 @Component({
   selector: 'app-running-exam',
@@ -27,12 +27,31 @@ export class RunningExamComponent implements OnInit {
   blockade = 0;
   causeOfBlockade = "";
   answerTemp = 0;
+  loading = false;
+
+  done = 0;
+  examAnswerWrapperList = [];
+
+  timeToEndExam = {
+    hours: 0,
+    minutes: 0,
+    seconds: 0
+  };
+
+  timeToEndQuestion = {
+    hours: 0,
+    minutes: 0,
+    seconds: 0
+  };
+
+  examRef: Exam;
 
   constructor(private formBuilder: FormBuilder,
               private router: Router,
               private route: ActivatedRoute,
               private examService: ExamService,
-              private accountService: AccountService) { }
+              private accountService: AccountService) {
+  }
 
   ngOnInit() {
     this.joinToExamForm = this.formBuilder.group({
@@ -48,31 +67,97 @@ export class RunningExamComponent implements OnInit {
       .subscribe(
         data => {
           this.exam = data;
-          console.log(this.exam);
 
-          if(this.exam.joining == false){
+          if (this.exam.joining == false) {
             this.router.navigate(['/']);
           }
-          else{
-            if(this.exam.examMembers[0].id == 0){
+          else {
+            if (this.exam.examMembers[0].id == 0) {
               this.runningProcess = 0;
+              setTimeout(() => {
+                this.ngOnInit();
+              }, 5000);
             }
-            else{
-              if(this.exam.examMembers[0].blocked){
+            else {
+              if (this.exam.examMembers[0].blocked) {
                 this.blockade = 1;
                 this.causeOfBlockade = this.exam.examMembers[0].causeOfBlockade;
-              }else{
-                if(!this.exam.finished){
+                this.refresh();
+              } else {
+                this.blockade = 0;
+                if (!this.exam.finished) {
                   this.runningProcess = 1;
-                }else{
-                  this.router.navigate(['/exam/'+this.exam.id+'/results']);
+                  if (!this.exam.started) {
+                    setTimeout(() => {
+                      this.ngOnInit();
+                    }, 5000);
+                  }
+
+                  setTimeout(()=> {
+                    $("#idExamMemberBackground").css('background-color', this.exam.color);
+                  }, 500);
+
+                  this.refreshTimeToEnd();
+
+                  this.refreshTimeToEndQuestion();
+
+                  this.checkBlockade();
+
+                  if (this.exam.showAllQuestions) {
+                    for (var i = 0; i < this.exam.examMembers[0].examMemberQuestions.length; i++) {
+                      var examMemberQuestion = this.exam.examMembers[0].examMemberQuestions[i];
+
+                      for (var j = 0; j < examMemberQuestion.examQuestion.examClosedAnswers.length; j++) {
+                        var answer = examMemberQuestion.examQuestion.examClosedAnswers[j];
+
+                        for (var k = 0; k < examMemberQuestion.examAnswers.length; k++) {
+                          var examAnswer = examMemberQuestion.examAnswers[k];
+                          if (examAnswer.examClosedAnswer.id == answer.id) {
+                            if (examMemberQuestion.examQuestion.type == 1) {
+                              this.checkRadioExamAnswer(examMemberQuestion.id, answer.id);
+                            }
+                            if (examMemberQuestion.examQuestion.type == 2) {
+                              this.checkBoxExamAnswer(examMemberQuestion.id, answer.id);
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                  else {
+                    for (var i = 0; i < this.exam.examMembers[0].examMemberQuestions.length; i++) {
+                      var examMemberQuestion = this.exam.examMembers[0].examMemberQuestions[i];
+
+                      if (examMemberQuestion.position == this.exam.examMembers[0].position) {
+
+                        for (var j = 0; j < examMemberQuestion.examQuestion.examClosedAnswers.length; j++) {
+                          var answer = examMemberQuestion.examQuestion.examClosedAnswers[j];
+
+                          for (var k = 0; k < examMemberQuestion.examAnswers.length; k++) {
+                            var examAnswer = examMemberQuestion.examAnswers[k];
+                            if (examAnswer.examClosedAnswer.id == answer.id) {
+                              if (examMemberQuestion.examQuestion.type == 1) {
+                                this.checkRadioExamAnswer2(examMemberQuestion.id, answer.id);
+                              }
+                              if (examMemberQuestion.examQuestion.type == 2) {
+                                this.checkBoxExamAnswer2(examMemberQuestion.id, answer.id);
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+
+
+                } else {
+                  this.router.navigate(['/exam/' + this.exam.id + '/results']);
                 }
               }
             }
           }
         },
         error => {
-          console.log("Nie mozna pobrac!");
           this.message = error["error"]["error"];
         });
 
@@ -81,116 +166,239 @@ export class RunningExamComponent implements OnInit {
   }
 
 
-  get jte() { return this.joinToExamForm.controls; }
+  get jte() {
+    return this.joinToExamForm.controls;
+  }
 
-  joinToExam(){
+  joinToExam() {
+    if (this.joinToExamForm.invalid) {
+      return;
+    }
+
+    this.loading = true;
     this.examService.joinToRunningExam(this.exam.id, this.jte.joinToExamPassword.value)
     .pipe(first())
     .subscribe(
       data => {
-        console.log("Dolaczono");
-        location.reload();
+        this.loading = false;
+        this.ngOnInit();
       },
       error => {
-        console.log(error);
-        console.log("Nie mozna wykonac!");
+        this.loading = false;
         this.message = error["error"]["error"];
       });
   }
 
 
-  addAnswers(){
+  addAnswers() {
+    this.loading = true;
     var lastIdExamMemberQuestion = 0;
-    var examAnswerWrapperList = [];
     var i = 0;
-    var done = 0;
+    this.done = 0;
+    this.examAnswerWrapperList = [];
 
-    var length =  $(".answers").length;
-    $(".answers").each(function(index, answer){
-      if($(this).is(':checked')){
-        if(lastIdExamMemberQuestion != parseInt($(this).attr('name'))){
+    var answers = $(".answers");
+    var length = answers.length;
+
+    for(var index=0; index<length; index++){
+      var element = answers.eq(index);
+      if(element.is(':checked')){
+        if (lastIdExamMemberQuestion != parseInt(element.attr('name'))) {
           var examAnswerWrapper = new ExamAnswerWrapper();
-          examAnswerWrapper.id_exam_member_question = $(this).attr('name');
-          examAnswerWrapper.id_exam_closed_answers.push($(this).val());
-          examAnswerWrapperList.push(examAnswerWrapper);
-          lastIdExamMemberQuestion = parseInt($(this).attr('name'));
+          examAnswerWrapper.id_exam_member_question = element.attr('name');
+          examAnswerWrapper.id_exam_closed_answers.push(element.val());
+          this.examAnswerWrapperList.push(examAnswerWrapper);
+          lastIdExamMemberQuestion = parseInt(element.attr('name'));
           i++;
-        }else{
+        } else {
           var examAnswerWrapper = new ExamAnswerWrapper();
-          examAnswerWrapper.id_exam_closed_answers = examAnswerWrapperList[i-1]["id_exam_closed_answers"];
-          examAnswerWrapper.id_exam_closed_answers.push($(this).val());
-          examAnswerWrapperList[i-1]["id_exam_closed_answers"] = examAnswerWrapper.id_exam_closed_answers;
+          examAnswerWrapper.id_exam_closed_answers = this.examAnswerWrapperList[i - 1]["id_exam_closed_answers"];
+          examAnswerWrapper.id_exam_closed_answers.push(element.val());
+          this.examAnswerWrapperList[i - 1]["id_exam_closed_answers"] = examAnswerWrapper.id_exam_closed_answers;
         }
       }
       else{
-        if(lastIdExamMemberQuestion != parseInt($(this).attr('name'))) {
+        if (lastIdExamMemberQuestion != parseInt(element.attr('name'))) {
           var examAnswerWrapper = new ExamAnswerWrapper();
-          examAnswerWrapper.id_exam_member_question = $(this).attr('name');
+          examAnswerWrapper.id_exam_member_question = element.attr('name');
           examAnswerWrapper.id_exam_closed_answers = [];
-          examAnswerWrapperList.push(examAnswerWrapper);
-          lastIdExamMemberQuestion = parseInt($(this).attr('name'));
+          this.examAnswerWrapperList.push(examAnswerWrapper);
+          lastIdExamMemberQuestion = parseInt(element.attr('name'));
           i++;
         }
       }
 
-      if(index === (length - 1)){
-        done = 1;
-      }
-
-    });
-
-    function waitForDone(examService: ExamService, exam: Exam, message: string){
-      if(done == 0){
-        setTimeout(waitForDone, 100);
-      }
-      else{
-        console.log(examAnswerWrapperList);
-        examService.addAnswers(exam.id, examAnswerWrapperList)
-        .pipe(first())
-        .subscribe(
-          data => {
-            console.log("Dodano odpowiedzi");
-            location.reload();
-          },
-          error => {
-            console.log(error);
-            console.log("Nie mozna wykonac!");
-            message = error["error"]["error"];
-          });
+      if (index === (length - 1)) {
+        this.done = 1;
       }
     }
 
-    waitForDone(this.examService, this.exam, this.message);
+
+    this.waitForDone();
   }
 
-  checkBoxExamAnswer(name: number, value: number){
-    $("#"+name+"_"+value).prop('checked', true);
+  waitForDone() {
+    if (this.done == 0) {
+      setTimeout(this.waitForDone, 100);
+    }
+    else {
+      this.examService.addAnswers(this.exam.id, this.examAnswerWrapperList)
+      .pipe(first())
+      .subscribe(
+        data => {
+          this.loading = false;
+          this.ngOnInit();
+        },
+        error => {
+          this.loading = false;
+          this.message = error["error"]["error"];
+        });
+    }
   }
 
-  checkRadioExamAnswer(name: number, value: number){
-    $("#"+name+"__"+value).prop('checked', true);
+  checkBoxExamAnswer(name: number, value: number) {
+    setTimeout(function () {
+      $("#" + name + "_" + value).prop('checked', true);
+    }, 500);
   }
 
-  checkBoxExamAnswer2(name: number, value: number){
-    $("#"+name+"____"+value).prop('checked', true);
+  checkRadioExamAnswer(name: number, value: number) {
+    setTimeout(function () {
+      $("#" + name + "__" + value).prop('checked', true);
+    }, 500);
   }
 
-  checkRadioExamAnswer2(name: number, value: number){
-    $("#"+name+"___"+value).prop('checked', true);
+  checkBoxExamAnswer2(name: number, value: number) {
+    setTimeout(function () {
+      $("#" + name + "____" + value).prop('checked', true);
+    }, 500);
+
   }
 
-  changeExamMemberPositionManually(position: number){
+  checkRadioExamAnswer2(name: number, value: number) {
+    setTimeout(function () {
+      $("#" + name + "___" + value).prop('checked', true);
+    }, 500);
+  }
+
+  changeExamMemberPositionManually(position: number) {
     this.examService.changeExamMemberPosition(this.exam.id, position)
     .pipe(first())
     .subscribe(
       data => {
-        console.log("Zmienono pozycje!");
-        location.reload();
+        this.ngOnInit();
       },
       error => {
-        console.log(error);
-        console.log("Nie mozna wykonac!");
         this.message = error["error"]["error"];
       });
+  }
+
+  refreshTimeToEnd(){
+    let date = new Date();
+    if(date.getTime() >= parseInt(this.exam.finishTime)){
+      this.ngOnInit();
+      return;
+    }
+
+
+    let ms = parseInt(this.exam.finishTime) - date.getTime();
+    let hours = Math.floor(ms / (1000*60*60));
+    let minutes = Math.floor((ms-hours * 1000 * 60 * 60) / (1000*60));
+    let seconds = Math.floor((ms-hours * 1000 * 60 * 60 - minutes * 1000 * 60) / 1000);
+
+    this.timeToEndExam.hours = hours;
+    this.timeToEndExam.minutes = minutes;
+    this.timeToEndExam.seconds = seconds;
+
+    setTimeout(() => {
+      this.refreshTimeToEnd();
+    }, 1000);
+  }
+
+  checkBlockade(){
+    this.examService.getRunningExam(this.idExam)
+    .pipe(first())
+    .subscribe(
+      data => {
+        this.examRef = data;
+        if(!this.exam.examMembers[0].blocked && this.examRef.examMembers[0].blocked){
+          this.ngOnInit();
+        }
+        if(this.exam.examMembers[0].blocked && !this.examRef.examMembers[0].blocked){
+          this.ngOnInit();
+        }
+        if(!this.exam.finished && this.examRef.finished){
+          this.ngOnInit();
+        }
+      },
+      error => {
+      });
+
+    setTimeout(() => {
+      this.checkBlockade();
+    }, 30000);
+
+  }
+
+  refreshTimeToEndQuestion(){
+    if((this.exam.type == 3 || this.exam.type == 4) && !this.exam.returnToQuestions){
+      if(this.exam.showAllQuestions){
+        var fullTime = 0;
+        for(var i =0; i<this.exam.examMembers[0].examMemberQuestions.length; i++){
+          fullTime += this.exam.examMembers[0].examMemberQuestions[i].examQuestion.answerTime;
+
+          if(i+1 >= this.exam.examMembers[0].examMemberQuestions.length){
+
+            var date = new Date();
+            let ms = parseInt(this.exam.startTime) + fullTime*60*1000 - date.getTime();
+            let hours = Math.floor(ms / (1000*60*60));
+            let minutes = Math.floor((ms-hours * 1000 * 60 * 60) / (1000*60));
+            let seconds = Math.floor((ms-hours * 1000 * 60 * 60 - minutes * 1000 * 60) / 1000);
+
+            if(ms <= 1000){
+              this.addAnswers();
+            }
+
+            this.timeToEndQuestion.hours = hours;
+            this.timeToEndQuestion.minutes = minutes;
+            this.timeToEndQuestion.seconds = seconds;
+          }
+        }
+      }else{
+        var fullTime = 0;
+        for(var i =0; i<this.exam.examMembers[0].examMemberQuestions.length; i++){
+          if(this.exam.examMembers[0].position >= this.exam.examMembers[0].examMemberQuestions[i].position)
+          {
+            fullTime += this.exam.examMembers[0].examMemberQuestions[i].examQuestion.answerTime;
+          }
+
+          if(i+1 >= this.exam.examMembers[0].examMemberQuestions.length){
+
+            var date = new Date();
+            let ms = parseInt(this.exam.startTime) + fullTime*60*1000 - date.getTime();
+            let hours = Math.floor(ms / (1000*60*60));
+            let minutes = Math.floor((ms-hours * 1000 * 60 * 60) / (1000*60));
+            let seconds = Math.floor((ms-hours * 1000 * 60 * 60 - minutes * 1000 * 60) / 1000);
+
+            if(ms <= 1000){
+              this.addAnswers();
+            }
+
+            this.timeToEndQuestion.hours = hours;
+            this.timeToEndQuestion.minutes = minutes;
+            this.timeToEndQuestion.seconds = seconds;
+          }
+        }
+      }
+    }
+
+    setTimeout(() => {
+      this.refreshTimeToEndQuestion();
+    }, 1000);
+  }
+
+  refresh(){
+    this.ngOnInit();
+    setTimeout(this.refresh, 5000);
   }
 }

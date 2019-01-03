@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { AccountService } from './service/account/account.service';
-import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from '@angular/common/http';
 
 import { MatButtonModule, MatCardModule, MatInputModule, MatListModule, MatToolbarModule } from '@angular/material';
 import { HomeComponent } from './component/home/home.component';
@@ -30,6 +30,16 @@ import { ExamManagementComponent } from './component/exam/exam-management/exam-m
 import { RunningExamManagementComponent } from './component/exam/running-exam-management/running-exam-management.component';
 import { RunningExamComponent } from './component/exam/running-exam/running-exam.component';
 import { ExamResultsComponent } from './component/exam/exam-results/exam-results.component';
+import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
+import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+
+import {MatSelectModule} from '@angular/material/select';
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatIconModule} from '@angular/material/icon';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {MatTableModule} from '@angular/material/table';
+import {MatDividerModule} from '@angular/material/divider';
 
 @NgModule({
   declarations: [
@@ -63,7 +73,21 @@ import { ExamResultsComponent } from './component/exam/exam-results/exam-results
     MatListModule,
     MatToolbarModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      }
+    }),
+    MatSelectModule,
+    BrowserAnimationsModule,
+    MatTabsModule,
+    MatIconModule,
+    MatSlideToggleModule,
+    MatTableModule,
+    MatDividerModule
   ],
   providers: [
     AccountService,
@@ -79,3 +103,7 @@ import { ExamResultsComponent } from './component/exam/exam-results/exam-results
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http);
+}

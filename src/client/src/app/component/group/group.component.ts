@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {GroupService} from "../../service/group/group.service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
@@ -25,7 +25,8 @@ export class GroupComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,
               private router: Router,
               private groupService: GroupService,
-              private accountService: AccountService) { }
+              private accountService: AccountService) {
+  }
 
   ngOnInit() {
 
@@ -34,6 +35,12 @@ export class GroupComponent implements OnInit {
       listOfAllGroups: ['']
     });
 
+    this.accountService.getLoggedAccount().subscribe(data => {
+        this.loggedAccount = data;
+      },
+      error => {
+      });
+
     this.groupService.getMyGroups()
     .pipe(first())
     .subscribe(
@@ -41,9 +48,6 @@ export class GroupComponent implements OnInit {
         this.listOfMyGroups = data;
       },
       error => {
-        console.log(error);
-        console.log("Nie mozna pobrac!");
-        this.message = error["error"]["error"];
       });
 
     this.groupService.getAllGroups()
@@ -53,14 +57,13 @@ export class GroupComponent implements OnInit {
         this.listOfAllGroups = data;
       },
       error => {
-        console.log(error);
-        console.log("Nie mozna pobrac!");
-        this.message = error["error"]["error"];
       });
 
 
   }
 
-  get f() { return this.groupsForm.controls; }
+  get f() {
+    return this.groupsForm.controls;
+  }
 
 }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {AccountService} from "../../../service/account/account.service";
 import {first} from "rxjs/operators";
+import {TranslateService} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-reset-password-request',
@@ -11,9 +12,12 @@ import {first} from "rxjs/operators";
 export class ResetPasswordRequestComponent implements OnInit {
   sendResetPasswordRequestForm: FormGroup;
   message = "";
+  loading = false;
+  submitted = false;
 
   constructor(private formBuilder: FormBuilder,
-              private accountService: AccountService) { }
+              private accountService: AccountService,
+              private translateService: TranslateService) { }
 
   ngOnInit() {
     this.sendResetPasswordRequestForm = this.formBuilder.group({
@@ -24,13 +28,26 @@ export class ResetPasswordRequestComponent implements OnInit {
   get f() { return this.sendResetPasswordRequestForm.controls; }
 
   onSubmit(){
+    this.submitted = true;
+
+    if (this.sendResetPasswordRequestForm.invalid) {
+      return;
+    }
+
+    this.loading = true;
+
+
     this.accountService.sendResetPasswordRequest(this.f.email.value)
     .pipe(first())
     .subscribe(
       data => {
-        this.message = "Kod resetujacy haslo został wysłany!";
+        this.message = this.translateService.instant('resetPasswordCodeSent');
+        setTimeout(function(){
+          location.href = '/';
+        }, 5000);
       },
       error => {
+        this.loading = false;
         this.message = error["error"]["error"];
       });
   }

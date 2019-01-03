@@ -8,7 +8,7 @@ export class ExamQuestion {
   type: number;
   difficulty: number;
   points: number;
-  answerTimer: number;
+  answerTime: number;
   position: number;
   exam: Exam;
   examClosedAnswers: ExamClosedAnswer[];

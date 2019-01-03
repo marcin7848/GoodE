@@ -24,6 +24,8 @@ export class ExamManagementComponent implements OnInit {
   exam: Exam;
   message = "";
   questions: Question[];
+  loading = false;
+
 
 
   constructor(private formBuilder: FormBuilder,
@@ -45,7 +47,6 @@ export class ExamManagementComponent implements OnInit {
           }
         },
         error => {
-          console.log("Nie mozna pobrac!");
         });
 
 
@@ -54,7 +55,6 @@ export class ExamManagementComponent implements OnInit {
       .subscribe(
         data => {
           this.exam = data;
-          console.log(this.exam);
 
           this.questionService.getQuestions(this.exam.group.id)
           .pipe(first())
@@ -66,51 +66,51 @@ export class ExamManagementComponent implements OnInit {
               }
             },
             error => {
-              console.log("Nie mozna pobrac!");
               this.message = error["error"]["error"];
             });
 
         },
         error => {
-          console.log(error);
-          console.log("Nie mozna pobrac!");
           this.message = error["error"]["error"];
         });
     });
   }
 
   addAllExamQuestions(){
+    this.loading = true;
     this.examService.addAllExamQuestions(this.exam.id).
     subscribe(data => {
-        console.log("Dodano wszystkie pytania");
-        location.reload();
+        this.loading = false;
+        this.ngOnInit();
       },
       error => {
-        console.log("Nie mozna wykonac!");
+        this.loading = false;
         this.message = error["error"]["error"];
       })
   }
 
   addQuestionToExam(question: Question){
+    this.loading = true;
     this.examService.addQuestionToExam(this.exam.id, question.id).
     subscribe(data => {
-        console.log("Dodano pytanie!");
-        location.reload();
+        this.loading = false;
+        this.ngOnInit();
       },
       error => {
-        console.log("Nie mozna wykonac!");
+        this.loading = false;
         this.message = error["error"]["error"];
       })
   }
 
   deleteExamQuestion(question: ExamQuestion){
+    this.loading = true;
     this.examService.deleteExamQuestion(this.exam.id, question.id).
     subscribe(data => {
-        console.log("Usunięto pytanie");
-        location.reload();
+        this.loading = false;
+        this.ngOnInit();
       },
       error => {
-        console.log("Nie mozna wykonac!");
+        this.loading = false;
         this.message = error["error"]["error"];
       })
   }
@@ -118,11 +118,9 @@ export class ExamManagementComponent implements OnInit {
   changeExamQuestionPosition(question: ExamQuestion, position: number){
     this.examService.changeExamQuestionPosition(this.exam.id, question.id, position).
     subscribe(data => {
-        console.log("Przeniesiono pytanie");
-        location.reload();
+        this.ngOnInit();
       },
       error => {
-        console.log("Nie mozna wykonac!");
         this.message = error["error"]["error"];
       })
   }
@@ -136,10 +134,20 @@ export class ExamManagementComponent implements OnInit {
     .pipe(first())
     .subscribe(
       data => {
-        console.log("Zmieniono correct!");
+        this.ngOnInit();
       },
       error => {
-        console.log("Nie mozna pobrac!");
+        this.message = error["error"]["error"];
+      });
+  }
+
+  changeCorrectAnswer(question: Question, closedAnswer: ClosedAnswer){
+    this.questionService.changeCorrectAnswer(this.exam.group.id, question.id, closedAnswer.id)
+    .pipe(first())
+    .subscribe(
+      data => {
+      },
+      error => {
         this.message = error["error"]["error"];
       });
   }

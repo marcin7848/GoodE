@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import {Account} from "../../model/Account";
 import {AccountService} from "../../service/account/account.service";
 import {Router} from "@angular/router";
+import {TranslateService} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-home',
@@ -13,15 +14,21 @@ export class HomeComponent implements OnInit {
 
   loggedAccount: Account;
 
-  constructor(private router: Router, private accountService: AccountService) { }
+  constructor(private router: Router, private accountService: AccountService) {}
 
   ngOnInit() {
     this.accountService.getLoggedAccount().
     subscribe(data => {
       this.loggedAccount = data;
+      if(this.loggedAccount.id == 0){
+        this.router.navigate(['/login']);
+      }
+      else{
+        this.router.navigate(['/group']);
+      }
     },
       error => {
-        console.log("Nie mozna pobrac!");
+        this.router.navigate(['/login']);
       })
   }
 

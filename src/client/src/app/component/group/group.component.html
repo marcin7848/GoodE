@@ -1,18 +1,40 @@
-<div *ngIf="loggedAccount?.accessRole.role=='ROLE_ADMIN'">
-  <a routerLink="/group/addNew">Add New Group</a>
-</div>
+<mat-card class="card-main">
+  <ng-container *ngIf="loggedAccount?.accessRole.role=='ROLE_ADMIN'">
+    <div class="card-main-buttons">
+      <a class="links card-links" routerLink="/group/addNew">{{ 'addNewGroup' | translate }}</a>
+    </div>
+  </ng-container>
+  <mat-card-header class="card-header">
+    <mat-card-title class="card-title">{{ 'groups' | translate }}</mat-card-title>
+    <!--<mat-card-subtitle>subtitle</mat-card-subtitle>-->
+  </mat-card-header>
+  <mat-card-content>
+    <mat-tab-group>
+      <mat-tab label="{{ 'allGroups' | translate }}">
+        <mat-list>
+          <mat-list-item *ngFor="let listAllGroups of listOfAllGroups">
+            <mat-icon mat-list-icon>group</mat-icon>
+            <h4 mat-line>
+              <a class="links"
+                 routerLink="/group/{{listAllGroups.id}}/view">{{listAllGroups.name}}</a>
+            </h4>
+            <p mat-line> {{listAllGroups.description}} </p>
+          </mat-list-item>
+        </mat-list>
+      </mat-tab>
 
-<br />
-<h2>My groups</h2>
-<form [formGroup]="groupsForm">
-  <ul>
-    <li *ngFor="let listMyGroups of listOfMyGroups"><a routerLink="/group/{{listMyGroups.id}}/view">{{listMyGroups.name}}</a></li>
-  </ul>
-
-  <br />
-  <h2>All groups</h2>
-  <ul>
-    <li *ngFor="let listAllGroups of listOfAllGroups"><a routerLink="/group/{{listAllGroups.id}}/view">{{listAllGroups.name}}</a></li>
-  </ul>
-  Errors: {{message}}
-</form>
+      <mat-tab label="{{ 'myGroups' | translate }}">
+        <mat-list>
+          <mat-list-item *ngFor="let listMyGroups of listOfMyGroups">
+            <mat-icon mat-list-icon>group</mat-icon>
+            <h4 mat-line>
+              <a class="links"
+                 routerLink="/group/{{listMyGroups.id}}/view">{{listMyGroups.name}}</a>
+            </h4>
+            <p mat-line> {{listMyGroups.description}} </p>
+          </mat-list-item>
+        </mat-list>
+      </mat-tab>
+    </mat-tab-group>
+  </mat-card-content>
+</mat-card>

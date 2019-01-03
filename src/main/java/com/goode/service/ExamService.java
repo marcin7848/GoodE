@@ -94,6 +94,7 @@ public class ExamService implements ExamServiceI {
         exam.getExamQuestions().get(i).getExamClosedAnswers().get(j).setExamQuestion(null);
         exam.getExamQuestions().get(i).getExamClosedAnswers().get(j).setExamAnswers(null);
       }
+      exam.getExamQuestions().get(i).getExamClosedAnswers().sort(Comparator.comparing(ExamClosedAnswer::getId));
     }
     return exam;
   }
@@ -617,6 +618,7 @@ public class ExamService implements ExamServiceI {
         examQuestions.remove(0);
         currentSummaryTimeQuestions = examQuestionRepository
             .getSummaryTimeForExamByIdExamMember(examMember.getId());
+        i++;
       }
 
       /* czyszczenie, gdy przekracza czas, ale chyba za dużo czyściło i dla małych czasow moiże zostawać 1 pytanie np.
@@ -668,7 +670,7 @@ public class ExamService implements ExamServiceI {
         }
       }
 
-      Timestamp timestamp = new Timestamp(new Date().getTime() + max * 1000 + 2000);
+      Timestamp timestamp = new Timestamp(new Date().getTime() + max * 60 * 1000 + 2000);
       exam.setFinishTime(timestamp);
     }
 

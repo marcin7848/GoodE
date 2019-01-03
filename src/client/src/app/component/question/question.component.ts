@@ -9,8 +9,8 @@ import {Group} from "../../model/Group";
 import {Question} from "../../model/Question";
 import {ClosedAnswer} from "../../model/ClosedAnswer";
 
-declare var jquery:any;
-declare var $ :any;
+declare var jquery: any;
+declare var $: any;
 
 @Component({
   selector: 'app-question',
@@ -28,6 +28,11 @@ export class QuestionComponent implements OnInit {
   editMode = 0;
   currentQuestion: Question;
   currentClosedAnswer: ClosedAnswer;
+  formMode = 0;
+  questionTextarea = "";
+  loading = false;
+  messageError = "";
+  closedAnswerTextarea = "";
 
   constructor(private formBuilder: FormBuilder,
               private router: Router,
@@ -46,7 +51,7 @@ export class QuestionComponent implements OnInit {
 
     this.answerForm = this.formBuilder.group({
       closedAnswer: ['', Validators.required],
-      correct: ['', Validators.required]
+      correct: [false, Validators.required]
     });
 
     this.route.params.subscribe(params => {
@@ -59,7 +64,6 @@ export class QuestionComponent implements OnInit {
           this.group = data;
         },
         error => {
-          console.log("Nie mozna pobrac!");
           this.message = error["error"]["error"];
         });
 
@@ -78,71 +82,133 @@ export class QuestionComponent implements OnInit {
         });
 
     });
+
+    $(document).delegate('#questionTextarea', 'keydown', function(e) {
+      var keyCode = e.keyCode || e.which;
+      if (keyCode == 9) {
+        e.preventDefault();
+        var start = this.selectionStart;
+        var end = this.selectionEnd;
+
+        $(this).val($(this).val().substring(0, start)
+          + "\t"
+          + $(this).val().substring(end));
+
+        this.selectionStart =
+          this.selectionEnd = start + 1;
+      }
+    });
+
+    $(document).delegate('#closedAnswerTextarea', 'keydown', function(e) {
+      var keyCode = e.keyCode || e.which;
+      if (keyCode == 9) {
+        e.preventDefault();
+        var start = this.selectionStart;
+        var end = this.selectionEnd;
+
+        $(this).val($(this).val().substring(0, start)
+          + "\t"
+          + $(this).val().substring(end));
+
+        this.selectionStart =
+          this.selectionEnd = start + 1;
+      }
+    });
   }
 
   get f() { return this.addNewQuestionForm.controls; }
   get a() { return this.answerForm.controls; }
 
   showAddQuestion(){
-    $("#formAnswer").css("visibility", "hidden");
+    this.formMode = 1;
     this.editMode = 1;
-    $("#formQuestion").css("visibility", "visible");
+    this.messageError = "";
+    this.loading = false;
+    this.questionTextarea = "";
   }
 
   showEditQuestion(question: Question){
-    $("#formAnswer").css("visibility", "hidden");
+    this.messageError = "";
+    this.loading = false;
+    this.formMode = 1;
     this.editMode = 2;
     this.currentQuestion = question;
-    this.f.addQuestion.setValue(question.question);
+
+    let questionString = question.question;
+    this.questionTextarea = questionString;
+    questionString = questionString.replace(/<br\s*[\/]?>/gi,"\n");
+    questionString = questionString.replace(/&nbsp;&nbsp;&nbsp;&nbsp;/gi,"\t");
+
+    this.f.addQuestion.setValue(questionString);
     this.f.addType.setValue(question.type);
     this.f.addDifficulty.setValue(question.difficulty);
     this.f.addPoints.setValue(question.points);
     this.f.addAnswerTime.setValue(question.answerTime);
-    $("#formQuestion").css("visibility", "visible");
   }
 
   showAddAnswer(question: Question){
-    $("#formQuestion").css("visibility", "hidden");
+    this.formMode = 2;
     this.editMode = 1;
+    this.messageError = "";
+    this.loading = false;
+    this.closedAnswerTextarea = "";
     this.currentQuestion = question;
-    $("#formAnswer").css("visibility", "visible");
   }
 
   showEditAnswer(question: Question, closedAnswer: ClosedAnswer){
-    $("#formQuestion").css("visibility", "hidden");
+    this.formMode = 2;
     this.editMode = 2;
+    this.messageError = "";
+    this.loading = false;
     this.currentQuestion = question;
     this.currentClosedAnswer = closedAnswer;
-    this.a.closedAnswer.setValue(closedAnswer.closedAnswer);
+
+    let closedAnswerString = closedAnswer.closedAnswer;
+    this.closedAnswerTextarea = closedAnswerString;
+    closedAnswerString = closedAnswerString.replace(/<br\s*[\/]?>/gi,"\n");
+    closedAnswerString = closedAnswerString.replace(/&nbsp;&nbsp;&nbsp;&nbsp;/gi,"\t");
+    this.a.closedAnswer.setValue(closedAnswerString);
     this.a.correct.setValue(closedAnswer.correct);
-    $("#formAnswer").css("visibility", "visible");
+
   }
 
   addNewQuestion(){
-    this.questionService.addNewQuestion(this.idGroup, this.f.addQuestion.value, this.f.addType.value, this.f.addDifficulty.value,
+    if (this.addNewQuestionForm.invalid) {
+      return;
+    }
+    this.loading = true;
+
+    this.questionService.addNewQuestion(this.idGroup, this.questionTextarea, this.f.addType.value, this.f.addDifficulty.value,
       this.f.addPoints.value, this.f.addAnswerTime.value)
     .pipe(first())
     .subscribe(
       data => {
-        location.reload();
+        this.formMode = 0;
+        this.ngOnInit();
       },
       error => {
-        console.log("Nie mozna pobrac!");
-        this.message = error["error"]["error"];
+        this.loading = false;
+        this.messageError = error["error"]["error"];
       });
   }
 
   editQuestion(question: Question){
-    this.questionService.editQuestion(this.idGroup, question.id, this.f.addQuestion.value, this.f.addType.value, this.f.addDifficulty.value,
+    if (this.addNewQuestionForm.invalid) {
+      return;
+    }
+    this.loading = true;
+
+    this.questionService.editQuestion(this.idGroup, question.id, this.questionTextarea, this.f.addType.value, this.f.addDifficulty.value,
       this.f.addPoints.value, this.f.addAnswerTime.value)
     .pipe(first())
     .subscribe(
       data => {
-        location.reload();
+        this.formMode = 0;
+        this.ngOnInit();
       },
       error => {
-        console.log("Nie mozna pobrac!");
-        this.message = error["error"]["error"];
+        this.loading = false;
+        this.messageError = error["error"]["error"];
       });
   }
 
@@ -151,38 +217,49 @@ export class QuestionComponent implements OnInit {
     .pipe(first())
     .subscribe(
       data => {
-        location.reload();
+        this.ngOnInit()
       },
       error => {
-        console.log("Nie mozna pobrac!");
         this.message = error["error"]["error"];
       });
   }
 
 
   addNewAnswer(question: Question){
-    this.questionService.addNewAnswer(this.idGroup, question.id, this.a.closedAnswer.value, this.a.correct.value)
+    if (this.answerForm.invalid) {
+      return;
+    }
+    this.loading = true;
+
+    this.questionService.addNewAnswer(this.idGroup, question.id, this.closedAnswerTextarea, this.a.correct.value)
     .pipe(first())
     .subscribe(
       data => {
-        location.reload();
+        this.formMode = 0;
+        this.ngOnInit();
       },
       error => {
-        console.log("Nie mozna pobrac!");
-        this.message = error["error"]["error"];
+        this.loading = false;
+        this.messageError = error["error"]["error"];
       });
   }
 
   editAnswer(question: Question, closedAnswer: ClosedAnswer){
-    this.questionService.editAnswer(this.idGroup, question.id, closedAnswer.id, this.a.closedAnswer.value, this.a.correct.value)
+    if (this.answerForm.invalid) {
+      return;
+    }
+    this.loading = true;
+
+    this.questionService.editAnswer(this.idGroup, question.id, closedAnswer.id, this.closedAnswerTextarea, this.a.correct.value)
     .pipe(first())
     .subscribe(
       data => {
-        location.reload();
+        this.formMode = 0;
+        this.ngOnInit();
       },
       error => {
-        console.log("Nie mozna pobrac!");
-        this.message = error["error"]["error"];
+        this.loading = false;
+        this.messageError = error["error"]["error"];
       });
   }
 
@@ -191,10 +268,9 @@ export class QuestionComponent implements OnInit {
     .pipe(first())
     .subscribe(
       data => {
-        location.reload();
+        this.ngOnInit()
       },
       error => {
-        console.log("Nie mozna pobrac!");
         this.message = error["error"]["error"];
       });
   }
@@ -204,13 +280,26 @@ export class QuestionComponent implements OnInit {
     .pipe(first())
     .subscribe(
       data => {
-        console.log("Zmieniono correct!");
       },
       error => {
-        console.log("Nie mozna pobrac!");
         this.message = error["error"]["error"];
       });
   }
 
+  cancel(){
+    this.formMode = 0;
+  }
+
+  questionTextareaChanged(event: string){
+    event = event.replace(/\r\n|\r|\n/g,"<br />");
+    event = event.replace(/\t/g,"&nbsp;&nbsp;&nbsp;&nbsp;");
+    this.questionTextarea = event;
+  }
+
+  closedAnswerTextareaChanged(event: string){
+    event = event.replace(/\r\n|\r|\n/g,"<br />");
+    event = event.replace(/\t/g,"&nbsp;&nbsp;&nbsp;&nbsp;");
+    this.closedAnswerTextarea = event;
+  }
 
 }

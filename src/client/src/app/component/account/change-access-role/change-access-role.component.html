@@ -1,13 +1,46 @@
-<h2>Change access role</h2>
-<div *ngIf="accessGranted">
-  <form [formGroup]="formG" (ngSubmit)="onSubmit()">
-    Username: <input type="text" formControlName="username" class="form-control" /><br />
-    Nowa rola:
-    <select formControlName="accessRole">
-      <option [value]="accessRole.role" *ngFor="let accessRole of accessRoles">{{accessRole.role}}</option>
-    </select>
-    <br />
-    <button class="btn btn-primary">Change access role</button><br />
-  </form>
-</div>
-Message: {{message}}
+<mat-card class="card-main">
+  <mat-card-header class="card-header">
+    <mat-card-title class="card-title">{{ 'changeAccessRole' | translate }}</mat-card-title>
+    <!--<mat-card-subtitle>subtitle</mat-card-subtitle>-->
+  </mat-card-header>
+  <mat-card-content>
+
+    <form class="form-main" [formGroup]="formG" (ngSubmit)="onSubmit()">
+      <mat-form-field class="form-input">
+        <input matInput #inputUsername maxlength="15" minlength="6" pattern="^[a-zA-Z0-9_]+$"
+               placeholder="{{'username' | translate}}" formControlName="username" required>
+        <mat-hint align="end">{{inputUsername.value?.length || 0}}/15</mat-hint>
+        <mat-error *ngIf="f.username.errors?.required">
+          {{ 'fieldRequired' | translate:{'field':'username' | translate} }}
+        </mat-error>
+        <mat-error *ngIf="f.username.errors?.minlength && !f.username.errors?.pattern">
+          {{ 'fieldMinLength' | translate:{'field':'username' | translate, 'length': '6'} }}
+        </mat-error>
+        <mat-error *ngIf="f.username.errors?.pattern">
+          {{ 'fieldPattern' | translate:{'field':'username' | translate} }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="form-input">
+        <mat-select formControlName="accessRole" placeholder="{{ 'accessRole' | translate }}" required>
+          <mat-option *ngFor="let accessRole of accessRoles" [value]="accessRole.role">
+            {{accessRole.role}}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="f.accessRole.errors?.required">
+          {{ 'fieldRequired' | translate:{'field':'accessRole' | translate} }}
+        </mat-error>
+      </mat-form-field>
+
+      <div class="action-button">
+        <button mat-raised-button color="primary" class="body-buttons" [disabled]="loading">{{ 'changeAccessRole' | translate
+          }}
+        </button>
+        <img *ngIf="loading"
+             src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
+      </div>
+
+      <div *ngIf="message" class="alert">{{message}}</div>
+    </form>
+  </mat-card-content>
+</mat-card>

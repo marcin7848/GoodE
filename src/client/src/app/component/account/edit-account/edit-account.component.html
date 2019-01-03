@@ -1,10 +1,89 @@
-<h2>Edit Account</h2>
-<form [formGroup]="editAccountForm" (ngSubmit)="onSubmit()">
-  Email: <input type="text" formControlName="email" class="form-control" /><br />
-  New Password: <input type="password" formControlName="password" class="form-control" /><br />
-  FirstName: <input type="text" formControlName="firstName" class="form-control" /><br />
-  LastName: <input type="text" formControlName="lastName" class="form-control" /><br /><br />
-  Current Password: <input type="password" formControlName="currentPassword" class="form-control" /><br />
-  <button class="btn btn-primary">Edit</button><br />
-  Errors: {{message}}
-</form>
+<mat-card class="card-main">
+  <mat-card-header class="card-header">
+    <mat-card-title class="card-title">{{ 'editAccount' | translate }}</mat-card-title>
+    <!--<mat-card-subtitle>subtitle</mat-card-subtitle>-->
+  </mat-card-header>
+  <mat-card-content>
+
+    <form class="form-main" [formGroup]="editAccountForm" (ngSubmit)="onSubmit()">
+
+      <mat-form-field class="form-input">
+        <input matInput #inputEmail maxlength="100" minlength="6"
+               pattern="^[a-zA-Z0-9._-]+@([a-zA-Z0-9-_]+\.)+[a-zA-Z0-9-_]+$"
+               placeholder="{{'email' | translate}}" formControlName="email" required>
+        <mat-hint align="end">{{inputEmail.value?.length || 0}}/100</mat-hint>
+        <mat-error *ngIf="f.email.errors?.required">
+          {{ 'fieldRequired' | translate:{'field':'email' | translate} }}
+        </mat-error>
+        <mat-error *ngIf="f.email.errors?.minlength && !f.email.errors?.pattern">
+          {{ 'fieldMinLength' | translate:{'field':'email' | translate, 'length': '6'} }}
+        </mat-error>
+        <mat-error *ngIf="f.email.errors?.pattern">
+          {{ 'fieldPattern' | translate:{'field':'email' | translate} }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="form-input">
+        <input matInput #inputPassword type="password" maxlength="100" minlength="8"
+               placeholder="{{'newPassword' | translate}}" formControlName="password">
+        <mat-hint align="end">{{inputPassword.value?.length || 0}}/100</mat-hint>
+        <mat-error *ngIf="f.password.errors?.minlength">
+          {{ 'fieldMinLength' | translate:{'field':'newPassword' | translate, 'length': '8'} }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="form-input">
+        <input matInput #inputFirstName maxlength="30" minlength="3" pattern="^[a-zA-Z-]+$"
+               placeholder="{{'firstName' | translate}}" formControlName="firstName" required>
+        <mat-hint align="end">{{inputFirstName.value?.length || 0}}/30</mat-hint>
+        <mat-error *ngIf="f.firstName.errors?.required">
+          {{ 'fieldRequired' | translate:{'field':'firstName' | translate} }}
+        </mat-error>
+        <mat-error *ngIf="f.firstName.errors?.minlength && !f.firstName.errors?.pattern">
+          {{ 'fieldMinLength' | translate:{'field':'firstName' | translate, 'length': '3'} }}
+        </mat-error>
+        <mat-error *ngIf="f.firstName.errors?.pattern">
+          {{ 'fieldPattern' | translate:{'field':'firstName' | translate} }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="form-input">
+        <input matInput #inputLastName maxlength="30" minlength="3" pattern="^[a-zA-Z-]+$"
+               placeholder="{{'lastName' | translate}}" formControlName="lastName" required>
+        <mat-hint align="end">{{inputLastName.value?.length || 0}}/30</mat-hint>
+        <mat-error *ngIf="f.lastName.errors?.required">
+          {{ 'fieldRequired' | translate:{'field':'lastName' | translate} }}
+        </mat-error>
+        <mat-error *ngIf="f.lastName.errors?.minlength && !f.lastName.errors?.pattern">
+          {{ 'fieldMinLength' | translate:{'field':'lastName' | translate, 'length': '3'} }}
+        </mat-error>
+        <mat-error *ngIf="f.lastName.errors?.pattern">
+          {{ 'fieldPattern' | translate:{'field':'lastName' | translate} }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="form-input">
+        <input matInput #inputCurrentPassword type="password" maxlength="100" minlength="8"
+               placeholder="{{'currentPassword' | translate}}" formControlName="currentPassword" required>
+        <mat-hint align="end">{{inputCurrentPassword.value?.length || 0}}/100</mat-hint>
+        <mat-error *ngIf="f.currentPassword.errors?.required && !f.currentPassword.errors?.minlength">
+          {{ 'fieldRequired' | translate:{'field':'currentPassword' | translate} }}
+        </mat-error>
+        <mat-error *ngIf="f.currentPassword.errors?.minlength">
+          {{ 'fieldMinLength' | translate:{'field':'currentPassword' | translate, 'length': '8'} }}
+        </mat-error>
+      </mat-form-field>
+
+      <div class="action-button">
+        <button mat-raised-button color="primary"  class="body-buttons" [disabled]="loading">{{ 'editAccount' |
+          translate
+          }}
+        </button>
+        <img *ngIf="loading"
+             src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
+      </div>
+
+      <div *ngIf="message" class="alert">{{message}}</div>
+    </form>
+  </mat-card-content>
+</mat-card>

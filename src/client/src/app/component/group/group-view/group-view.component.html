@@ -1,262 +1,388 @@
-<h2>Group Info</h2>
-Id: {{group?.id}}
-<br/>
-Name: {{group?.name}}
-<br/>
-Description: {{group?.description}}
-<br/>
-
-<div id="formExam" style="position: absolute; right: 0; height: 500px; width: 800px; visibility: hidden;">
-  <ng-container *ngIf="editMode == 1">
-    <h2>Add new exam</h2>
-  </ng-container>
-  <ng-container *ngIf="editMode == 2">
-    <h2>Edit exam</h2>
-  </ng-container>
-
-  <form [formGroup]="examForm">
-    Title: <input type="text" formControlName="title" class="form-control" /><br />
-    Type: <select formControlName="type">
-      <option [value]="1" >Brak czasu, wszystkie pytania</option>
-      <option [value]="2">Brak czasu, określona ilość wylosowanych pytań</option>
-      <option [value]="3">Z czasem, wszystkie pytania</option>
-      <option [value]="4">Z czasem, ilość pytań nie przekraczająca określonego czasu</option>
-    </select><br />
-    Difficulty: <input type="text" formControlName="difficulty" class="form-control" size="3" /><br />
-    Show all questions: <input type="checkbox" formControlName="showAllQuestions" /><br />
-    Return to questions: <input type="checkbox" formControlName="returnToQuestions" /><br />
-    Send results instantly: <input type="checkbox" formControlName="sendResultsInstantly" /><br />
-    Show full results: <input type="checkbox" formControlName="showFullResults" /><br />
-    Mix questions: <input type="checkbox" formControlName="mixQuestions" /><br />
-    Percent to pass [0 - 100%]: <input type="text" formControlName="percentToPass" class="form-control" size="3" /><br />
-    Number of questions: <input type="text" formControlName="numberOfQuestions" class="form-control" size="3" /><br />
-    Max time: <input type="text" formControlName="maxTime" class="form-control" size="5" /><br />
-    <ng-container *ngIf="editMode == 1">
-      <button (click)="addNewExam()" class="btn btn-primary">Add new exam</button>
+<mat-card class="card-main">
+  <div class="card-main-buttons">
+    <ng-container *ngIf="group?.groupMembers[0] == null && group?.possibleToJoin">
+      <a class="links card-links" routerLink="#" (click)="joinToGroup(group.id)">{{ 'joinToGroup' |
+        translate
+        }}</a>
     </ng-container>
-    <ng-container *ngIf="editMode == 2">
-      <button (click)="editExam(currentExam)" class="btn btn-primary">Edit exam</button>
+    <ng-container
+      *ngIf="group?.groupMembers[0] != null && group?.groupMembers[0].accessRole.role!='ROLE_ADMIN'">
+      <a class="links card-links" routerLink="#" (click)="leaveGroup(group.id)">{{ 'leaveGroup' |
+        translate }}</a>
     </ng-container>
-    <br/>
-    Errors: {{message}}
-  </form>
-</div>
-
-<div *ngIf="group?.groupMembers[0] != null && group?.groupMembers[0].accessRole.role=='ROLE_ADMIN'">
-  <a routerLink="/group/{{group?.id}}/edit">Edit group</a>
-</div>
-
-<br/>
-
-<div *ngIf="group?.groupMembers[0] != null && group?.groupMembers[0].accessRole.role=='ROLE_ADMIN'">
-  <button (click)="deleteGroup(group.id)" class="btn btn-primary">Delete group</button>
-  <br/>
-</div>
-<br/>
-
-<div
-  *ngIf="group?.groupMembers[0] != null && (group?.groupMembers[0].accessRole.role=='ROLE_ADMIN' || group?.groupMembers[0].accessRole.role=='ROLE_TEACHER')">
-  <a routerLink="/group/{{group?.id}}/question">Questions</a>
-</div>
-
-<br/>
-<br/>
-
-<div *ngIf="group?.groupMembers[0] == null && group?.possibleToJoin">
-  <button (click)="joinToGroup(group.id)" class="btn btn-primary">Join to the group!</button>
-  <br/>
-</div>
-
-<div *ngIf="group?.groupMembers[0] != null && group?.groupMembers[0].accessRole.role!='ROLE_ADMIN'">
-  <button (click)="leaveGroup(group.id)" class="btn btn-primary">Leave group</button>
-  <br/>
-</div>
-{{actionMessage}}
-
-<h2>Group members</h2>
-<table border="1">
-  <div
-    *ngIf="group?.groupMembers[0] != null && (group?.groupMembers[0].accessRole.role=='ROLE_ADMIN' || group?.groupMembers[0].accessRole.role=='ROLE_TEACHER')">
-    <tr>
-      <td colspan="4">Admins</td>
-    </tr>
-    <tr>
-      <td>Username</td>
-      <td>First name</td>
-      <td>Last name</td>
-      <td>Actions</td>
-    </tr>
-    <tr *ngFor="let member of groupMembers">
-      <ng-container
-        *ngIf="(member.accessRole.role=='ROLE_ADMIN' || member.accessRole.role=='ROLE_TEACHER') && member.accepted">
-        <td>{{member.account.username}}</td>
-        <td>{{member.account.firstName}}</td>
-        <td>{{member.account.lastName}}</td>
-        <ng-container *ngIf="group?.groupMembers[0].accessRole.role=='ROLE_ADMIN'">
-          <ng-container *ngIf="member.accessRole.role!='ROLE_ADMIN'">
-            <td>
-              <button (click)="reduceToStudent(group.id, member.id)" class="btn btn-primary">Reduce
-                to Student
-              </button>
-            </td>
-          </ng-container>
-          <ng-container *ngIf="member.accessRole.role=='ROLE_ADMIN'">
-            <td></td>
-          </ng-container>
-        </ng-container>
-        <ng-container *ngIf="group?.groupMembers[0].accessRole.role!='ROLE_ADMIN'">
-          <td></td>
-        </ng-container>
-      </ng-container>
-    </tr>
-
-    <tr>
-      <td colspan="5">Students</td>
-    </tr>
-    <tr>
-      <td>Username</td>
-      <td>First name</td>
-      <td>Last name</td>
-      <td>Register number</td>
-      <td>Actions</td>
-    </tr>
-    <tr *ngFor="let member of groupMembers">
-      <ng-container *ngIf="member.accessRole.role=='ROLE_STUDENT' && member.accepted">
-        <td>{{member.account.username}}</td>
-        <td>{{member.account.firstName}}</td>
-        <td>{{member.account.lastName}}</td>
-        <td>{{member.account.register_no}}</td>
-        <ng-container *ngIf="group?.groupMembers[0].accessRole.role=='ROLE_ADMIN'">
-          <td>
-            <button (click)="deleteGroupMember(group.id, member.id)" class="btn btn-primary">Delete
-              member
-            </button>
-            |
-            <button (click)="promoteToTeacher(group.id, member.id)" class="btn btn-primary">Promote
-              to a Teacher
-            </button>
-          </td>
-        </ng-container>
-        <ng-container *ngIf="group?.groupMembers[0].accessRole.role=='ROLE_TEACHER'">
-          <td>
-            <button (click)="deleteGroupMember(group.id, member.id)" class="btn btn-primary">Delete
-              member
-            </button>
-          </td>
-        </ng-container>
-      </ng-container>
-    </tr>
-
-    <tr>
-      <td colspan="5">Waiting</td>
-    </tr>
-    <tr>
-      <td>Username</td>
-      <td>First name</td>
-      <td>Last name</td>
-      <td>Register number</td>
-      <td>Actions</td>
-    </tr>
-    <tr *ngFor="let member of groupMembers">
-      <ng-container *ngIf="member.accessRole.role=='ROLE_STUDENT'  && !member.accepted">
-        <td>{{member.account.username}}</td>
-        <td>{{member.account.firstName}}</td>
-        <td>{{member.account.lastName}}</td>
-        <td>{{member.account.register_no}}</td>
-        <td>
-          <button (click)="acceptNewMember(group.id, member.id)" class="btn btn-primary">Accept
-            member
-          </button>
-        </td>
-      </ng-container>
-    </tr>
+    <ng-container
+      *ngIf="group?.groupMembers[0] != null && group?.groupMembers[0].accessRole.role=='ROLE_ADMIN'">
+      <a class="links card-links" routerLink="/group/{{group?.id}}/edit">{{ 'editGroup' | translate
+        }}</a>
+      <a class="links card-links" routerLink="#" (click)="deleteGroup(group.id)">{{ 'deleteGroup' |
+        translate
+        }}</a>
+    </ng-container>
+    <ng-container
+      *ngIf="group?.groupMembers[0] != null && (group?.groupMembers[0].accessRole.role=='ROLE_ADMIN' || group?.groupMembers[0].accessRole.role=='ROLE_TEACHER')">
+      <a class="links card-links" routerLink="/group/{{group?.id}}/question">{{ 'questionsPanel' |
+        translate }}</a>
+      <a class="links card-links" routerLink="#" (click)="showAddExam()">{{ 'addNewExam' | translate
+        }}</a>
+    </ng-container>
   </div>
+  <div *ngIf="message" class="alert-top">{{message}}</div>
+  <mat-card-header class="card-header">
+    <mat-card-title class="card-title">{{group?.name}}</mat-card-title>
+    <mat-card-subtitle>{{group?.description}}</mat-card-subtitle>
+  </mat-card-header>
+  <ng-container *ngIf="formMode == 0">
+    <mat-card-content>
+      <mat-tab-group>
+        <mat-tab label="{{ 'groupMembers' | translate }}">
+          <mat-tab-group>
+            <mat-tab label="{{ 'teachers' | translate }}">
+              <mat-form-field>
+                <input matInput (keyup)="applyFilterTeachers($event.target.value)"
+                       placeholder="Filter">
+              </mat-form-field>
 
-  <div
-    *ngIf="group?.groupMembers[0] == null || (group?.groupMembers != null && group?.groupMembers[0].accessRole.role=='ROLE_STUDENT')">
-    <tr>
-      <td colspan="3">Admins</td>
-    </tr>
-    <tr>
-      <td>Username</td>
-      <td>First name</td>
-      <td>Last name</td>
-    </tr>
-    <tr *ngFor="let member of groupMembers">
-      <ng-container
-        *ngIf="(member.accessRole.role=='ROLE_ADMIN' || member.accessRole.role=='ROLE_TEACHER') && member.accepted">
-        <td>{{member.account.username}}</td>
-        <td>{{member.account.firstName}}</td>
-        <td>{{member.account.lastName}}</td>
+              <table mat-table [dataSource]="dataSourceOfGroupMembersOfTeachers"
+                     class="mat-elevation-z8">
+
+                <ng-container matColumnDef="username">
+                  <th mat-header-cell *matHeaderCellDef> {{ 'username' | translate }}</th>
+                  <td mat-cell *matCellDef="let element"> {{element.account.username}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="firstName">
+                  <th mat-header-cell *matHeaderCellDef> {{ 'firstName' | translate }}</th>
+                  <td mat-cell *matCellDef="let element"> {{element.account.firstName}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="lastName">
+                  <th mat-header-cell *matHeaderCellDef> {{ 'lastName' | translate }}</th>
+                  <td mat-cell *matCellDef="let element"> {{element.account.lastName}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                  <th mat-header-cell *matHeaderCellDef> {{ 'actions' | translate }}</th>
+                  <td mat-cell *matCellDef="let element">
+                    <ng-container
+                      *ngIf="group?.groupMembers[0].accessRole.role=='ROLE_ADMIN' && element.account.accessRole.role!='ROLE_ADMIN'">
+                      <button mat-raised-button color="primary" class="body-buttons"
+                              (click)="reduceToStudent(group.id, element.id)">{{ 'reduceToStudent' |
+                        translate }}
+                      </button>
+                    </ng-container>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumnsGroupMembersOfTeachers"></tr>
+                <tr mat-row
+                    *matRowDef="let row; columns: displayedColumnsGroupMembersOfTeachers;"></tr>
+              </table>
+            </mat-tab>
+
+            <mat-tab label="{{ 'students' | translate }}">
+              <mat-form-field>
+                <input matInput (keyup)="applyFilterStudents($event.target.value)"
+                       placeholder="Filter">
+              </mat-form-field>
+
+              <table mat-table [dataSource]="dataSourceOfGroupMembersOfStudents"
+                     class="mat-elevation-z8">
+
+                <ng-container matColumnDef="username">
+                  <th mat-header-cell *matHeaderCellDef> {{ 'username' | translate }}</th>
+                  <td mat-cell *matCellDef="let element"> {{element.account.username}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="firstName">
+                  <th mat-header-cell *matHeaderCellDef> {{ 'firstName' | translate }}</th>
+                  <td mat-cell *matCellDef="let element"> {{element.account.firstName}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="lastName">
+                  <th mat-header-cell *matHeaderCellDef> {{ 'lastName' | translate }}</th>
+                  <td mat-cell *matCellDef="let element"> {{element.account.lastName}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="registerNo">
+                  <th mat-header-cell *matHeaderCellDef> {{ 'registerNo' | translate }}</th>
+                  <td mat-cell *matCellDef="let element"> {{element.account.register_no}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                  <th mat-header-cell *matHeaderCellDef> {{ 'actions' | translate }}</th>
+                  <td mat-cell *matCellDef="let element">
+                    <ng-container *ngIf="group?.groupMembers[0].accessRole.role=='ROLE_ADMIN'">
+                      <button mat-raised-button color="primary" class="body-buttons"
+                              (click)="promoteToTeacher(group.id, element.id)">{{ 'promoteToTeacher'
+                        | translate }}
+                      </button>
+                    </ng-container>
+                    <ng-container
+                      *ngIf="group?.groupMembers[0].accessRole.role=='ROLE_ADMIN' || group?.groupMembers[0].accessRole.role=='ROLE_TEACHER'">
+                      <button mat-raised-button color="primary" class="body-buttons"
+                              (click)="deleteGroupMember(group.id, element.id)">{{
+                        'deleteGroupMember' | translate }}
+                      </button>
+                    </ng-container>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumnsGroupMembersOfStudents"></tr>
+                <tr mat-row
+                    *matRowDef="let row; columns: displayedColumnsGroupMembersOfStudents;"></tr>
+              </table>
+            </mat-tab>
+
+            <mat-tab label="{{ 'waiting' | translate }}">
+              <mat-form-field>
+                <input matInput (keyup)="applyFilterWaiting($event.target.value)"
+                       placeholder="Filter">
+              </mat-form-field>
+
+              <table mat-table [dataSource]="dataSourceOfGroupMembersWaiting"
+                     class="mat-elevation-z8">
+
+                <ng-container matColumnDef="username">
+                  <th mat-header-cell *matHeaderCellDef> {{ 'username' | translate }}</th>
+                  <td mat-cell *matCellDef="let element"> {{element.account.username}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="firstName">
+                  <th mat-header-cell *matHeaderCellDef> {{ 'firstName' | translate }}</th>
+                  <td mat-cell *matCellDef="let element"> {{element.account.firstName}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="lastName">
+                  <th mat-header-cell *matHeaderCellDef> {{ 'lastName' | translate }}</th>
+                  <td mat-cell *matCellDef="let element"> {{element.account.lastName}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="registerNo">
+                  <th mat-header-cell *matHeaderCellDef> {{ 'registerNo' | translate }}</th>
+                  <td mat-cell *matCellDef="let element"> {{element.account.register_no}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                  <th mat-header-cell *matHeaderCellDef> {{ 'actions' | translate }}</th>
+                  <td mat-cell *matCellDef="let element">
+                    <button mat-raised-button color="primary" class="body-buttons"
+                            (click)="acceptNewMember(group.id, element.id)">{{ 'acceptMember' |
+                      translate }}
+                    </button>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumnsGroupMembersWaiting"></tr>
+                <tr mat-row
+                    *matRowDef="let row; columns: displayedColumnsGroupMembersWaiting;"></tr>
+              </table>
+            </mat-tab>
+          </mat-tab-group>
+        </mat-tab>
+
+        <mat-tab label="{{ 'exams' | translate }}">
+          <mat-form-field>
+            <input matInput (keyup)="applyFilterExams($event.target.value)" placeholder="Filter">
+          </mat-form-field>
+
+          <table mat-table [dataSource]="dataSourceOfExams"
+                 class="mat-elevation-z8">
+
+            <ng-container matColumnDef="title">
+              <th mat-header-cell *matHeaderCellDef> {{ 'title' | translate }}</th>
+              <td mat-cell *matCellDef="let element"> {{element.title}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef> {{ 'actions' | translate }}</th>
+              <td mat-cell *matCellDef="let exam">
+                <ng-container *ngIf="exam.joining">
+                  <button mat-raised-button color="primary" class="body-buttons" (click)="joinToExam(exam)">{{ 'joinToExam' | translate }}</button>
+                </ng-container>
+                <ng-container
+                  *ngIf="group?.groupMembers[0].accessRole.role=='ROLE_ADMIN' || group?.groupMembers[0].accessRole.role=='ROLE_TEACHER'">
+                  <button mat-raised-button color="primary" class="body-buttons" (click)="showEditExam(exam)">{{ 'editExam' | translate }}</button>
+                  <button mat-raised-button color="primary" class="body-buttons" (click)="goToManageExam(exam)">{{ 'manageExam' | translate }}
+                  </button>
+                </ng-container>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumnsExams"></tr>
+            <tr mat-row
+                *matRowDef="let row; columns: displayedColumnsExams;"></tr>
+          </table>
+        </mat-tab>
+
+        <mat-tab label="{{ 'finishedExams' | translate }}">
+          <mat-form-field>
+            <input matInput (keyup)="applyFilterFinishedExams($event.target.value)"
+                   placeholder="Filter">
+          </mat-form-field>
+
+          <table mat-table [dataSource]="dataSourceOfFinishedExams"
+                 class="mat-elevation-z8">
+
+            <ng-container matColumnDef="title">
+              <th mat-header-cell *matHeaderCellDef> {{ 'title' | translate }}</th>
+              <td mat-cell *matCellDef="let element"> {{element.title}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef> {{ 'actions' | translate }}</th>
+              <td mat-cell *matCellDef="let exam">
+                <button mat-raised-button color="primary" class="body-buttons" (click)="goToResults(exam)">{{ 'seeResults' | translate }}</button>
+                <ng-container
+                  *ngIf="group?.groupMembers[0].accessRole.role=='ROLE_ADMIN' || group?.groupMembers[0].accessRole.role=='ROLE_TEACHER'">
+                  <button mat-raised-button color="primary" class="body-buttons" (click)="showEditExam(exam)">{{ 'editExam' | translate }}</button>
+                  <button mat-raised-button color="primary" class="body-buttons" (click)="goToManageExam(exam)" >{{ 'manageExam' | translate }}
+                  </button>
+                </ng-container>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumnsFinishedExams"></tr>
+            <tr mat-row
+                *matRowDef="let row; columns: displayedColumnsFinishedExams;"></tr>
+          </table>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-card-content>
+  </ng-container>
+
+  <ng-container *ngIf="formMode == 1">
+    <mat-card-content>
+      <ng-container *ngIf="editMode == 0">
+        <h2>{{ 'addNewExam' | translate }}</h2>
       </ng-container>
-    </tr>
-
-    <tr>
-      <td colspan="2">Students</td>
-    </tr>
-    <tr>
-      <td>Username</td>
-      <td>Register number</td>
-    </tr>
-    <tr *ngFor="let member of groupMembers">
-      <ng-container *ngIf="member.accessRole.role=='ROLE_STUDENT'  && member.accepted">
-        <td>{{member.account.username}}</td>
-        <td>{{member.account.register_no}}</td>
+      <ng-container *ngIf="editMode == 1">
+        <h2>{{ 'editExam' | translate }}</h2>
       </ng-container>
-    </tr>
-  </div>
-</table>
 
+      <form class="form-main" [formGroup]="examForm">
+        <mat-form-field class="form-input">
+          <input matInput #inputTitle maxlength="40" minlength="4"
+                 pattern="^[ĄĆĘŁŃÓŚŹŻąćęłńóśźża-zA-Z0-9_\-\/ +\.]+$"
+                 placeholder="{{'title' | translate}}" formControlName="title" required>
+          <mat-hint align="end">{{inputTitle.value?.length || 0}}/40</mat-hint>
+          <mat-error *ngIf="f.title.errors?.required">
+            {{ 'fieldRequired' | translate:{'field':'title' | translate} }}
+          </mat-error>
+          <mat-error *ngIf="f.title.errors?.minlength && !f.title.errors?.pattern">
+            {{ 'fieldMinLength' | translate:{'field':'title' | translate, 'length': '4'} }}
+          </mat-error>
+          <mat-error *ngIf="f.title.errors?.pattern">
+            {{ 'fieldPattern' | translate:{'field':'title' | translate} }}
+          </mat-error>
+        </mat-form-field>
 
-<br/>
-<br/>
-<ng-container *ngIf="group?.groupMembers[0].accessRole.role=='ROLE_ADMIN' || group?.groupMembers[0].accessRole.role=='ROLE_TEACHER'">
-  <button (click)="showAddExam()" class="btn btn-primary">Add new exam</button>
-</ng-container>
-<h2>Exams</h2>
-<table border="1">
-  <tr>
-    <td colspan="2">Egzaminy</td>
-  </tr>
-  <tr>
-    <td>Nazwa</td>
-    <td>Akcje</td>
-  </tr>
-  <tr *ngFor="let exam of exams">
-    <ng-container *ngIf="!exam.finished">
-      <td>{{exam.title}}</td>
-      <td>
-        <ng-container *ngIf="exam.joining">
-          <button (click)="joinToExam(exam)" class="btn btn-primary">Join to exam</button>
-        </ng-container>
-        <ng-container *ngIf="group?.groupMembers[0].accessRole.role=='ROLE_ADMIN' || group?.groupMembers[0].accessRole.role=='ROLE_TEACHER'">
-          <button (click)="showEditExam(exam)" class="btn btn-primary">Edit exam</button>
-          <button (click)="goToManageExam(exam)" class="btn btn-primary">Manage exam</button>
-        </ng-container>
-      </td>
-    </ng-container>
-  </tr>
-</table>
+        <mat-form-field style="width: 400px;" class="form-input">
+          <mat-select style="width: 400px;" formControlName="type" placeholder="{{ 'type' | translate }}" required>
+            <mat-option style="width: 400px;" [value]="1">{{ 'examType1' | translate }}</mat-option>
+            <mat-option style="width: 400px;" [value]="2">{{ 'examType2' | translate }}</mat-option>
+            <mat-option style="width: 400px;" [value]="3">{{ 'examType3' | translate }}</mat-option>
+            <mat-option style="width: 400px;" [value]="4">{{ 'examType4' | translate }}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="f.type.errors?.required">
+            {{ 'fieldRequired' | translate:{'field':'type' | translate} }}
+          </mat-error>
+        </mat-form-field>
 
-<h2>Finished Exams</h2>
-<table border="1">
-  <tr>
-    <td colspan="2">Egzaminy zakończone</td>
-  </tr>
-  <tr>
-    <td>Nazwa</td>
-    <td>Akcje</td>
-  </tr>
-  <tr *ngFor="let exam of exams">
-    <ng-container *ngIf="exam.finished">
-      <td>{{exam.title}}</td>
-      <td>
-        <button (click)="goToResults(exam)" class="btn btn-primary">See results</button>
-        <ng-container *ngIf="group?.groupMembers[0].accessRole.role=='ROLE_ADMIN' || group?.groupMembers[0].accessRole.role=='ROLE_TEACHER'">
-          <button (click)="showEditExam(exam)" class="btn btn-primary">Edit exam</button>
-          <button (click)="goToManageExam(exam)" class="btn btn-primary">Manage exam</button>
-        </ng-container>
-      </td>
-    </ng-container>
-  </tr>
-</table>
+        <mat-form-field class="form-input">
+          <input matInput #inputDifficulty maxlength="2" pattern="[0-9]+$"
+                 placeholder="{{'difficulty' | translate}}" formControlName="difficulty" required>
+          <mat-hint align="end">{{inputDifficulty.value?.length || 0}}/2</mat-hint>
+          <mat-error *ngIf="f.difficulty.errors?.required">
+            {{ 'fieldRequired' | translate:{'field':'difficulty' | translate} }}
+          </mat-error>
+          <mat-error *ngIf="f.difficulty.errors?.pattern">
+            {{ 'fieldPattern' | translate:{'field':'difficulty' | translate} }}
+          </mat-error>
+        </mat-form-field>
+
+        <div class="form-slide">
+          <mat-slide-toggle color="primary" formControlName="showAllQuestions">
+            {{'showAllQuestions' | translate}}
+          </mat-slide-toggle>
+        </div>
+
+        <div class="form-slide">
+          <mat-slide-toggle color="primary" formControlName="returnToQuestions">
+            {{'returnToQuestions' | translate}}
+          </mat-slide-toggle>
+        </div>
+
+        <div class="form-slide">
+          <mat-slide-toggle color="primary" formControlName="sendResultsInstantly">
+            {{'sendResultsInstantly' | translate}}
+          </mat-slide-toggle>
+        </div>
+
+        <div class="form-slide">
+          <mat-slide-toggle color="primary" formControlName="showFullResults">
+            {{'showFullResults' | translate}}
+          </mat-slide-toggle>
+        </div>
+
+        <div class="form-slide">
+          <mat-slide-toggle color="primary" formControlName="mixQuestions">
+            {{'mixQuestions' | translate}}
+          </mat-slide-toggle>
+        </div>
+
+        <mat-form-field class="form-input">
+          <input matInput #inputPercentToPass maxlength="3" pattern="[0-9]+$"
+                 placeholder="{{'percentToPass' | translate}}" formControlName="percentToPass" required>
+          <mat-hint align="end">{{inputPercentToPass.value?.length || 0}}/3</mat-hint>
+          <mat-error *ngIf="f.percentToPass.errors?.required">
+            {{ 'fieldRequired' | translate:{'field':'percentToPass' | translate} }}
+          </mat-error>
+          <mat-error *ngIf="f.percentToPass.errors?.pattern">
+            {{ 'fieldPattern' | translate:{'field':'percentToPass' | translate} }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="form-input">
+          <input matInput #inputNumberOfQuestions maxlength="3" pattern="[0-9]+$"
+                 placeholder="{{'numberOfQuestions' | translate}}" formControlName="numberOfQuestions" required>
+          <mat-hint align="end">{{inputNumberOfQuestions.value?.length || 0}}/3</mat-hint>
+          <mat-error *ngIf="f.numberOfQuestions.errors?.required">
+            {{ 'fieldRequired' | translate:{'field':'numberOfQuestions' | translate} }}
+          </mat-error>
+          <mat-error *ngIf="f.numberOfQuestions.errors?.pattern">
+            {{ 'fieldPattern' | translate:{'field':'numberOfQuestions' | translate} }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="form-input">
+          <input matInput #inputMaxTime maxlength="3" pattern="[0-9]+$"
+                 placeholder="{{'maxTime' | translate}}" formControlName="maxTime" required>
+          <mat-hint align="end">{{inputMaxTime.value?.length || 0}}/3</mat-hint>
+          <mat-error *ngIf="f.maxTime.errors?.required">
+            {{ 'fieldRequired' | translate:{'field':'maxTime' | translate} }}
+          </mat-error>
+          <mat-error *ngIf="f.maxTime.errors?.pattern">
+            {{ 'fieldPattern' | translate:{'field':'maxTime' | translate} }}
+          </mat-error>
+        </mat-form-field>
+
+        <div class="action-button">
+
+          <ng-container *ngIf="editMode == 0">
+            <button mat-raised-button color="primary" class="body-buttons" (click)="addNewExam()" [disabled]="loading">{{'addNewExam' | translate}}</button>
+          </ng-container>
+          <ng-container *ngIf="editMode == 1">
+            <button mat-raised-button color="primary" class="body-buttons" (click)="editExam(currentExam)" [disabled]="loading">{{'editExam' | translate}}</button>
+          </ng-container>
+
+          <button mat-raised-button color="primary" class="body-buttons" (click)="cancelFormExam()">{{'cancel' | translate}}</button>
+
+          <img *ngIf="loading"
+               src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
+        </div>
+
+        <div *ngIf="messageExam" class="alert">{{messageExam}}</div>
+      </form>
+    </mat-card-content>
+  </ng-container>
+</mat-card>
