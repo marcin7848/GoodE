@@ -363,7 +363,32 @@ public class ExamService implements ExamServiceI {
 
   @Override
   public Exam getExamMemberResults(int id, Account account) {
-    Exam exam = this.getExamById(id);
+    Exam gotExam = this.getExamById(id);
+
+    Exam exam = new Exam();
+    exam.setId(gotExam.getId());
+    exam.setTitle(gotExam.getTitle());
+    exam.setColor(gotExam.getColor());
+    exam.setType(gotExam.getType());
+    exam.setDifficulty(gotExam.getDifficulty());
+    exam.setShowAllQuestions(gotExam.isShowAllQuestions());
+    exam.setReturnToQuestions(gotExam.isReturnToQuestions());
+    exam.setSendResultsInstantly(gotExam.isSendResultsInstantly());
+    exam.setShowFullResults(gotExam.isShowFullResults());
+    exam.setMixQuestions(gotExam.isMixQuestions());
+    exam.setMaxTime(gotExam.getMaxTime());
+    exam.setAdditionalTime(gotExam.getAdditionalTime());
+    exam.setNumberOfQuestions(gotExam.getNumberOfQuestions());
+    exam.setJoining(gotExam.isJoining());
+    exam.setStarted(gotExam.isStarted());
+    exam.setFinished(gotExam.isFinished());
+    exam.setRated(gotExam.isRated());
+    exam.setStartTime(gotExam.getStartTime());
+    exam.setFinishTime(gotExam.getFinishTime());
+    exam.setCreationTime(gotExam.getCreationTime());
+    exam.setPercentToPass(gotExam.getPercentToPass());
+    exam.setExamMembers(gotExam.getExamMembers());
+
     exam.setGroup(null);
     exam.setExamQuestions(null);
     exam.setPassword("");
@@ -371,7 +396,7 @@ public class ExamService implements ExamServiceI {
     ExamMember examMember = new ExamMember();
 
     for (int i = 0; i < exam.getExamMembers().size(); i++) {
-      if (exam.getExamMembers().get(i).getAccount() == account) {
+      if (exam.getExamMembers().get(i).getAccount().getId() == account.getId()) {
         exam.getExamMembers().get(i).getAccount().setAccessRole(null);
         exam.getExamMembers().get(i).getAccount().setActivationCodes(null);
         exam.getExamMembers().get(i).getAccount().setGroupMembers(null);

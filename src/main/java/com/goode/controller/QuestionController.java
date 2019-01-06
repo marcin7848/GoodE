@@ -74,8 +74,6 @@ public class QuestionController {
       @PathVariable("idGroup") int idGroup){
 
     if (result.hasErrors()) {
-      System.out.println(result.getFieldError().getCode());
-      System.out.println(result.getFieldError().getDefaultMessage());
       return ErrorMessage.send(Language
           .translateError(result.getFieldError().getField(), result.getFieldError().getCode(),
               result.getFieldError().getDefaultMessage(),
