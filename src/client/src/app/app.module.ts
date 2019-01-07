@@ -27,7 +27,7 @@ import {QuestionService} from "./service/question/question.service";
 import { QuestionComponent } from './component/question/question.component';
 import {ExamService} from "./service/exam/exam.service";
 import { ExamManagementComponent } from './component/exam/exam-management/exam-management.component';
-import { RunningExamManagementComponent } from './component/exam/running-exam-management/running-exam-management.component';
+import {RunningExamManagementComponent} from './component/exam/running-exam-management/running-exam-management.component';
 import { RunningExamComponent } from './component/exam/running-exam/running-exam.component';
 import { ExamResultsComponent } from './component/exam/exam-results/exam-results.component';
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
@@ -40,6 +40,9 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatTableModule} from '@angular/material/table';
 import {MatDividerModule} from '@angular/material/divider';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {MatDialogModule} from '@angular/material/dialog';
+import { DialogBlockExamMemberComponent } from './component/exam/running-exam-management/dialog-block-exam-member/dialog-block-exam-member.component';
 
 @NgModule({
   declarations: [
@@ -61,7 +64,8 @@ import {MatDividerModule} from '@angular/material/divider';
     ExamManagementComponent,
     RunningExamManagementComponent,
     RunningExamComponent,
-    ExamResultsComponent
+    ExamResultsComponent,
+    DialogBlockExamMemberComponent
   ],
   imports: [
     routing,
@@ -87,7 +91,9 @@ import {MatDividerModule} from '@angular/material/divider';
     MatIconModule,
     MatSlideToggleModule,
     MatTableModule,
-    MatDividerModule
+    MatDividerModule,
+    MatSnackBarModule,
+    MatDialogModule
   ],
   providers: [
     AccountService,
@@ -100,7 +106,8 @@ import {MatDividerModule} from '@angular/material/divider';
       useClass: Interceptor,
       multi: true
     }],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents:[DialogBlockExamMemberComponent]
 })
 export class AppModule { }
 

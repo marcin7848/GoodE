@@ -1,0 +1,10 @@
+<h1 mat-dialog-title>{{ 'blockExamMember' | translate }}</h1>
+<div mat-dialog-content>
+  <mat-form-field>
+    <input matInput [(ngModel)]="data.causeOfBlockade" placeholder="{{ 'giveTheCauseOfBlockade' | translate }}">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">{{ 'cancel' | translate }}</button>
+  <button mat-button [mat-dialog-close]="[ data.idExamMember, data.causeOfBlockade]" cdkFocusInitial>{{ 'blockExamMember' | translate }}</button>
+</div>

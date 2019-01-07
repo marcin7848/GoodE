@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, NgModule, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ExamService} from "../../../service/exam/exam.service";
@@ -9,8 +9,9 @@ import {Exam} from "../../../model/Exam";
 import {Question} from "../../../model/Question";
 import {first} from "rxjs/operators";
 import {GroupMember} from "../../../model/GroupMember";
-import {MatTableDataSource} from "@angular/material";
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatTableDataSource} from "@angular/material";
 import {ExamMember} from "../../../model/ExamMember";
+import {DialogBlockExamMemberComponent} from "./dialog-block-exam-member/dialog-block-exam-member.component";
 
 declare var jquery: any;
 declare var $: any;
@@ -47,7 +48,7 @@ export class RunningExamManagementComponent implements OnInit {
               private route: ActivatedRoute,
               private examService: ExamService,
               private accountService: AccountService,
-              private questionService: QuestionService) {
+              public dialog: MatDialog) {
   }
 
   ngOnInit() {
@@ -186,9 +187,9 @@ export class RunningExamManagementComponent implements OnInit {
       });
   }
 
-  blockExamMember(examMember) {
+  blockExamMember(idExamMember: number, causeOfBlockade: string) {
     this.loading = true;
-    this.examService.blockExamMember(this.exam.id, examMember.id, $("#causeOfBlockadeExamMember").val())
+    this.examService.blockExamMember(this.exam.id, idExamMember, causeOfBlockade)
     .pipe(first())
     .subscribe(
       data => {
@@ -238,4 +239,19 @@ export class RunningExamManagementComponent implements OnInit {
       this.refreshTimeToEnd();
       }, 1000);
   }
+
+  openDialogBlockExamMember(idExamMember: number): void {
+    const dialogRef = this.dialog.open(DialogBlockExamMemberComponent, {
+      width: '300px',
+      data: {idExamMember: idExamMember, causeOfBlockade: ""}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result != undefined)
+      {
+        this.blockExamMember(result[0], result[1])
+      }
+    });
+  }
+
 }
