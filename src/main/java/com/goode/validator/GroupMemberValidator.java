@@ -114,7 +114,7 @@ public class GroupMemberValidator extends BaseValidator {
       return false;
     }
 
-    if (!this.validatePermissionToGroup(group, false, errorCode)) {
+    if (!this.validatePermissionToGroup(group, true, errorCode)) {
       errorCode.rejectValue("accessRole", errorCode.getCode());
       return false;
     }

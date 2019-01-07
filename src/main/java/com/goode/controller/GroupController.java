@@ -324,7 +324,7 @@ public class GroupController extends BaseController<Group, GroupService> {
     }
 
     ErrorCode errorCode = new ErrorCode();
-    if (!groupMemberValidator.validatePermissionToGroup(group, false, errorCode)) {
+    if (!groupMemberValidator.validatePermissionToGroup(group, true, errorCode)) {
       return ErrorMessage.send(Language.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
     }
 

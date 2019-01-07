@@ -27,7 +27,7 @@
   "blockade": "Blokada",
 
   "fieldRequired": "Pole {{field}} jest wymagane!",
-  "fieldMinLength": "Długość pola {{field}} musi być co najmniej {{length}} znaków!",
+  "fieldMinLength": "Długość pola {{field}} musi mieć co najmniej {{length}} znaków!",
   "fieldPattern": "Pole {{field}} zawiera niedozwolone znaki!",
 
   "incorrectData": "Niepoprawne dane!",

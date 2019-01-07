@@ -258,9 +258,6 @@ export class RunningExamComponent implements OnInit {
         error => {
           this.loading = false;
           this.message = error["error"]["error"];
-          this.snackBar.open(this.message, this.translateService.instant('close'), {
-            duration: 5000,
-          });
         });
     }
   }

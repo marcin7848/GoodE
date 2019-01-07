@@ -152,9 +152,9 @@
           </mat-error>
         </mat-form-field>
         <mat-form-field class="form-input" style="width: 200px;">
-          <input matInput #inputAddAnswerTime maxlength="100" pattern="[0-9]+$"
+          <input matInput #inputAddAnswerTime maxlength="4" pattern="[0-9]+$"
                  placeholder="{{'answerTime' | translate}}" formControlName="addAnswerTime" required>
-          <mat-hint align="end">{{inputAddAnswerTime.value?.length || 0}}/100</mat-hint>
+          <mat-hint align="end">{{inputAddAnswerTime.value?.length || 0}}/4</mat-hint>
           <mat-error *ngIf="f.addAnswerTime.errors?.required">
             {{ 'fieldRequired' | translate:{'field':'answerTime' | translate} }}
           </mat-error>
