@@ -232,6 +232,7 @@ export class ExamResultsComponent implements OnInit {
     this.maxPoints = result.maxPoints;
     this.percentResult = result.percentResult;
     this.examMemberResult = result;
+    console.log(this.examMemberResult);
     this.blocked = result.exam.examMembers[0].blocked;
     this.causeOfBlockade = result.exam.examMembers[0].causeOfBlockade;
     this.formMode = 1;

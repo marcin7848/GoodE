@@ -24,7 +24,7 @@
             <ng-container *ngIf="!tookPartInExam">
               {{ 'notTookPartInExam' | translate }}
             </ng-container>
-            <ng-container *ngIf="tookPartInExam">
+            <ng-container *ngIf="tookPartInExam && results && exam">
               <h2>{{ 'yourResult' | translate }}:&nbsp;{{results?.percentResult}}%</h2>
               {{results?.points}} / {{results?.maxPoints}} {{ 'pointsResult' | translate }} <br/>
               {{ 'result' | translate }}
@@ -235,7 +235,7 @@
                 <th class="mdl-data-table__cell--non-numeric">{{ 'question' | translate }}</th>
                 <th style="text-align: right;">{{ 'points' | translate }}:
                   <ng-container
-                    *ngFor="let examMemberQuestionResult of results?.examMemberQuestionResults">
+                    *ngFor="let examMemberQuestionResult of examMemberResult?.examMemberQuestionResults">
                     <ng-container
                       *ngIf="examMemberQuestionResult.idExamMemberQuestion == examMemberQuestion.id">
                       {{examMemberQuestionResult.points}}
