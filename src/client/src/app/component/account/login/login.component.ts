@@ -5,6 +5,7 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {first} from "rxjs/operators";
 import { CookieService } from 'ngx-cookie-service';
 import {TranslateService} from "@ngx-translate/core";
+import {MatSnackBar} from "@angular/material";
 
 @Component({
   selector: 'app-login',
@@ -24,7 +25,8 @@ export class LoginComponent implements OnInit {
     private route: ActivatedRoute,
     private accountService: AccountService,
     private cookieService: CookieService,
-    private translateService: TranslateService) {}
+    private translateService: TranslateService,
+    private snackBar: MatSnackBar) {}
 
   ngOnInit() {
     if(this.router.url === '/logout'){
@@ -70,6 +72,9 @@ export class LoginComponent implements OnInit {
       },
       error => {
         this.message = this.translateService.instant('incorrectData');
+        this.snackBar.open(this.message, this.translateService.instant('close'), {
+          duration: 5000,
+        });
         this.loading = false;
       });
   }

@@ -5,6 +5,7 @@ import {ActivatedRoute} from "@angular/router";
 import {first} from "rxjs/operators";
 import {AccessRole} from "../../../model/AccessRole";
 import {TranslateService} from "@ngx-translate/core";
+import {MatSnackBar} from "@angular/material";
 
 @Component({
   selector: 'app-change-access-role',
@@ -21,7 +22,8 @@ export class ChangeAccessRoleComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,
               private accountService: AccountService,
               private route: ActivatedRoute,
-              private translateService: TranslateService) { }
+              private translateService: TranslateService,
+              private snackBar: MatSnackBar) { }
 
   ngOnInit() {
     this.formG = this.formBuilder.group({
@@ -62,6 +64,9 @@ export class ChangeAccessRoleComponent implements OnInit {
       error => {
         this.loading = false;
         this.message = error["error"]["error"];
+        this.snackBar.open(this.message, this.translateService.instant('close'), {
+          duration: 5000,
+        });
       });
   }
 }

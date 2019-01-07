@@ -3,6 +3,7 @@ import {AccountService} from "../../../service/account/account.service";
 import {ActivatedRoute} from "@angular/router";
 import {first} from "rxjs/operators";
 import {TranslateService} from "@ngx-translate/core";
+import {MatSnackBar} from "@angular/material";
 
 @Component({
   selector: 'app-activate-account',
@@ -16,7 +17,8 @@ export class ActivateAccountComponent implements OnInit {
 
   constructor(private accountService: AccountService,
               private route: ActivatedRoute,
-              private translateService: TranslateService) { }
+              private translateService: TranslateService,
+              private snackBar: MatSnackBar) { }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
@@ -33,6 +35,9 @@ export class ActivateAccountComponent implements OnInit {
         },
         error => {
           this.message = error["error"]["error"];
+          this.snackBar.open(this.message, this.translateService.instant('close'), {
+            duration: 5000,
+          });
         });
     });
   }

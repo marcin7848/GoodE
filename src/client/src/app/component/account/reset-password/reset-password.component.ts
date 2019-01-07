@@ -4,6 +4,7 @@ import {AccountService} from "../../../service/account/account.service";
 import {first} from "rxjs/operators";
 import {ActivatedRoute} from "@angular/router";
 import {TranslateService} from "@ngx-translate/core";
+import {MatSnackBar} from "@angular/material";
 
 @Component({
   selector: 'app-reset-password',
@@ -22,7 +23,8 @@ export class ResetPasswordComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,
               private accountService: AccountService,
               private route: ActivatedRoute,
-              private translateService: TranslateService) { }
+              private translateService: TranslateService,
+              private snackBar: MatSnackBar) { }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
@@ -67,6 +69,10 @@ export class ResetPasswordComponent implements OnInit {
       error => {
         this.loading = false;
         this.message = error["error"]["error"];
+        this.snackBar.open(this.message, this.translateService.instant('close'), {
+          duration: 5000,
+        });
+
       });
   }
 

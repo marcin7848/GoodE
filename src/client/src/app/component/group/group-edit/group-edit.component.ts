@@ -6,6 +6,8 @@ import {AccountService} from "../../../service/account/account.service";
 import {Account} from "../../../model/Account";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Group} from "../../../model/Group";
+import {TranslateService} from "@ngx-translate/core";
+import {MatSnackBar} from "@angular/material";
 
 @Component({
   selector: 'app-group-edit',
@@ -26,7 +28,9 @@ export class GroupEditComponent implements OnInit {
               private groupService: GroupService,
               private accountService: AccountService,
               private router: Router,
-              private route: ActivatedRoute) { }
+              private route: ActivatedRoute,
+              private translateService: TranslateService,
+              private snackBar: MatSnackBar) { }
 
 
   ngOnInit() {
@@ -94,6 +98,9 @@ export class GroupEditComponent implements OnInit {
       error => {
         this.loading = false;
         this.message = error["error"]["error"];
+        this.snackBar.open(this.message, this.translateService.instant('close'), {
+          duration: 5000,
+        });
       });
   }
 }

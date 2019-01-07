@@ -7,6 +7,8 @@ import {Account} from "../../../model/Account";
 import {Exam} from "../../../model/Exam";
 import {first} from "rxjs/operators";
 import {ExamAnswerWrapper} from "../../../model/ExamAnswerWrapper";
+import {TranslateService} from "@ngx-translate/core";
+import {MatSnackBar} from "@angular/material";
 
 declare var jquery: any;
 declare var $: any;
@@ -50,7 +52,8 @@ export class RunningExamComponent implements OnInit {
               private router: Router,
               private route: ActivatedRoute,
               private examService: ExamService,
-              private accountService: AccountService) {
+              private translateService: TranslateService,
+              private snackBar: MatSnackBar) {
   }
 
   ngOnInit() {
@@ -186,6 +189,9 @@ export class RunningExamComponent implements OnInit {
       error => {
         this.loading = false;
         this.message = error["error"]["error"];
+        this.snackBar.open(this.message, this.translateService.instant('close'), {
+          duration: 5000,
+        });
       });
   }
 
@@ -252,6 +258,9 @@ export class RunningExamComponent implements OnInit {
         error => {
           this.loading = false;
           this.message = error["error"]["error"];
+          this.snackBar.open(this.message, this.translateService.instant('close'), {
+            duration: 5000,
+          });
         });
     }
   }
@@ -290,6 +299,9 @@ export class RunningExamComponent implements OnInit {
       },
       error => {
         this.message = error["error"]["error"];
+        this.snackBar.open(this.message, this.translateService.instant('close'), {
+          duration: 5000,
+        });
       });
   }
 

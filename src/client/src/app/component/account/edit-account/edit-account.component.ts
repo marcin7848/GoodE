@@ -4,6 +4,7 @@ import {AccountService} from "../../../service/account/account.service";
 import {first} from "rxjs/operators";
 import {Account} from "../../../model/Account";
 import {TranslateService} from "@ngx-translate/core";
+import {MatSnackBar} from "@angular/material";
 
 @Component({
   selector: 'app-edit-account',
@@ -19,7 +20,8 @@ export class EditAccountComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder,
               private accountService: AccountService,
-              private translateService: TranslateService) { }
+              private translateService: TranslateService,
+              private snackBar: MatSnackBar) { }
 
   ngOnInit() {
     this.editAccountForm = this.formBuilder.group({
@@ -64,6 +66,9 @@ export class EditAccountComponent implements OnInit {
       error => {
         this.loading = false;
         this.message = error["error"]["error"];
+        this.snackBar.open(this.message, this.translateService.instant('close'), {
+          duration: 5000,
+        });
       });
   }
 

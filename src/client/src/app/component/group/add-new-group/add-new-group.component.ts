@@ -8,6 +8,7 @@ import {GroupService} from "../../../service/group/group.service";
 import {CookieService} from "ngx-cookie-service";
 import {TranslateService} from "@ngx-translate/core";
 import {Router} from "@angular/router";
+import {MatSnackBar} from "@angular/material";
 
 @Component({
   selector: 'app-add-new-group',
@@ -24,7 +25,8 @@ export class AddNewGroupComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,
               private groupService: GroupService,
               private router: Router,
-              private translateService: TranslateService) {}
+              private translateService: TranslateService,
+              private snackBar: MatSnackBar) {}
 
 
   ngOnInit() {
@@ -66,6 +68,9 @@ export class AddNewGroupComponent implements OnInit {
       error => {
         this.loading = false;
         this.message = error["error"]["error"];
+        this.snackBar.open(this.message, this.translateService.instant('close'), {
+          duration: 5000,
+        });
       });
   }
 }

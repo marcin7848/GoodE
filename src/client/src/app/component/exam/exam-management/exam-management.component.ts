@@ -11,6 +11,8 @@ import {Question} from "../../../model/Question";
 import {ExamQuestion} from "../../../model/ExamQuestion";
 import {ClosedAnswer} from "../../../model/ClosedAnswer";
 import {ExamClosedAnswer} from "../../../model/ExamClosedAnswer";
+import {MatSnackBar} from "@angular/material";
+import {TranslateService} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-exam-management',
@@ -33,7 +35,9 @@ export class ExamManagementComponent implements OnInit {
               private route: ActivatedRoute,
               private examService: ExamService,
               private accountService: AccountService,
-              private questionService: QuestionService) { }
+              private questionService: QuestionService,
+              private translateService: TranslateService,
+              private snackBar: MatSnackBar) { }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
@@ -86,6 +90,9 @@ export class ExamManagementComponent implements OnInit {
       error => {
         this.loading = false;
         this.message = error["error"]["error"];
+        this.snackBar.open(this.message, this.translateService.instant('close'), {
+          duration: 5000,
+        });
       })
   }
 
@@ -99,6 +106,9 @@ export class ExamManagementComponent implements OnInit {
       error => {
         this.loading = false;
         this.message = error["error"]["error"];
+        this.snackBar.open(this.message, this.translateService.instant('close'), {
+          duration: 5000,
+        });
       })
   }
 
@@ -112,6 +122,9 @@ export class ExamManagementComponent implements OnInit {
       error => {
         this.loading = false;
         this.message = error["error"]["error"];
+        this.snackBar.open(this.message, this.translateService.instant('close'), {
+          duration: 5000,
+        });
       })
   }
 
@@ -122,6 +135,9 @@ export class ExamManagementComponent implements OnInit {
       },
       error => {
         this.message = error["error"]["error"];
+        this.snackBar.open(this.message, this.translateService.instant('close'), {
+          duration: 5000,
+        });
       })
   }
 
@@ -138,6 +154,9 @@ export class ExamManagementComponent implements OnInit {
       },
       error => {
         this.message = error["error"]["error"];
+        this.snackBar.open(this.message, this.translateService.instant('close'), {
+          duration: 5000,
+        });
       });
   }
 
@@ -149,6 +168,9 @@ export class ExamManagementComponent implements OnInit {
       },
       error => {
         this.message = error["error"]["error"];
+        this.snackBar.open(this.message, this.translateService.instant('close'), {
+          duration: 5000,
+        });
       });
   }
 }

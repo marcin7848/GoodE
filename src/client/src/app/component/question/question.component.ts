@@ -8,6 +8,8 @@ import {first} from "rxjs/operators";
 import {Group} from "../../model/Group";
 import {Question} from "../../model/Question";
 import {ClosedAnswer} from "../../model/ClosedAnswer";
+import {TranslateService} from "@ngx-translate/core";
+import {MatSnackBar} from "@angular/material";
 
 declare var jquery: any;
 declare var $: any;
@@ -38,7 +40,9 @@ export class QuestionComponent implements OnInit {
               private router: Router,
               private route: ActivatedRoute,
               private questionService: QuestionService,
-              private groupService: GroupService) { }
+              private groupService: GroupService,
+              private translateService: TranslateService,
+              private snackBar: MatSnackBar) { }
 
   ngOnInit() {
     this.addNewQuestionForm = this.formBuilder.group({
@@ -189,6 +193,9 @@ export class QuestionComponent implements OnInit {
       error => {
         this.loading = false;
         this.messageError = error["error"]["error"];
+        this.snackBar.open(this.message, this.translateService.instant('close'), {
+          duration: 5000,
+        });
       });
   }
 
@@ -209,6 +216,9 @@ export class QuestionComponent implements OnInit {
       error => {
         this.loading = false;
         this.messageError = error["error"]["error"];
+        this.snackBar.open(this.message, this.translateService.instant('close'), {
+          duration: 5000,
+        });
       });
   }
 
@@ -221,6 +231,9 @@ export class QuestionComponent implements OnInit {
       },
       error => {
         this.message = error["error"]["error"];
+        this.snackBar.open(this.message, this.translateService.instant('close'), {
+          duration: 5000,
+        });
       });
   }
 
@@ -241,6 +254,9 @@ export class QuestionComponent implements OnInit {
       error => {
         this.loading = false;
         this.messageError = error["error"]["error"];
+        this.snackBar.open(this.message, this.translateService.instant('close'), {
+          duration: 5000,
+        });
       });
   }
 
@@ -260,6 +276,9 @@ export class QuestionComponent implements OnInit {
       error => {
         this.loading = false;
         this.messageError = error["error"]["error"];
+        this.snackBar.open(this.message, this.translateService.instant('close'), {
+          duration: 5000,
+        });
       });
   }
 
@@ -272,6 +291,9 @@ export class QuestionComponent implements OnInit {
       },
       error => {
         this.message = error["error"]["error"];
+        this.snackBar.open(this.message, this.translateService.instant('close'), {
+          duration: 5000,
+        });
       });
   }
 
@@ -283,6 +305,9 @@ export class QuestionComponent implements OnInit {
       },
       error => {
         this.message = error["error"]["error"];
+        this.snackBar.open(this.message, this.translateService.instant('close'), {
+          duration: 5000,
+        });
       });
   }
 

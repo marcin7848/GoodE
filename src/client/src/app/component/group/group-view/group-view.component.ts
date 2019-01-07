@@ -8,7 +8,8 @@ import {GroupMember} from "../../../model/GroupMember";
 import {AccountService} from "../../../service/account/account.service";
 import {ExamService} from "../../../service/exam/exam.service";
 import {Exam} from "../../../model/Exam";
-import {MatTableDataSource} from '@angular/material';
+import {MatSnackBar, MatTableDataSource} from '@angular/material';
+import {TranslateService} from "@ngx-translate/core";
 
 declare var jquery:any;
 declare var $ :any;
@@ -59,7 +60,9 @@ export class GroupViewComponent implements OnInit {
               private route: ActivatedRoute,
               private groupService: GroupService,
               private accountService: AccountService,
-              private examService: ExamService) {}
+              private examService: ExamService,
+              private translateService: TranslateService,
+              private snackBar: MatSnackBar) {}
 
   ngOnInit() {
     this.examForm = this.formBuilder.group({
@@ -261,6 +264,9 @@ export class GroupViewComponent implements OnInit {
       },
       error => {
         this.message = error["error"]["error"];
+        this.snackBar.open(this.message, this.translateService.instant('close'), {
+          duration: 5000,
+        });
       })
   }
 
@@ -271,6 +277,9 @@ export class GroupViewComponent implements OnInit {
       },
       error => {
         this.message = error["error"]["error"];
+        this.snackBar.open(this.message, this.translateService.instant('close'), {
+          duration: 5000,
+        });
       })
   }
 
@@ -290,6 +299,9 @@ export class GroupViewComponent implements OnInit {
       },
       error => {
         this.message = error["error"]["error"];
+        this.snackBar.open(this.message, this.translateService.instant('close'), {
+          duration: 5000,
+        });
       })
   }
 
@@ -300,6 +312,9 @@ export class GroupViewComponent implements OnInit {
       },
       error => {
         this.message = error["error"]["error"];
+        this.snackBar.open(this.message, this.translateService.instant('close'), {
+          duration: 5000,
+        });
       })
   }
 
@@ -310,6 +325,9 @@ export class GroupViewComponent implements OnInit {
       },
       error => {
         this.message = error["error"]["error"];
+        this.snackBar.open(this.message, this.translateService.instant('close'), {
+          duration: 5000,
+        });
       })
   }
 
@@ -320,6 +338,9 @@ export class GroupViewComponent implements OnInit {
       },
       error => {
         this.message = error["error"]["error"];
+        this.snackBar.open(this.message, this.translateService.instant('close'), {
+          duration: 5000,
+        });
       })
   }
 
@@ -347,6 +368,9 @@ export class GroupViewComponent implements OnInit {
       error => {
         this.loading = false;
         this.messageExam = error["error"]["error"];
+        this.snackBar.open(this.message, this.translateService.instant('close'), {
+          duration: 5000,
+        });
       });
   }
 
@@ -373,6 +397,9 @@ export class GroupViewComponent implements OnInit {
       error => {
         this.loading = false;
         this.messageExam = error["error"]["error"];
+        this.snackBar.open(this.message, this.translateService.instant('close'), {
+          duration: 5000,
+        });
       });
   }
 

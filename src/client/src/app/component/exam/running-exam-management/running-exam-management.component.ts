@@ -9,9 +9,16 @@ import {Exam} from "../../../model/Exam";
 import {Question} from "../../../model/Question";
 import {first} from "rxjs/operators";
 import {GroupMember} from "../../../model/GroupMember";
-import {MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatTableDataSource} from "@angular/material";
+import {
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogRef,
+  MatSnackBar,
+  MatTableDataSource
+} from "@angular/material";
 import {ExamMember} from "../../../model/ExamMember";
 import {DialogBlockExamMemberComponent} from "./dialog-block-exam-member/dialog-block-exam-member.component";
+import {TranslateService} from "@ngx-translate/core";
 
 declare var jquery: any;
 declare var $: any;
@@ -48,7 +55,9 @@ export class RunningExamManagementComponent implements OnInit {
               private route: ActivatedRoute,
               private examService: ExamService,
               private accountService: AccountService,
-              public dialog: MatDialog) {
+              public dialog: MatDialog,
+              private translateService: TranslateService,
+              private snackBar: MatSnackBar) {
   }
 
   ngOnInit() {
@@ -159,6 +168,9 @@ export class RunningExamManagementComponent implements OnInit {
       error => {
         this.loading = false;
         this.message = error["error"]["error"];
+        this.snackBar.open(this.message, this.translateService.instant('close'), {
+          duration: 5000,
+        });
       });
   }
 
@@ -184,6 +196,9 @@ export class RunningExamManagementComponent implements OnInit {
       error => {
         this.loading = false;
         this.message = error["error"]["error"];
+        this.snackBar.open(this.message, this.translateService.instant('close'), {
+          duration: 5000,
+        });
       });
   }
 
@@ -199,6 +214,9 @@ export class RunningExamManagementComponent implements OnInit {
       error => {
         this.loading = false;
         this.message = error["error"]["error"];
+        this.snackBar.open(this.message, this.translateService.instant('close'), {
+          duration: 5000,
+        });
       });
   }
 
@@ -211,6 +229,9 @@ export class RunningExamManagementComponent implements OnInit {
       error => {
         this.loading = false;
         this.message = error["error"]["error"];
+        this.snackBar.open(this.message, this.translateService.instant('close'), {
+          duration: 5000,
+        });
       });
   }
 

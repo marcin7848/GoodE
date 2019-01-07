@@ -3,6 +3,7 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {AccountService} from "../../../service/account/account.service";
 import {first} from "rxjs/operators";
 import {TranslateService} from "@ngx-translate/core";
+import {MatSnackBar} from "@angular/material";
 
 @Component({
   selector: 'app-resend-activation-code',
@@ -17,7 +18,8 @@ export class ResendActivationCodeComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder,
               private accountService: AccountService,
-              private translateService: TranslateService) { }
+              private translateService: TranslateService,
+              private snackBar: MatSnackBar) { }
 
   ngOnInit() {
     this.resendActivationCodeForm = this.formBuilder.group({
@@ -48,6 +50,9 @@ export class ResendActivationCodeComponent implements OnInit {
       error => {
         this.loading = false;
         this.message = error["error"]["error"];
+        this.snackBar.open(this.message, this.translateService.instant('close'), {
+          duration: 5000,
+        });
       });
   }
 
