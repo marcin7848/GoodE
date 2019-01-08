@@ -20,6 +20,13 @@ export class GroupService {
     return this.http.post<any>(this.baseUri + "/addNew", body);
   }
 
+  public addNewGroupWithTeacher(nameV: string, descriptionV: string, passwordV: string, possibleToJoinV: boolean, acceptanceV: boolean, hiddenV: boolean,
+                     idGroupParentV: number, teacherUsername: string){
+    const body = {name: nameV, description: descriptionV, password: passwordV, possibleToJoin: possibleToJoinV, acceptance: acceptanceV, hidden: hiddenV,
+      idGroupParent: idGroupParentV};
+    return this.http.post<any>(this.baseUri + "/addNew/"+teacherUsername, body);
+  }
+
   public getMyGroups(){
     return this.http.get<any>(this.baseUri + "/getMyGroups");
   }

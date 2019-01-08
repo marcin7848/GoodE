@@ -103,4 +103,8 @@ export class GroupEditComponent implements OnInit {
         });
       });
   }
+
+  cancel(){
+    this.router.navigate(['/group/'+this.group.id+'/view']);
+  }
 }

@@ -8,8 +8,10 @@ import {GroupMember} from "../../../model/GroupMember";
 import {AccountService} from "../../../service/account/account.service";
 import {ExamService} from "../../../service/exam/exam.service";
 import {Exam} from "../../../model/Exam";
-import {MatSnackBar, MatTableDataSource} from '@angular/material';
+import {MatDialog, MatSnackBar, MatTableDataSource} from '@angular/material';
 import {TranslateService} from "@ngx-translate/core";
+import {DialogBlockExamMemberComponent} from "../../exam/running-exam-management/dialog-block-exam-member/dialog-block-exam-member.component";
+import {DialogGroupDeleteComponent} from "./dialog-group-delete/dialog-group-delete.component";
 
 declare var jquery:any;
 declare var $ :any;
@@ -62,7 +64,8 @@ export class GroupViewComponent implements OnInit {
               private accountService: AccountService,
               private examService: ExamService,
               private translateService: TranslateService,
-              private snackBar: MatSnackBar) {}
+              private snackBar: MatSnackBar,
+              public dialog: MatDialog) {}
 
   ngOnInit() {
     this.examForm = this.formBuilder.group({
@@ -439,4 +442,19 @@ export class GroupViewComponent implements OnInit {
     this.editMode = 0;
     this.formMode = 0;
   }
+
+  openDialogDeleteGroup(): void {
+    const dialogRef = this.dialog.open(DialogGroupDeleteComponent, {
+      width: '400px',
+      data: {idGroup: this.group.id, name: this.group.name}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result != undefined)
+      {
+        this.deleteGroup(result);
+      }
+    });
+  }
+
 }

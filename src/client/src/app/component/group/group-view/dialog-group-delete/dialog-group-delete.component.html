@@ -1,0 +1,8 @@
+<h1 mat-dialog-title>{{ 'areYouSureDeleteGroup' | translate}}</h1>
+<div mat-dialog-content>
+    <h5><b>{{data.name}}</b></h5>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">{{ 'false' | translate }}</button>
+  <button mat-button [mat-dialog-close]="data.idGroup" cdkFocusInitial>{{ 'true' | translate }}</button>
+</div>

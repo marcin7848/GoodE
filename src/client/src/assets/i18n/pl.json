@@ -40,6 +40,7 @@
   "back": "Powrót",
   "true": "Tak",
   "false": "Nie",
+  "save": "Zapisz",
 
   "details": "Szczegóły",
   "resultDetails": "Szczegóły wyniku",
@@ -97,8 +98,8 @@
   "joinToExam": "Dołącz do egzaminu",
 
   "acceptMember": "Zaakceptuj członka",
-  "reduceToStudent": "Zdegraduj do studenta",
-  "promoteToTeacher": "Awansuj na nauczyciela",
+  "reduceToStudent": "Usuń prawa nauczyciela",
+  "promoteToTeacher": "Przyznaj prawa nauczyciela",
   "deleteGroupMember": "Usuń członka",
 
   "examType1": "Brak czasu, wszystkie pytania",
@@ -175,6 +176,9 @@
   "listOfQuestions": "Lista pytań",
   "timeToEndExam": "Czas do zakończenia egzaminu",
   "timeToEndExamQuestion": "Czas do zakończenia pytania",
-  "timeToEndExamQuestionFull": "Czas do zakończenia Twojego egzaminu"
-
+  "timeToEndExamQuestionFull": "Czas do zakończenia Twojego egzaminu",
+  "examinationSystem": "System egzaminowania studentów",
+  "listOfAllGroups": "Lista wszystkich grup",
+  "teacherUsername": "Nazwa uzytkownika nauczyciela",
+  "areYouSureDeleteGroup": "Czy na pewno chcesz usunąć tą grupę?"
 }

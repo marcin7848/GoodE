@@ -43,6 +43,7 @@ import {MatDividerModule} from '@angular/material/divider';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatDialogModule} from '@angular/material/dialog';
 import { DialogBlockExamMemberComponent } from './component/exam/running-exam-management/dialog-block-exam-member/dialog-block-exam-member.component';
+import { DialogGroupDeleteComponent } from './component/group/group-view/dialog-group-delete/dialog-group-delete.component';
 
 @NgModule({
   declarations: [
@@ -65,7 +66,8 @@ import { DialogBlockExamMemberComponent } from './component/exam/running-exam-ma
     RunningExamManagementComponent,
     RunningExamComponent,
     ExamResultsComponent,
-    DialogBlockExamMemberComponent
+    DialogBlockExamMemberComponent,
+    DialogGroupDeleteComponent
   ],
   imports: [
     routing,
@@ -107,7 +109,7 @@ import { DialogBlockExamMemberComponent } from './component/exam/running-exam-ma
       multi: true
     }],
   bootstrap: [AppComponent],
-  entryComponents:[DialogBlockExamMemberComponent]
+  entryComponents:[DialogBlockExamMemberComponent, DialogGroupDeleteComponent]
 })
 export class AppModule { }
 

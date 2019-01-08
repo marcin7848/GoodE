@@ -21,6 +21,7 @@ export class AddNewGroupComponent implements OnInit {
   message = "";
   loading = false;
   submitted = false;
+  listOfAllGroups: Group[];
 
   constructor(private formBuilder: FormBuilder,
               private groupService: GroupService,
@@ -36,8 +37,20 @@ export class AddNewGroupComponent implements OnInit {
       password: [''],
       possibleToJoin: [false, Validators.required],
       acceptance: [false, Validators.required],
-      hidden: [false, Validators.required]
+      hidden: [false, Validators.required],
+      username: [''],
     });
+
+
+    this.groupService.getAllGroups()
+    .pipe(first())
+    .subscribe(
+      data => {
+        this.listOfAllGroups = data;
+      },
+      error => {
+      });
+
   }
 
   get f() { return this.addNewGroupForm.controls; }
@@ -51,26 +64,55 @@ export class AddNewGroupComponent implements OnInit {
 
     this.loading = true;
 
-    this.groupService.addNewGroup(this.f.name.value, this.f.description.value,
-      this.f.password.value, this.f.possibleToJoin.value, this.f.acceptance.value,
-      this.f.hidden.value, null)
-    .pipe(first())
-    .subscribe(
-      data => {
-        this.message = this.translateService.instant('groupAdded');
-        setTimeout(goToGroup, 2000, this.router);
+    if(this.f.username.value.length == 0){
+      this.groupService.addNewGroup(this.f.name.value, this.f.description.value,
+        this.f.password.value, this.f.possibleToJoin.value, this.f.acceptance.value,
+        this.f.hidden.value, null)
+      .pipe(first())
+      .subscribe(
+        data => {
+          this.message = this.translateService.instant('groupAdded');
+          setTimeout(goToGroup, 2000, this.router);
 
-        function goToGroup(router: Router){
-          router.navigate(['/group']);
-        }
+          function goToGroup(router: Router) {
+            router.navigate(['/group']);
+          }
 
-      },
-      error => {
-        this.loading = false;
-        this.message = error["error"]["error"];
-        this.snackBar.open(this.message, this.translateService.instant('close'), {
-          duration: 5000,
+        },
+        error => {
+          this.loading = false;
+          this.message = error["error"]["error"];
+          this.snackBar.open(this.message, this.translateService.instant('close'), {
+            duration: 5000,
+          });
         });
-      });
+    }
+    else {
+      this.groupService.addNewGroupWithTeacher(this.f.name.value, this.f.description.value,
+        this.f.password.value, this.f.possibleToJoin.value, this.f.acceptance.value,
+        this.f.hidden.value, null, this.f.username.value)
+      .pipe(first())
+      .subscribe(
+        data => {
+          this.message = this.translateService.instant('groupAdded');
+          setTimeout(goToGroup, 2000, this.router);
+
+          function goToGroup(router: Router) {
+            router.navigate(['/group']);
+          }
+
+        },
+        error => {
+          this.loading = false;
+          this.message = error["error"]["error"];
+          this.snackBar.open(this.message, this.translateService.instant('close'), {
+            duration: 5000,
+          });
+        });
+    }
+  }
+
+  cancel(){
+    this.router.navigate(['/group']);
   }
 }

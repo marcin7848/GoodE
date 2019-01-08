@@ -14,7 +14,7 @@
       *ngIf="group?.groupMembers[0] != null && group?.groupMembers[0].accessRole.role=='ROLE_ADMIN'">
       <a class="links card-links" routerLink="/group/{{group?.id}}/edit">{{ 'editGroup' | translate
         }}</a>
-      <a class="links card-links" routerLink="#" (click)="deleteGroup(group.id)">{{ 'deleteGroup' |
+      <a class="links card-links" routerLink="#" (click)="openDialogDeleteGroup()">{{ 'deleteGroup' |
         translate
         }}</a>
     </ng-container>

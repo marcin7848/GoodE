@@ -5,7 +5,8 @@
   </mat-card-header>
   <mat-card-content>
 
-    <form class="form-main" [formGroup]="addNewGroupForm" (ngSubmit)="onSubmit()">
+    <div style="width: 50%; display:inline-block; vertical-align:top;">
+    <form class="form-main" style="width: 100%;" [formGroup]="addNewGroupForm" (ngSubmit)="onSubmit()">
       <mat-form-field class="form-input">
         <input matInput #inputName maxlength="40" minlength="4"
                pattern="^[ĄĆĘŁŃÓŚŹŻąćęłńóśźża-zA-Z0-9_\-\/ +\.,]+$"
@@ -50,8 +51,23 @@
         </mat-slide-toggle>
       </div>
 
+      <mat-form-field style="width: 300px;" class="form-input">
+        <input matInput #inputUsername maxlength="15" minlength="6" pattern="^[a-zA-Z0-9_]+$"
+               placeholder="{{'teacherUsername' | translate}}" formControlName="username">
+        <mat-hint align="end">{{inputUsername.value?.length || 0}}/15</mat-hint>
+        <mat-error *ngIf="f.username.errors?.minlength && !f.username.errors?.pattern">
+          {{ 'fieldMinLength' | translate:{'field':'teacherUsername' | translate, 'length': '6'} }}
+        </mat-error>
+        <mat-error *ngIf="f.username.errors?.pattern">
+          {{ 'fieldPattern' | translate:{'field':'teacherUsername' | translate} }}
+        </mat-error>
+      </mat-form-field>
+
       <div class="action-button">
         <button mat-raised-button color="primary"  class="body-buttons" [disabled]="loading">{{ 'add' | translate
+          }}
+        </button>
+        <button mat-raised-button color="primary"  (click)="cancel()" class="body-buttons" [disabled]="loading">{{ 'cancel' | translate
           }}
         </button>
         <img *ngIf="loading"
@@ -60,5 +76,20 @@
 
       <div *ngIf="message" class="alert">{{message}}</div>
     </form>
+    </div>
+
+    <div style="width: 50%; display:inline-block; vertical-align:top;">
+      <h5 style="margin-left: 10px;">{{'listOfAllGroups' | translate}}</h5>
+      <mat-list>
+        <mat-list-item *ngFor="let listAllGroups of listOfAllGroups">
+          <mat-icon mat-list-icon>group</mat-icon>
+          <h4 mat-line>
+            <a class="links"
+               routerLink="/group/{{listAllGroups.id}}/view">{{listAllGroups.name}}</a>
+          </h4>
+          <p mat-line> {{listAllGroups.description}} </p>
+        </mat-list-item>
+      </mat-list>
+    </div>
   </mat-card-content>
 </mat-card>

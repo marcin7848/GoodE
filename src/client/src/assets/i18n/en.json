@@ -41,6 +41,7 @@
   "back": "Back",
   "true": "Yes",
   "false": "No",
+  "save": "Save",
 
   "details": "Details",
   "resultDetails": "Result details",
@@ -97,8 +98,8 @@
   "joinToExam": "Join to exam",
 
   "acceptMember": "Accept member",
-  "reduceToStudent": "Reduce to a student",
-  "promoteToTeacher": "Promote to a teacher",
+  "reduceToStudent": "Delete teacher rights",
+  "promoteToTeacher": "Give teacher rights",
   "deleteGroupMember": "Delete member",
 
   "examType1": "Without time, all questions",
@@ -174,5 +175,9 @@
   "listOfQuestions": "List of questions",
   "timeToEndExam": "Time to end exam",
   "timeToEndExamQuestion": "Time to end question",
-  "timeToEndExamQuestionFull": "Time to end your exam"
+  "timeToEndExamQuestionFull": "Time to end your exam",
+  "examinationSystem": "Examination system",
+  "listOfAllGroups": "List of all groups",
+  "teacherUsername": "Teacher's username",
+  "areYouSureDeleteGroup": "Are you sure to delete this group?"
 }

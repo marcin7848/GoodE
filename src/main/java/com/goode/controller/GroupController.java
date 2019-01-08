@@ -9,6 +9,7 @@ import com.goode.business.Group;
 import com.goode.business.Group.AddNewValidation;
 import com.goode.business.GroupMember;
 import com.goode.repository.AccessRoleRepository;
+import com.goode.repository.GroupMemberRepository;
 import com.goode.service.AccountService;
 import com.goode.service.GroupMemberService;
 import com.goode.service.GroupService;
@@ -55,6 +56,9 @@ public class GroupController extends BaseController<Group, GroupService> {
 
   @Autowired
   AccessRoleRepository accessRoleRepository;
+
+  @Autowired
+  GroupMemberRepository groupMemberRepository;
 
   @GetMapping("/getMyGroups")
   @PreAuthorize("hasAnyRole('"+ AccessRole.ROLE_ADMIN +"', '"+ AccessRole.ROLE_TEACHER +"', '"+ AccessRole.ROLE_STUDENT +"')")
@@ -135,7 +139,7 @@ public class GroupController extends BaseController<Group, GroupService> {
 
   @PostMapping("/addNew")
   @PreAuthorize("hasAnyRole('"+ AccessRole.ROLE_ADMIN +"')")
-  public ResponseEntity<?> addNew(@Validated(AddNewValidation.class) @RequestBody Group group,
+  public ResponseEntity<?> addNewWithTeacher(@Validated(AddNewValidation.class) @RequestBody Group group,
       BindingResult result){
     super.initializeService(groupService);
 
@@ -157,9 +161,61 @@ public class GroupController extends BaseController<Group, GroupService> {
     }
 
     Group newGroup = groupService.addNew(group);
+    if(newGroup == null) {
+      return ErrorMessage
+          .send(Language.getMessage("error.group.notCreated"), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    return new ResponseEntity<>(null, HttpStatus.OK);
+  }
+
+  @PostMapping("/addNew/{teacherUsername}")
+  @PreAuthorize("hasAnyRole('"+ AccessRole.ROLE_ADMIN +"')")
+  public ResponseEntity<?> addNewWithTeacher(@Validated(AddNewValidation.class) @RequestBody Group group,
+      BindingResult result,
+      @PathVariable("teacherUsername") String teacherUsername){
+    super.initializeService(groupService);
+
+    if (result.hasErrors()) {
+      return ErrorMessage.send(Language
+          .translateError(result.getFieldError().getField(), result.getFieldError().getCode(),
+              result.getFieldError().getDefaultMessage(),
+              Language.getMessage(result.getFieldError().getField())), HttpStatus.BAD_REQUEST);
+    }
+
+    Account loggedAccount = accountService.getLoggedAccount();
+    Account accountTeacher = null;
+    if(!teacherUsername.equals("") && !teacherUsername.equals(loggedAccount.getUsername())){
+      accountTeacher = accountService.getAccountByUsername(teacherUsername);
+      if(accountTeacher == null){
+        return ErrorMessage
+            .send(Language.getMessage("error.account.teacherAccountNotExists"), HttpStatus.BAD_REQUEST);
+      }
+    }
+
+    if(groupService.getGroupByName(group.getName()) != null){
+      return ErrorMessage
+          .send(Language.getMessage("error.group.alreadyExists"), HttpStatus.BAD_REQUEST);
+    }
+
+    ErrorCode errorCode = new ErrorCode();
+    if (group.getIdGroupParent() != null && !groupValidator.validateIdGroupParent(group.getIdGroupParent(), errorCode)) {
+      return ErrorMessage.send(Language.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
+    }
+
+    Group newGroup = groupService.addNew(group);
     if(newGroup == null){
       return ErrorMessage
           .send(Language.getMessage("error.group.notCreated"), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    if(accountTeacher != null){
+      GroupMember groupMember = new GroupMember();
+      groupMember.setAccount(accountTeacher);
+      groupMember.setGroup(newGroup);
+      groupMember.setAccepted(true);
+      groupMember.setAccessRole(accessRoleRepository.getAccessRoleByRole(AccessRole.ROLE_TEACHER));
+
+      groupMemberRepository.save(groupMember);
     }
 
     return new ResponseEntity<>(null, HttpStatus.OK);
