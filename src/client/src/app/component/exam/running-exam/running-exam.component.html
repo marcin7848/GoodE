@@ -10,7 +10,7 @@
 
     <ng-container *ngIf="blockade == 0">
       <ng-container *ngIf="runningProcess == 0">
-        <h5>Join to exam!</h5>
+        <h5>{{ 'joinToExam' | translate }}</h5>
         <form class="form-main" [formGroup]="joinToExamForm" (ngSubmit)="joinToExam()">
           <mat-form-field class="form-input">
             <input matInput #inputPassword maxlength="50" minlength="5"
@@ -27,7 +27,7 @@
 
           <div class="action-button">
             <button mat-raised-button color="primary" class="body-buttons" [disabled]="loading">{{
-              'joinToExam' | translate
+              'joinTo' | translate
               }}
             </button>
             <img *ngIf="loading"

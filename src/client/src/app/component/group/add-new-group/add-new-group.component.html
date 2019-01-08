@@ -7,7 +7,7 @@
 
     <div style="width: 50%; display:inline-block; vertical-align:top;">
     <form class="form-main" style="width: 100%;" [formGroup]="addNewGroupForm" (ngSubmit)="onSubmit()">
-      <mat-form-field class="form-input">
+      <mat-form-field style="width: 200px;" class="form-input">
         <input matInput #inputName maxlength="40" minlength="4"
                pattern="^[ĄĆĘŁŃÓŚŹŻąćęłńóśźża-zA-Z0-9_\-\/ +\.,]+$"
                placeholder="{{'name' | translate}}" formControlName="name" required>
@@ -23,7 +23,7 @@
         </mat-error>
       </mat-form-field>
 
-      <mat-form-field class="form-input">
+      <mat-form-field style="width: 200px;" class="form-input">
         <input matInput #inputDescription maxlength="70"
                pattern="^[ĄĆĘŁŃÓŚŹŻąćęłńóśźża-zA-Z0-9_\-\/ +\.,]+$"
                placeholder="{{'description' | translate}}" formControlName="description">

@@ -176,8 +176,9 @@
   "timeToEndExam": "Time to end exam",
   "timeToEndExamQuestion": "Time to end question",
   "timeToEndExamQuestionFull": "Time to end your exam",
-  "examinationSystem": "Examination system",
+  "examinationSystem": "Examination platform",
   "listOfAllGroups": "List of all groups",
   "teacherUsername": "Teacher's username",
-  "areYouSureDeleteGroup": "Are you sure to delete this group?"
+  "areYouSureDeleteGroup": "Are you sure to delete this group?",
+  "joinTo": "Join to"
 }

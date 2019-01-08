@@ -177,8 +177,9 @@
   "timeToEndExam": "Czas do zakończenia egzaminu",
   "timeToEndExamQuestion": "Czas do zakończenia pytania",
   "timeToEndExamQuestionFull": "Czas do zakończenia Twojego egzaminu",
-  "examinationSystem": "System egzaminowania studentów",
+  "examinationSystem": "Platforma egzaminacyjna",
   "listOfAllGroups": "Lista wszystkich grup",
   "teacherUsername": "Nazwa uzytkownika nauczyciela",
-  "areYouSureDeleteGroup": "Czy na pewno chcesz usunąć tą grupę?"
+  "areYouSureDeleteGroup": "Czy na pewno chcesz usunąć tą grupę?",
+  "joinTo": "Dołącz"
 }
