@@ -70,6 +70,58 @@
           </tr>
           </thead>
           <tbody>
+          <tr id="answerBox_{{question.id}}" style="display: none; width: 100%;">
+            <td style="text-align: left;" colspan="5">
+              <ng-container *ngIf="editMode == 1">
+                <h5>{{'addNewAnswer' | translate}}</h5>
+              </ng-container>
+              <ng-container *ngIf="editMode == 2">
+                <h5>{{'editAnswer' | translate}}</h5>
+              </ng-container>
+              <div style="width: 50%; display:inline-block; vertical-align:top;">
+                <form class="form-main" [formGroup]="answerForm">
+                  <mat-form-field class="form-input" style=" min-width: 400px;width: 100%;">
+          <textarea id="closedAnswerTextarea" matInput #inputClosedAnswer maxlength="50000" rows="10"
+                    (ngModelChange)="closedAnswerTextareaChanged($event)"
+                    placeholder="{{'closedAnswer' | translate}}" formControlName="closedAnswer"
+                    required></textarea>
+                    <mat-hint align="end">{{inputClosedAnswer.value?.length || 0}}/50000</mat-hint>
+                    <mat-error *ngIf="a.closedAnswer.errors?.required">
+                      {{ 'fieldRequired' | translate:{'field':'closedAnswer' | translate} }}
+                    </mat-error>
+                  </mat-form-field>
+
+                  <div class="form-slide">
+                    <mat-slide-toggle color="primary" formControlName="correct" [checked]="currentClosedAnswer?.correct">
+                      {{'isCorrect' | translate}}
+                    </mat-slide-toggle>
+                  </div>
+
+                  <div>
+                    <ng-container *ngIf="editMode == 1">
+                      <button mat-raised-button color="primary" class="body-buttons"
+                              style="width: 50px;" (click)="addNewAnswer(currentQuestion)" [disabled]="loading">{{'add' | translate}}</button>
+                    </ng-container>
+                    <ng-container *ngIf="editMode == 2">
+                      <button mat-raised-button color="primary" class="body-buttons"
+                              style="width: 50px;" (click)="editAnswer(currentQuestion, currentClosedAnswer)" [disabled]="loading">{{'save' | translate}}</button>
+                    </ng-container>
+                    <button mat-raised-button color="primary" class="body-buttons"
+                            style="width: 50px;"
+                            (click)="cancel()" [disabled]="loading">{{'cancel' | translate}}
+                    </button>
+                    <img *ngIf="loading"
+                         src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
+
+                    <div *ngIf="messageError" class="alert">{{messageError}}</div>
+                  </div>
+
+                </form>
+              </div>
+              <div style="width: 50%; display:inline-block; vertical-align:top; word-break: break-all;white-space: normal;" [innerHTML]="closedAnswerTextarea">
+              </div>
+            </td>
+          </tr>
           <ng-container *ngFor="let answer of question.closedAnswers">
             <tr>
               <td colspan="3" class="mdl-data-table__cell--non-numeric"
@@ -166,11 +218,11 @@
         <div>
         <ng-container *ngIf="editMode == 1">
           <button mat-raised-button color="primary" class="body-buttons"
-                  style="width: 150px;" (click)="addNewQuestion()" [disabled]="loading">{{'addNewQuestion' | translate}}</button>
+                  style="width: 50px;" (click)="addNewQuestion()" [disabled]="loading">{{'add' | translate}}</button>
         </ng-container>
         <ng-container *ngIf="editMode == 2">
           <button mat-raised-button color="primary" class="body-buttons"
-                  style="width: 150px;" (click)="editQuestion(currentQuestion)" [disabled]="loading">{{'editQuestion' | translate}}</button>
+                  style="width: 50px;" (click)="editQuestion(currentQuestion)" [disabled]="loading">{{'save' | translate}}</button>
         </ng-container>
         <button mat-raised-button color="primary" class="body-buttons"
                 style="width: 50px;"
@@ -190,57 +242,5 @@
     </mat-card-content>
   </ng-container>
 
-  <ng-container *ngIf="formMode == 2">
-    <mat-card-content>
-      <ng-container *ngIf="editMode == 1">
-        <h5>{{'addNewAnswer' | translate}}</h5>
-      </ng-container>
-      <ng-container *ngIf="editMode == 2">
-        <h5>{{'editAnswer' | translate}}</h5>
-      </ng-container>
-      <div style="width: 50%; display:inline-block; vertical-align:top;">
-        <form class="form-main" [formGroup]="answerForm">
-          <mat-form-field class="form-input" style=" min-width: 400px;width: 100%;">
-          <textarea id="closedAnswerTextarea" matInput #inputClosedAnswer maxlength="50000" rows="10"
-                    (ngModelChange)="closedAnswerTextareaChanged($event)"
-                    placeholder="{{'closedAnswer' | translate}}" formControlName="closedAnswer"
-                    required></textarea>
-            <mat-hint align="end">{{inputClosedAnswer.value?.length || 0}}/50000</mat-hint>
-            <mat-error *ngIf="a.closedAnswer.errors?.required">
-              {{ 'fieldRequired' | translate:{'field':'closedAnswer' | translate} }}
-            </mat-error>
-          </mat-form-field>
-
-          <div class="form-slide">
-            <mat-slide-toggle color="primary" formControlName="correct" [checked]="currentClosedAnswer?.correct">
-              {{'isCorrect' | translate}}
-            </mat-slide-toggle>
-          </div>
-
-          <div>
-            <ng-container *ngIf="editMode == 1">
-              <button mat-raised-button color="primary" class="body-buttons"
-                      style="width: 200px;" (click)="addNewAnswer(currentQuestion)" [disabled]="loading">{{'addNewAnswer' | translate}}</button>
-            </ng-container>
-            <ng-container *ngIf="editMode == 2">
-              <button mat-raised-button color="primary" class="body-buttons"
-                      style="width: 200px;" (click)="editAnswer(currentQuestion, currentClosedAnswer)" [disabled]="loading">{{'editAnswer' | translate}}</button>
-            </ng-container>
-            <button mat-raised-button color="primary" class="body-buttons"
-                    style="width: 50px;"
-                    (click)="cancel()" [disabled]="loading">{{'cancel' | translate}}
-            </button>
-            <img *ngIf="loading"
-                 src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
-
-            <div *ngIf="messageError" class="alert">{{messageError}}</div>
-          </div>
-
-        </form>
-      </div>
-      <div style="width: 50%; display:inline-block; vertical-align:top; word-break: break-all;white-space: normal;" [innerHTML]="closedAnswerTextarea">
-      </div>
-    </mat-card-content>
-  </ng-container>
 </mat-card>
 

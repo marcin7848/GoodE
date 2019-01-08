@@ -151,16 +151,21 @@ export class QuestionComponent implements OnInit {
   }
 
   showAddAnswer(question: Question){
-    this.formMode = 2;
+    this.clearAllAnswerBox();
+    this.formMode = 0;
     this.editMode = 1;
     this.messageError = "";
     this.loading = false;
     this.closedAnswerTextarea = "";
     this.currentQuestion = question;
+    $('#answerBox_'+question.id).css('display', '');
+    $('#answerBox_'+question.id).toggleClass('open');
   }
 
+
   showEditAnswer(question: Question, closedAnswer: ClosedAnswer){
-    this.formMode = 2;
+    this.clearAllAnswerBox();
+    this.formMode = 0;
     this.editMode = 2;
     this.messageError = "";
     this.loading = false;
@@ -174,6 +179,7 @@ export class QuestionComponent implements OnInit {
     this.a.closedAnswer.setValue(closedAnswerString);
     this.a.correct.setValue(closedAnswer.correct);
 
+    $('#answerBox_'+question.id).css('display', '');
   }
 
   addNewQuestion(){
@@ -313,6 +319,7 @@ export class QuestionComponent implements OnInit {
 
   cancel(){
     this.formMode = 0;
+    this.clearAllAnswerBox();
   }
 
   questionTextareaChanged(event: string){
@@ -325,6 +332,12 @@ export class QuestionComponent implements OnInit {
     event = event.replace(/\r\n|\r|\n/g,"<br />");
     event = event.replace(/\t/g,"&nbsp;&nbsp;&nbsp;&nbsp;");
     this.closedAnswerTextarea = event;
+  }
+
+  clearAllAnswerBox(){
+    for(var i=0; i<this.questions.length; i++){
+      $('#answerBox_'+this.questions[i].id).css('display', 'none');
+    }
   }
 
 }
