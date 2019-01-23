@@ -4,7 +4,7 @@
       <a class="links card-links" routerLink="/group/{{exam?.group.id}}/view">{{ 'back' |
         translate
         }}</a>
-      <ng-container *ngIf="!exam?.finished">
+      <ng-container *ngIf="!exam?.finished && !exam?.draft">
         <a class="links card-links" routerLink="#" (click)="startExam()">{{ 'runningExamManagement' | translate }}</a>
       </ng-container>
     </div>
@@ -58,6 +58,11 @@
           <mat-list-item style="font-size: 14px;">{{ 'finished' | translate }}:
             <ng-container *ngIf="exam?.finished">{{ 'true' | translate }}</ng-container>
             <ng-container *ngIf="!exam?.finished">{{ 'false' | translate }}</ng-container>
+          </mat-list-item>
+          <mat-divider></mat-divider>
+          <mat-list-item style="font-size: 14px;">{{ 'draft' | translate }}:
+            <ng-container *ngIf="exam?.draft">{{ 'true' | translate }}</ng-container>
+            <ng-container *ngIf="!exam?.draft">{{ 'false' | translate }}</ng-container>
           </mat-list-item>
         </mat-list>
       </mat-tab>

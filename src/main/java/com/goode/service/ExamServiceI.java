@@ -36,6 +36,7 @@ public interface ExamServiceI {
   JSONArray getResultsForAllExamMembers(Exam exam);
 
   Exam addNew(Exam question);
+  Exam addNewBaseOnTemplate(Exam exam);
   Exam edit(Exam exam);
   ExamQuestion addNewExamQuestion(Exam exam, Question question);
   void deleteExamQuestion(ExamQuestion examQuestion);

@@ -37,6 +37,8 @@ export class GroupViewComponent implements OnInit {
   examForm: FormGroup;
   currentExam: Exam;
 
+  examFromDraftForm: FormGroup;
+
   groupMembersOfTeachers: GroupMember[];
   dataSourceOfGroupMembersOfTeachers = new MatTableDataSource(this.groupMembersOfTeachers);
   displayedColumnsGroupMembersOfTeachers: string[] = ['username', 'firstName', 'lastName', 'actions'];
@@ -80,8 +82,12 @@ export class GroupViewComponent implements OnInit {
       percentToPass: ['', Validators.required],
       numberOfQuestions: [''],
       maxTime: [''],
+      draft: [false]
     });
 
+    this.examFromDraftForm = this.formBuilder.group({
+      draft: ['', Validators.required]
+    });
 
     this.route.params.subscribe(params => {
       this.id = params['id'];
@@ -222,10 +228,19 @@ export class GroupViewComponent implements OnInit {
 
   get f() { return this.examForm.controls; }
 
+  get g() { return this.examFromDraftForm.controls; }
+
   showAddExam(){
+    this.messageExam = "";
     this.editMode = 0;
     this.formMode = 1;
     this.fillFields();
+  }
+
+  showAddExamFromDraft(){
+    this.messageExam = "";
+    this.editMode = 0;
+    this.formMode = 2;
   }
 
   fillFields(){
@@ -240,9 +255,11 @@ export class GroupViewComponent implements OnInit {
     this.f.percentToPass.setValue("");
     this.f.numberOfQuestions.setValue("");
     this.f.maxTime.setValue("");
+    this.f.draft.setValue(false);
   }
 
   showEditExam(exam: Exam){
+    this.messageExam = "";
     this.editMode = 1;
     this.formMode = 1;
     this.currentExam = exam;
@@ -257,6 +274,7 @@ export class GroupViewComponent implements OnInit {
     this.f.percentToPass.setValue(exam.percentToPass);
     this.f.numberOfQuestions.setValue(exam.numberOfQuestions);
     this.f.maxTime.setValue(exam.maxTime);
+    this.f.draft.setValue(exam.draft);
   }
 
   joinToGroup(idGroup: number){
@@ -359,10 +377,12 @@ export class GroupViewComponent implements OnInit {
 
     this.examService.addNewExam(this.id, this.f.title.value, this.f.type.value, this.f.difficulty.value,
       this.f.showAllQuestions.value, this.f.returnToQuestions.value, this.f.sendResultsInstantly.value, this.f.showFullResults.value,
-      this.f.mixQuestions.value, this.f.percentToPass.value, this.f.numberOfQuestions.value, this.f.maxTime.value)
+      this.f.mixQuestions.value, this.f.percentToPass.value, this.f.numberOfQuestions.value, this.f.maxTime.value, this.f.draft.value)
     .pipe(first())
     .subscribe(
       data => {
+        this.messageExam = "";
+        this.loading = false;
         this.editMode = 0;
         this.formMode = 0;
         this.fillFields();
@@ -371,7 +391,7 @@ export class GroupViewComponent implements OnInit {
       error => {
         this.loading = false;
         this.messageExam = error["error"]["error"];
-        this.snackBar.open(this.message, this.translateService.instant('close'), {
+        this.snackBar.open(this.messageExam, this.translateService.instant('close'), {
           duration: 5000,
         });
       });
@@ -388,10 +408,12 @@ export class GroupViewComponent implements OnInit {
 
     this.examService.editExam(exam.id, this.f.title.value, this.f.type.value, this.f.difficulty.value,
       this.f.showAllQuestions.value, this.f.returnToQuestions.value, this.f.sendResultsInstantly.value, this.f.showFullResults.value,
-      this.f.mixQuestions.value, this.f.percentToPass.value, this.f.numberOfQuestions.value, this.f.maxTime.value)
+      this.f.mixQuestions.value, this.f.percentToPass.value, this.f.numberOfQuestions.value, this.f.maxTime.value, this.f.draft.value)
     .pipe(first())
     .subscribe(
       data => {
+        this.messageExam = "";
+        this.loading = false;
         this.editMode = 0;
         this.formMode = 0;
         this.fillFields();
@@ -400,7 +422,7 @@ export class GroupViewComponent implements OnInit {
       error => {
         this.loading = false;
         this.messageExam = error["error"]["error"];
-        this.snackBar.open(this.message, this.translateService.instant('close'), {
+        this.snackBar.open(this.messageExam, this.translateService.instant('close'), {
           duration: 5000,
         });
       });
@@ -455,6 +477,34 @@ export class GroupViewComponent implements OnInit {
         this.deleteGroup(result);
       }
     });
+  }
+
+  addNewExamFromDraft(){
+    this.submitted = true;
+
+    if (this.examFromDraftForm.invalid) {
+      return;
+    }
+
+    this.loading = true;
+
+    this.examService.addNewExamFromDraft(this.id, this.g.draft.value)
+    .pipe(first())
+    .subscribe(
+      data => {
+        this.messageExam = "";
+        this.loading = false;
+        this.editMode = 0;
+        this.formMode = 0;
+        this.ngOnInit();
+      },
+      error => {
+        this.loading = false;
+        this.messageExam = error["error"]["error"];
+        this.snackBar.open(this.messageExam, this.translateService.instant('close'), {
+          duration: 5000,
+        });
+      });
   }
 
 }

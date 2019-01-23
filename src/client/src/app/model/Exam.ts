@@ -25,6 +25,7 @@ export class Exam {
   finishTime: string;
   creationTime: string;
   percentToPass: number;
+  draft: boolean;
   group: Group;
   examQuestions: ExamQuestion[];
   examMembers: ExamMember[];

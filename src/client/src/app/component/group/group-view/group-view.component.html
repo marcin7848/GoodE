@@ -25,6 +25,8 @@
         translate }}</a>
       <a class="links card-links" routerLink="#" (click)="showAddExam()">{{ 'addNewExam' | translate
         }}</a>
+      <a class="links card-links" routerLink="#" (click)="showAddExamFromDraft()">{{ 'addNewExamFromDraft' | translate
+        }}</a>
     </ng-container>
   </div>
   <div *ngIf="message" class="alert-top">{{message}}</div>
@@ -191,7 +193,11 @@
 
             <ng-container matColumnDef="title">
               <th mat-header-cell *matHeaderCellDef> {{ 'title' | translate }}</th>
-              <td mat-cell *matCellDef="let element"> {{element.title}}</td>
+              <td mat-cell *matCellDef="let element"> {{element.title}}
+                <ng-container *ngIf="element.draft">
+                  <span style="color: red;">[{{ 'draft' | translate }}]</span>
+                </ng-container>
+              </td>
             </ng-container>
 
             <ng-container matColumnDef="actions">
@@ -367,6 +373,12 @@
           </mat-error>
         </mat-form-field>
 
+        <div class="form-slide">
+          <mat-slide-toggle color="primary" formControlName="draft">
+            {{'draft' | translate}}
+          </mat-slide-toggle>
+        </div>
+
         <div class="action-button">
 
           <ng-container *ngIf="editMode == 0">
@@ -382,6 +394,37 @@
                src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
         </div>
 
+        <div *ngIf="messageExam" class="alert">{{messageExam}}</div>
+      </form>
+    </mat-card-content>
+  </ng-container>
+
+  <ng-container *ngIf="formMode == 2">
+    <mat-card-content>
+      <h2>{{ 'addNewExamFromDraft' | translate }}</h2>
+
+      <form class="form-main" [formGroup]="examFromDraftForm">
+        <mat-form-field style="width: 400px;" class="form-input">
+          <mat-select style="width: 400px;" formControlName="draft" placeholder="{{ 'draft' | translate }}" required>
+            <ng-container
+              *ngFor="let exam of examsNotFinished">
+              <ng-container *ngIf="exam.draft">
+                <mat-option style="width: 400px;" [value]="exam.id">{{exam.title}}</mat-option>
+              </ng-container>
+            </ng-container>
+          </mat-select>
+          <mat-error *ngIf="g.draft.errors?.required">
+            {{ 'fieldRequired' | translate:{'field':'draft' | translate} }}
+          </mat-error>
+        </mat-form-field>
+
+        <div class="action-button">
+          <button mat-raised-button color="primary" class="body-buttons" (click)="addNewExamFromDraft()" [disabled]="loading">{{'add' | translate}}</button>
+          <button mat-raised-button color="primary" class="body-buttons" (click)="cancelFormExam()">{{'cancel' | translate}}</button>
+
+          <img *ngIf="loading"
+               src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
+        </div>
         <div *ngIf="messageExam" class="alert">{{messageExam}}</div>
       </form>
     </mat-card-content>

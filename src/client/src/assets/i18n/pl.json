@@ -26,6 +26,7 @@
   "idExamMember": "Id członka",
   "blockade": "Blokada",
   "confirmPassword": "Powtórz hasło",
+  "draft": "Szablon",
 
   "fieldRequired": "Pole {{field}} jest wymagane!",
   "fieldMinLength": "Długość pola {{field}} musi mieć co najmniej {{length}} znaków!",
@@ -183,5 +184,7 @@
   "teacherUsername": "Nazwa uzytkownika nauczyciela",
   "areYouSureDeleteGroup": "Czy na pewno chcesz usunąć tą grupę?",
   "joinTo": "Dołącz",
-  "passwordsNotIdentical": "Podane hasła nie są identyczne."
+  "passwordsNotIdentical": "Podane hasła nie są identyczne.",
+
+  "addNewExamFromDraft": "Dodaj nowy egzamin z szablonu"
 }

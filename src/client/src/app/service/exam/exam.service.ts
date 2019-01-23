@@ -31,18 +31,23 @@ export class ExamService {
   }
 
   public addNewExam(idGroupV: number, titleV: string, typeV: number, difficultyV: number, showAllQuestionsV: boolean, returnToQuestionsV: boolean, sendResultsInstantlyV: boolean,
-                    showFullResultsV: boolean, mixQuestionsV: boolean, percentToPassV: number, numberOfQuestionsV: number, maxTimeV: number){
+                    showFullResultsV: boolean, mixQuestionsV: boolean, percentToPassV: number, numberOfQuestionsV: number, maxTimeV: number, draftV: boolean){
     const body = {title: titleV, type: typeV, difficulty: difficultyV, showAllQuestions: showAllQuestionsV, returnToQuestions: returnToQuestionsV,
       sendResultsInstantly: sendResultsInstantlyV, showFullResults: showFullResultsV, mixQuestions: mixQuestionsV, percentToPass: percentToPassV,
-      numberOfQuestions: numberOfQuestionsV, maxTime: maxTimeV};
+      numberOfQuestions: numberOfQuestionsV, maxTime: maxTimeV, draft: draftV};
     return this.http.post<any>(this.baseUri + "/addNew/group/"+idGroupV, body);
   }
 
+  public addNewExamFromDraft(idGroupV: number, idTemplate: number){
+    const body = {};
+    return this.http.post<any>(this.baseUri + "/addNew/group/"+idGroupV+"/template/"+idTemplate, body);
+  }
+
   public editExam(idExam: number, titleV: string, typeV: number, difficultyV: number, showAllQuestionsV: boolean, returnToQuestionsV: boolean, sendResultsInstantlyV: boolean,
-                    showFullResultsV: boolean, mixQuestionsV: boolean, percentToPassV: number, numberOfQuestionsV: number, maxTimeV: number){
+                    showFullResultsV: boolean, mixQuestionsV: boolean, percentToPassV: number, numberOfQuestionsV: number, maxTimeV: number, draftV: boolean){
     const body = {title: titleV, type: typeV, difficulty: difficultyV, showAllQuestions: showAllQuestionsV, returnToQuestions: returnToQuestionsV,
       sendResultsInstantly: sendResultsInstantlyV, showFullResults: showFullResultsV, mixQuestions: mixQuestionsV, percentToPass: percentToPassV,
-      numberOfQuestions: numberOfQuestionsV, maxTime: maxTimeV};
+      numberOfQuestions: numberOfQuestionsV, maxTime: maxTimeV, draft: draftV};
     return this.http.patch<any>(this.baseUri + "/"+idExam+"/edit/", body);
   }
 

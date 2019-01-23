@@ -300,6 +300,45 @@ public class ExamController {
     return new ResponseEntity<>(null, HttpStatus.OK);
   }
 
+  @PostMapping("/addNew/group/{idGroup}/template/{id}")
+  @PreAuthorize("hasAnyRole('" + AccessRole.ROLE_ADMIN + "', '" + AccessRole.ROLE_TEACHER + "')")
+  public ResponseEntity<?> addNewBaseOnTemplate(@PathVariable("idGroup") int idGroup,
+      @PathVariable("id") int id) {
+
+    Exam exam = examService.getExamById(id);
+    if (exam == null) {
+      return ErrorMessage
+          .send(Language.getMessage("error.exam.badId"), HttpStatus.BAD_REQUEST);
+    }
+
+    Group group = groupService.getGroupById(idGroup);
+    if (group == null) {
+      return ErrorMessage
+          .send(Language.getMessage("error.group.badId"), HttpStatus.BAD_REQUEST);
+    }
+
+    ErrorCode errorCode = new ErrorCode();
+    if (!groupMemberValidator.validatePermissionToGroup(group, true, errorCode)) {
+      return ErrorMessage.send(Language.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
+    }
+
+    exam.setGroup(group);
+
+    if (!exam.isDraft()) {
+      return ErrorMessage
+          .send(Language.getMessage("error.exam.notDraft"),
+              HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    exam = examService.addNewBaseOnTemplate(exam);
+    if (exam == null) {
+      return ErrorMessage
+          .send(Language.getMessage("error.exam.notCreated"), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    return new ResponseEntity<>(null, HttpStatus.OK);
+  }
+
   @PatchMapping("/{id}/edit")
   @PreAuthorize("hasAnyRole('" + AccessRole.ROLE_ADMIN + "', '" + AccessRole.ROLE_TEACHER + "')")
   public ResponseEntity<?> editExam(@Validated(ExamValidationFull.class) @RequestBody Exam exam,
@@ -548,6 +587,11 @@ public class ExamController {
           .send(Language.getMessage("error.group.badId"), HttpStatus.BAD_REQUEST);
     }
 
+    if (examById.isDraft()) {
+      return ErrorMessage
+          .send(Language.getMessage("error.exam.examIsDraft"), HttpStatus.BAD_REQUEST);
+    }
+
     ErrorCode errorCode = new ErrorCode();
     if (!groupMemberValidator.validatePermissionToGroup(group, true, errorCode)) {
       return ErrorMessage.send(Language.getMessage(errorCode.getCode()), HttpStatus.BAD_REQUEST);
@@ -590,6 +634,11 @@ public class ExamController {
     if (group == null) {
       return ErrorMessage
           .send(Language.getMessage("error.group.badId"), HttpStatus.BAD_REQUEST);
+    }
+
+    if (examById.isDraft()) {
+      return ErrorMessage
+          .send(Language.getMessage("error.exam.examIsDraft"), HttpStatus.BAD_REQUEST);
     }
 
     ErrorCode errorCode = new ErrorCode();
@@ -687,6 +736,11 @@ public class ExamController {
     if (group == null) {
       return ErrorMessage
           .send(Language.getMessage("error.group.badId"), HttpStatus.BAD_REQUEST);
+    }
+
+    if (examById.isDraft()) {
+      return ErrorMessage
+          .send(Language.getMessage("error.exam.examIsDraft"), HttpStatus.BAD_REQUEST);
     }
 
     ErrorCode errorCode = new ErrorCode();

@@ -502,6 +502,74 @@ public class ExamService implements ExamServiceI {
   }
 
   @Override
+  public Exam addNewBaseOnTemplate(Exam currentExam) {
+    Exam exam = new Exam();
+    List<ExamQuestion> examQuestions = examQuestionRepository.findAllExamQuestionsByIdExam(currentExam.getId());
+
+    exam.setCreationTime(new Timestamp(new Date().getTime()));
+    exam.setStartTime(null);
+    exam.setFinishTime(null);
+    exam.setStarted(false);
+    exam.setFinished(false);
+    exam.setRated(false);
+    exam.setDraft(false);
+
+    exam.setTitle(currentExam.getTitle());
+    exam.setPassword(currentExam.getPassword());
+    exam.setColor(currentExam.getColor());
+    exam.setType(currentExam.getType());
+    exam.setDifficulty(currentExam.getDifficulty());
+    exam.setShowAllQuestions(currentExam.isShowAllQuestions());
+    exam.setReturnToQuestions(currentExam.isReturnToQuestions());
+    exam.setSendResultsInstantly(currentExam.isSendResultsInstantly());
+    exam.setShowFullResults(currentExam.isShowFullResults());
+    exam.setMixQuestions(currentExam.isMixQuestions());
+    exam.setMaxTime(currentExam.getMaxTime());
+    exam.setAdditionalTime(currentExam.getAdditionalTime());
+    exam.setNumberOfQuestions(currentExam.getNumberOfQuestions());
+    exam.setPercentToPass(currentExam.getPercentToPass());
+    exam.setGroup(currentExam.getGroup());
+
+    exam = examRepository.save(exam);
+
+    if (exam == null) {
+      return null;
+    }
+
+    for(ExamQuestion examQuestion: examQuestions){
+      ExamQuestion examQuestion1 = new ExamQuestion();
+      examQuestion1.setQuestion(examQuestion.getQuestion());
+      examQuestion1.setType(examQuestion.getType());
+      examQuestion1.setDifficulty(examQuestion.getDifficulty());
+      examQuestion1.setPoints(examQuestion.getPoints());
+      examQuestion1.setAnswerTime(examQuestion.getAnswerTime());
+      examQuestion1.setPosition(examQuestion.getPosition());
+      examQuestion1.setExam(exam);
+
+      examQuestion1 = examQuestionRepository.save(examQuestion1);
+      if (examQuestion1 == null) {
+        return null;
+      }
+
+      List<ExamClosedAnswer> examClosedAnswers = examClosedAnswerRepository.findAllExamClosedAnswerByIdExamQuestion(examQuestion.getId());
+
+      for(ExamClosedAnswer examClosedAnswer: examClosedAnswers){
+        ExamClosedAnswer examClosedAnswer1 = new ExamClosedAnswer();
+        examClosedAnswer1.setClosedAnswer(examClosedAnswer.getClosedAnswer());
+        examClosedAnswer1.setCorrect(examClosedAnswer.isCorrect());
+        examClosedAnswer1.setExamQuestion(examQuestion1);
+
+        examClosedAnswer1 = examClosedAnswerRepository.save(examClosedAnswer1);
+        if (examClosedAnswer1 == null) {
+          return null;
+        }
+      }
+    }
+
+    return exam;
+  }
+
+  @Override
   public Exam edit(Exam exam) {
     Exam oldExam = examRepository.findExamById(exam.getId());
     exam.setCreationTime(oldExam.getCreationTime());

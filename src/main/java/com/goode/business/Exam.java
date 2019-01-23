@@ -119,6 +119,9 @@ public class Exam {
   @NotNull(groups = {ExamValidationFull.class})
   private int percentToPass;
 
+  @Column(name = "draft")
+  private boolean draft;
+
   @ManyToOne(fetch = FetchType.EAGER, optional = false)
   @JoinColumn(name = "id_group")
   @OnDelete(action = OnDeleteAction.CASCADE)
