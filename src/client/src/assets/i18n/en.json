@@ -26,6 +26,7 @@
   "color": "Color [#000000]",
   "idExamMember": "Id exam member",
   "blockade": "Blockade",
+  "confirmPassword": "Repeat password",
 
   "fieldRequired": "Field {{field}} is required!",
   "fieldMinLength": "Field length {{field}} must be at least {{length}} characters!",
@@ -180,5 +181,6 @@
   "listOfAllGroups": "List of all groups",
   "teacherUsername": "Teacher's username",
   "areYouSureDeleteGroup": "Are you sure to delete this group?",
-  "joinTo": "Join to"
+  "joinTo": "Join to",
+  "passwordsNotIdentical": "The given passwords are not identical."
 }

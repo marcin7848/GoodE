@@ -8,51 +8,99 @@
     <form class="form-main" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
 
       <div>
-      <mat-form-field class="form-input">
-        <input matInput #inputUsername maxlength="15" minlength="6" pattern="^[a-zA-Z0-9_]+$"
-               placeholder="{{'username' | translate}}" formControlName="username" required>
-        <mat-hint align="end">{{inputUsername.value?.length || 0}}/15</mat-hint>
-        <mat-error *ngIf="f.username.errors?.required">
-          {{ 'fieldRequired' | translate:{'field':'username' | translate} }}
-        </mat-error>
-        <mat-error *ngIf="f.username.errors?.minlength && !f.username.errors?.pattern">
-          {{ 'fieldMinLength' | translate:{'field':'username' | translate, 'length': '6'} }}
-        </mat-error>
-        <mat-error *ngIf="f.username.errors?.pattern">
-          {{ 'fieldPattern' | translate:{'field':'username' | translate} }}
-        </mat-error>
-      </mat-form-field>
+        <mat-form-field class="form-input">
+          <input matInput #inputUsername maxlength="15" minlength="6" pattern="^[a-zA-Z0-9_]+$"
+                 placeholder="{{'username' | translate}}" formControlName="username" required>
+          <mat-hint align="end">{{inputUsername.value?.length || 0}}/15</mat-hint>
+          <mat-error *ngIf="f.username.errors?.required">
+            {{ 'fieldRequired' | translate:{'field':'username' | translate} }}
+          </mat-error>
+          <mat-error *ngIf="f.username.errors?.minlength && !f.username.errors?.pattern">
+            {{ 'fieldMinLength' | translate:{'field':'username' | translate, 'length': '6'} }}
+          </mat-error>
+          <mat-error *ngIf="f.username.errors?.pattern">
+            {{ 'fieldPattern' | translate:{'field':'username' | translate} }}
+          </mat-error>
+        </mat-form-field>
 
-      <mat-form-field class="form-input" style="margin-left: 40px;">
-        <input matInput #inputEmail maxlength="100" minlength="6"
-               pattern="^[a-zA-Z0-9._-]+@([a-zA-Z0-9-_]+\.)+[a-zA-Z0-9-_]+$"
-               placeholder="{{'email' | translate}}" formControlName="email" required>
-        <mat-hint align="end">{{inputEmail.value?.length || 0}}/100</mat-hint>
-        <mat-error *ngIf="f.email.errors?.required">
-          {{ 'fieldRequired' | translate:{'field':'email' | translate} }}
-        </mat-error>
-        <mat-error *ngIf="f.email.errors?.minlength && !f.email.errors?.pattern">
-          {{ 'fieldMinLength' | translate:{'field':'email' | translate, 'length': '6'} }}
-        </mat-error>
-        <mat-error *ngIf="f.email.errors?.pattern">
-          {{ 'fieldPattern' | translate:{'field':'email' | translate} }}
-        </mat-error>
-      </mat-form-field>
+        <mat-form-field class="form-input" style="margin-left: 40px;">
+          <input matInput #inputEmail maxlength="100" minlength="6"
+                 pattern="^[a-zA-Z0-9._-]+@([a-zA-Z0-9-_]+\.)+[a-zA-Z0-9-_]+$"
+                 placeholder="{{'email' | translate}}" formControlName="email" required>
+          <mat-hint align="end">{{inputEmail.value?.length || 0}}/100</mat-hint>
+          <mat-error *ngIf="f.email.errors?.required">
+            {{ 'fieldRequired' | translate:{'field':'email' | translate} }}
+          </mat-error>
+          <mat-error *ngIf="f.email.errors?.minlength && !f.email.errors?.pattern">
+            {{ 'fieldMinLength' | translate:{'field':'email' | translate, 'length': '6'} }}
+          </mat-error>
+          <mat-error *ngIf="f.email.errors?.pattern">
+            {{ 'fieldPattern' | translate:{'field':'email' | translate} }}
+          </mat-error>
+        </mat-form-field>
       </div>
       <div>
-      <mat-form-field class="form-input">
-        <input matInput #inputPassword type="password" maxlength="100" minlength="8"
-               placeholder="{{'password' | translate}}" formControlName="password" required>
-        <mat-hint align="end">{{inputPassword.value?.length || 0}}/100</mat-hint>
-        <mat-error *ngIf="f.password.errors?.required && !f.password.errors?.minlength">
-          {{ 'fieldRequired' | translate:{'field':'password' | translate} }}
-        </mat-error>
-        <mat-error *ngIf="f.password.errors?.minlength">
-          {{ 'fieldMinLength' | translate:{'field':'password' | translate, 'length': '8'} }}
-        </mat-error>
-      </mat-form-field>
+        <mat-form-field class="form-input">
+          <input matInput #inputPassword type="password" maxlength="100" minlength="8"
+                 placeholder="{{'password' | translate}}" formControlName="password" required>
+          <mat-hint align="end">{{inputPassword.value?.length || 0}}/100</mat-hint>
+          <mat-error *ngIf="f.password.errors?.required && !f.password.errors?.minlength">
+            {{ 'fieldRequired' | translate:{'field':'password' | translate} }}
+          </mat-error>
+          <mat-error *ngIf="f.password.errors?.minlength">
+            {{ 'fieldMinLength' | translate:{'field':'password' | translate, 'length': '8'} }}
+          </mat-error>
+        </mat-form-field>
 
-      <mat-form-field class="form-input" style="margin-left: 40px;">
+        <mat-form-field class="form-input"  style="margin-left: 40px;">
+          <input matInput #inputConfirmPassword type="password" maxlength="100" minlength="8"
+                 placeholder="{{'confirmPassword' | translate}}" formControlName="confirmPassword"
+                 required>
+          <mat-hint align="end">{{inputConfirmPassword.value?.length || 0}}/100</mat-hint>
+          <mat-error
+            *ngIf="f.confirmPassword.errors?.required && !f.confirmPassword.errors?.minlength">
+            {{ 'fieldRequired' | translate:{'field':'confirmPassword' | translate} }}
+          </mat-error>
+          <mat-error *ngIf="f.confirmPassword.errors?.minlength">
+            {{ 'fieldMinLength' | translate:{'field':'confirmPassword' | translate, 'length': '8'} }}
+          </mat-error>
+          <mat-error *ngIf="f.confirmPassword.errors?.notEquivalent  && !f.confirmPassword.errors?.minlength">
+            {{ 'passwordsNotIdentical' | translate }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field class="form-input">
+          <input matInput #inputFirstName maxlength="30" minlength="3" pattern="^[a-zA-Z-]+$"
+                 placeholder="{{'firstName' | translate}}" formControlName="firstName" required>
+          <mat-hint align="end">{{inputFirstName.value?.length || 0}}/30</mat-hint>
+          <mat-error *ngIf="f.firstName.errors?.required">
+            {{ 'fieldRequired' | translate:{'field':'firstName' | translate} }}
+          </mat-error>
+          <mat-error *ngIf="f.firstName.errors?.minlength && !f.firstName.errors?.pattern">
+            {{ 'fieldMinLength' | translate:{'field':'firstName' | translate, 'length': '3'} }}
+          </mat-error>
+          <mat-error *ngIf="f.firstName.errors?.pattern">
+            {{ 'fieldPattern' | translate:{'field':'firstName' | translate} }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="form-input" style="margin-left: 40px;">
+          <input matInput #inputLastName maxlength="30" minlength="3" pattern="^[a-zA-Z-]+$"
+                 placeholder="{{'lastName' | translate}}" formControlName="lastName" required>
+          <mat-hint align="end">{{inputLastName.value?.length || 0}}/30</mat-hint>
+          <mat-error *ngIf="f.lastName.errors?.required">
+            {{ 'fieldRequired' | translate:{'field':'lastName' | translate} }}
+          </mat-error>
+          <mat-error *ngIf="f.lastName.errors?.minlength && !f.lastName.errors?.pattern">
+            {{ 'fieldMinLength' | translate:{'field':'lastName' | translate, 'length': '3'} }}
+          </mat-error>
+          <mat-error *ngIf="f.lastName.errors?.pattern">
+            {{ 'fieldPattern' | translate:{'field':'lastName' | translate} }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <mat-form-field class="form-input">
         <input matInput #inputRegisterNo maxlength="50" pattern="[0-9]+$"
                placeholder="{{'registerNo' | translate}}" formControlName="register_no" required>
         <mat-hint align="end">{{inputRegisterNo.value?.length || 0}}/50</mat-hint>
@@ -63,40 +111,10 @@
           {{ 'fieldPattern' | translate:{'field':'registerNo' | translate} }}
         </mat-error>
       </mat-form-field>
-      </div>
-      <div>
-      <mat-form-field class="form-input">
-        <input matInput #inputFirstName maxlength="30" minlength="3" pattern="^[a-zA-Z-]+$"
-               placeholder="{{'firstName' | translate}}" formControlName="firstName" required>
-        <mat-hint align="end">{{inputFirstName.value?.length || 0}}/30</mat-hint>
-        <mat-error *ngIf="f.firstName.errors?.required">
-          {{ 'fieldRequired' | translate:{'field':'firstName' | translate} }}
-        </mat-error>
-        <mat-error *ngIf="f.firstName.errors?.minlength && !f.firstName.errors?.pattern">
-          {{ 'fieldMinLength' | translate:{'field':'firstName' | translate, 'length': '3'} }}
-        </mat-error>
-        <mat-error *ngIf="f.firstName.errors?.pattern">
-          {{ 'fieldPattern' | translate:{'field':'firstName' | translate} }}
-        </mat-error>
-      </mat-form-field>
 
-      <mat-form-field class="form-input" style="margin-left: 40px;">
-        <input matInput #inputLastName maxlength="30" minlength="3" pattern="^[a-zA-Z-]+$"
-               placeholder="{{'lastName' | translate}}" formControlName="lastName" required>
-        <mat-hint align="end">{{inputLastName.value?.length || 0}}/30</mat-hint>
-        <mat-error *ngIf="f.lastName.errors?.required">
-          {{ 'fieldRequired' | translate:{'field':'lastName' | translate} }}
-        </mat-error>
-        <mat-error *ngIf="f.lastName.errors?.minlength && !f.lastName.errors?.pattern">
-          {{ 'fieldMinLength' | translate:{'field':'lastName' | translate, 'length': '3'} }}
-        </mat-error>
-        <mat-error *ngIf="f.lastName.errors?.pattern">
-          {{ 'fieldPattern' | translate:{'field':'lastName' | translate} }}
-        </mat-error>
-      </mat-form-field>
-      </div>
       <div class="action-button">
-        <button mat-raised-button color="primary"  class="body-buttons" [disabled]="loading">{{ 'registerButton' |
+        <button mat-raised-button color="primary" class="body-buttons" [disabled]="loading">{{
+          'registerButton' |
           translate
           }}
         </button>

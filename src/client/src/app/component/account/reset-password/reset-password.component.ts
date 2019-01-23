@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators} from "@angular/forms";
 import {AccountService} from "../../../service/account/account.service";
 import {first} from "rxjs/operators";
 import {ActivatedRoute} from "@angular/router";
@@ -24,7 +24,8 @@ export class ResetPasswordComponent implements OnInit {
               private accountService: AccountService,
               private route: ActivatedRoute,
               private translateService: TranslateService,
-              private snackBar: MatSnackBar) { }
+              private snackBar: MatSnackBar) {
+  }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
@@ -42,13 +43,17 @@ export class ResetPasswordComponent implements OnInit {
     });
 
     this.resetPasswordForm = this.formBuilder.group({
-      password: ['', Validators.required]
-    });
+        password: ['', Validators.required],
+        confirmPassword: ['', Validators.required]
+      },
+      {validator: this.passwordValidator()});
   }
 
-  get f() { return this.resetPasswordForm.controls; }
+  get f() {
+    return this.resetPasswordForm.controls;
+  }
 
-  onSubmit(){
+  onSubmit() {
     this.submitted = true;
 
     if (this.resetPasswordForm.invalid) {
@@ -62,7 +67,7 @@ export class ResetPasswordComponent implements OnInit {
     .subscribe(
       data => {
         this.message = this.translateService.instant('resetPasswordDone');
-        setTimeout(function(){
+        setTimeout(function () {
           location.href = '/login';
         }, 5000);
       },
@@ -74,6 +79,17 @@ export class ResetPasswordComponent implements OnInit {
         });
 
       });
+  }
+
+  passwordValidator(): ValidatorFn {
+    return (group: FormGroup): ValidationErrors => {
+      const password = group.controls['password'];
+      const confirmPassword = group.controls['confirmPassword'];
+      if (password.value !== confirmPassword.value && confirmPassword.errors == null) {
+        confirmPassword.setErrors({notEquivalent: true});
+      }
+      return;
+    };
   }
 
 }

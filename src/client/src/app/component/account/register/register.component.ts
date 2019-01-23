@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators} from "@angular/forms";
 import {AccountService} from "../../../service/account/account.service";
 import {first} from "rxjs/operators";
 import {TranslateService} from "@ngx-translate/core";
@@ -19,22 +19,27 @@ export class RegisterComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,
               private accountService: AccountService,
               private translateService: TranslateService,
-              private snackBar: MatSnackBar) { }
+              private snackBar: MatSnackBar) {
+  }
 
   ngOnInit() {
     this.registerForm = this.formBuilder.group({
-      username: ['', Validators.required],
-      email: ['', Validators.required],
-      password: ['', Validators.required],
-      register_no: ['', Validators.required],
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required]
-    });
+        username: ['', Validators.required],
+        email: ['', Validators.required],
+        password: ['', Validators.required],
+        register_no: ['', Validators.required],
+        firstName: ['', Validators.required],
+        lastName: ['', Validators.required],
+        confirmPassword: ['', Validators.required]
+      },
+      {validator: this.passwordValidator()});
   }
 
-  get f() { return this.registerForm.controls; }
+  get f() {
+    return this.registerForm.controls;
+  }
 
-  onSubmit(){
+  onSubmit() {
     this.submitted = true;
     if (this.registerForm.invalid) {
       return;
@@ -48,7 +53,7 @@ export class RegisterComponent implements OnInit {
       data => {
         this.loading = false;
         this.message = this.translateService.instant('registered');
-        setTimeout(function(){
+        setTimeout(function () {
           location.href = '/';
         }, 5000);
       },
@@ -59,6 +64,17 @@ export class RegisterComponent implements OnInit {
           duration: 5000,
         });
       });
+  }
+
+  passwordValidator(): ValidatorFn {
+    return (group: FormGroup): ValidationErrors => {
+      const password = group.controls['password'];
+      const confirmPassword = group.controls['confirmPassword'];
+      if (password.value !== confirmPassword.value && confirmPassword.errors == null) {
+        confirmPassword.setErrors({ notEquivalent: true });
+      }
+      return;
+    };
   }
 
 }

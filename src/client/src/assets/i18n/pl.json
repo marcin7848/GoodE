@@ -25,6 +25,7 @@
   "color": "Kolor [#000000]",
   "idExamMember": "Id członka",
   "blockade": "Blokada",
+  "confirmPassword": "Powtórz hasło",
 
   "fieldRequired": "Pole {{field}} jest wymagane!",
   "fieldMinLength": "Długość pola {{field}} musi mieć co najmniej {{length}} znaków!",
@@ -181,5 +182,6 @@
   "listOfAllGroups": "Lista wszystkich grup",
   "teacherUsername": "Nazwa uzytkownika nauczyciela",
   "areYouSureDeleteGroup": "Czy na pewno chcesz usunąć tą grupę?",
-  "joinTo": "Dołącz"
+  "joinTo": "Dołącz",
+  "passwordsNotIdentical": "Podane hasła nie są identyczne."
 }
