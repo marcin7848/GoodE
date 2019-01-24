@@ -198,7 +198,13 @@ export class GroupViewComponent implements OnInit {
 
           for(let i=0; i<this.exams.length; i++) {
             if (!this.exams[i].finished) {
-              this.examsNotFinished.push(this.exams[i]);
+              if(!this.exams[i].draft) {
+                this.examsNotFinished.push(this.exams[i]);
+              }else{
+                if(this.group.groupMembers[0].accessRole.role=='ROLE_ADMIN' || this.group.groupMembers[0].accessRole.role=='ROLE_TEACHER'){
+                  this.examsNotFinished.push(this.exams[i]);
+                }
+              }
             }
 
             if (this.exams[i].finished) {
