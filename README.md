@@ -10,27 +10,19 @@ WEB application created for examining students. The application was built using 
  - Spring Boot 2
  
  #### Images
-<p align="center">
+Img 1. List of students
 
  ![image](./img/students.png "students")
- 
-Img 1. List of students
-</p>
-<p align="center">
+
+Img 2. Creating questions for the exam
 
  ![image](./img/creating_question.png "creating_question")
  
-Img 2. Creating questions for the exam
-</p>
-<p align="center">
+ Img 3. Exam results for the teacher
 
  ![image](./img/exam_results.png "exam_results")
  
-Img 3. Exam results for the teacher
-</p>
-<p align="center">
+Img 4. Exam results for the student
 
  ![image](./img/exam_results_for_student.png "exam_results_for_student")
  
-Img 4. Exam results for the student
-</p>
